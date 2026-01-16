@@ -9,12 +9,12 @@ body{
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
-
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
+/* h1 */
 @layer base {
   h1 {
     @apply
@@ -24,6 +24,8 @@ body{
       text-center
   }
 }
+
+/* Links */
 @layer components {
   .link-base {
     @apply
@@ -80,6 +82,7 @@ body{
   }
 }
 
+/* Buttons */
 @layer base {
   button {
     @apply
@@ -93,5 +96,18 @@ body{
       text-center
       p-2
       cursor-pointer
+  }
+}
+
+/* Spinner for loading states */
+@layer components {
+  .spinner {
+    @apply
+      size-4 
+      border-2 
+      border-white 
+      border-l-white/0 
+      rounded-full 
+      animate-spin
   }
 }

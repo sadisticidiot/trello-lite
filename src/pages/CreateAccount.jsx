@@ -27,6 +27,8 @@ export default function CreateAccount() {
   const [gender, setGender] = useState(null)
   const [name, setName] = useState("")
 
+  const [loading, setLoading] = useState(true)
+
   const [error, setError] = useState("")
   const [openDropdown, setOpenDropdown] = useState(null)
 
@@ -57,7 +59,6 @@ export default function CreateAccount() {
           : "Something went wrong."
       )
     } else {
-      console.log("Profile saved successfully!")
       navigate("/app")
     }
   }
@@ -84,6 +85,13 @@ export default function CreateAccount() {
     checkProfile()
   }, [user])
 
+  if (loading) {
+    return(
+      <div className="fixed inset-0 flex gap-2 justify-center items-center">
+        <span className="spinner" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-4">

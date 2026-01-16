@@ -1,5 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
 import { FaceSmileIcon, XMarkIcon } from "@heroicons/react/24/outline"
+import { useState } from "react";
 
 export default function Signup() {
 

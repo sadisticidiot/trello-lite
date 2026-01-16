@@ -8,6 +8,7 @@ export default function App(){
 
     const [name, setName] = useState(null)
     const [gender, setGender] = useState(null)
+    const [loading, setLoading] = useState(true)
 
     const getInfo = async () => {
 
@@ -22,7 +23,7 @@ export default function App(){
         } else {
             setName(data.display_name)
             setGender(data.gender)
-            console.log("Fetched:", data.display_name, data.gender)
+            setLoading(false)
         }
     }
 
@@ -30,10 +31,15 @@ export default function App(){
         await supabase.auth.signOut()
     } 
 
-
     useEffect(() => {
         getInfo()
     }, [])
+
+    if (loading) {
+        return(
+            <div className="fixed inset-0 flex items-center justify-center"><span className="spinner size-8" /></div>
+        )
+    }
 
     return(
         <>
