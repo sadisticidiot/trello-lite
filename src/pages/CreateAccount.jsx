@@ -63,10 +63,27 @@ export default function CreateAccount() {
   }
 
   useEffect(() => {
-    if (user) {
-      navigate("/app")
+    if (!user) return
+
+    const checkProfile = async () => {
+      const { data, error } = await supabase
+        .from("users")
+        .select("id")
+        .eq("user_id", user.id)
+        .single()
+
+      if (data) {
+        navigate("/app")
+      }
+
+      if (error && error.code !== "PGRST116") {
+        console.error("Profile check error:", error)
+      }
     }
-  }, [session])
+
+    checkProfile()
+  }, [user])
+
 
   return (
     <div className="flex flex-col gap-4">
