@@ -1,7 +1,6 @@
 import { EnvelopeIcon } from "@heroicons/react/24/outline"
 import { useState } from "react"
 import { supabase } from "../data/supabase-client"
-import { useNavigate } from "react-router-dom"
 
 export default function() {
     const [email, setEmail] = useState("")
@@ -10,6 +9,7 @@ export default function() {
 
     const handleGoogle = async (e) => {
         e.preventDefault()
+        
 
         const { error } = await supabase.auth.signInWithOAuth({
             provider: "google",

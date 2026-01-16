@@ -1,7 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthProvider";
+import { useEffect } from "react";
 
 export default function Landing() {
+    const { session } = useAuth()
+    const navigate = useNavigate()
 
+    useEffect(() => {
+        if (session) {
+            navigate("/app", { replace: true })
+        }
+    }, [session])
 function DesktopDisplay() {
     return(
         <div>Hi</div>
