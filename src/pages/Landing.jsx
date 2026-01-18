@@ -11,6 +11,7 @@ export default function Landing() {
             navigate("/app", { replace: true })
         }
     }, [session])
+    
 function DesktopDisplay() {
     return(
         <div>Hi</div>

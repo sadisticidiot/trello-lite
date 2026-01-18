@@ -5,6 +5,7 @@ import { motion } from "motion/react"
 import { supabase } from "../data/supabase-client"
 import { useAuth } from "../AuthProvider"
 import { Link, useNavigate } from "react-router-dom"
+import { FaceSmileIcon, UserIcon } from "@heroicons/react/24/outline"
 
 const MONTHS = [
   "January", "February", "March", "April",
@@ -27,8 +28,10 @@ export default function CreateAccount() {
   const [gender, setGender] = useState(null)
   const [name, setName] = useState("")
 
-  const [loading, setLoading] = useState(true)
+  const [imageFile, setImageFile] = useState(null)
+  const [preview, setPreview] = useState(null)
 
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [openDropdown, setOpenDropdown] = useState(null)
 
@@ -43,14 +46,46 @@ export default function CreateAccount() {
 
   const birthdayStr = new Date(year, monthIndex, day).toISOString().split("T")[0]
 
+  const handleImage = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    setImageFile(file)
+    setPreview(URL.createObjectURL(file))
+  }
+
+  const uploadAvatar = async () => {
+    if (!imageFile) return null
+
+    const fileExt = imageFile.name.split(".").pop()
+    const filePath = `${user.id}.${fileExt}`
+
+    const { error } = await supabase.storage
+      .from("avatars")
+      .upload(filePath, imageFile)
+
+    if (error) throw error
+
+    const { data } = supabase.storage
+      .from("avatars")
+      .getPublicUrl(filePath)
+
+    return data.publicUrl
+  }
+
   const handleSave = async (e) => {
     e.preventDefault()
-    const { error } = await supabase.from("users").insert({
-      user_id: user.id,
-      display_name: name,
-      birthday: birthdayStr,
-      gender
-    })
+
+    try {
+      const avatarUrl = await uploadAvatar()
+    
+      const { error } = await supabase.from("users").insert({
+        user_id: user.id,
+        display_name: name,
+        birthday: birthdayStr,
+        gender,
+        avatar_url: avatarUrl,
+      })
 
     if (error) {
       setError(
@@ -58,8 +93,11 @@ export default function CreateAccount() {
           ? "User already exists."
           : "Something went wrong."
       )
-    } else {
-      navigate("/app")
+    } 
+    navigate("/app")
+    } catch (err) {
+      console.error(err)
+      setError(err.message)
     }
   }
 
@@ -83,6 +121,7 @@ export default function CreateAccount() {
     }
 
     checkProfile()
+    setLoading(false)
   }, [user])
 
   if (loading) {
@@ -94,95 +133,128 @@ export default function CreateAccount() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <input
-        placeholder="Display Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+    <div className="flex flex-col items-center justify-between fixed inset-0 m-4 mb-0">
+      <header>
+        <h1>Finish setting up your account</h1>
+      </header>
 
-      <div className="flex gap-2">
-        <Dropdown
-          value={month}
-          open={openDropdown === "month"}
-          onOpen={() => setOpenDropdown(openDropdown === "month" ? null : "month")}
-        >
-          {MONTHS.map(m => (
-            <Option
-              key={m}
-              onClick={() => {
-                setMonth(m)
-                setOpenDropdown(null)
-              }}
+      <div className="flex w-full flex-col gap-4 flex-1">
+        <div className="flex flex-col items-center justify-center gap-2">
+          <label className="flex-1 flex  justify-center items-center w-50 cursor-pointer">
+            <input type="file" accept="image/*" onChange={handleImage} hidden/>
+      
+            <div 
+              className="size-45 rounded-full flex items-center justify-center overflow-hidden"
             >
-              {m}
-            </Option>
-          ))}
-        </Dropdown>
+              {preview ? (
+                <img src={preview} alt="Preview" className="size-50 object-cover rounded-full"/>
+              ) : (
+                <div className="bg-neutral relative size-full border-2 rounded-full flex items-center justify-center">
+                  <UserIcon className="size-20 absolute text-white/20 "/>
+                </div>
+              )}
+            </div>
+          </label>
 
-        <Dropdown
-          value={day}
-          open={openDropdown === "day"}
-          onOpen={() => setOpenDropdown(openDropdown === "day" ? null : "day")}
-        >
-          {days.map(d => (
-            <Option
-              key={d}
-              onClick={() => {
-                setDay(d)
-                setOpenDropdown(null)
-              }}
-            >
-              {d}
-            </Option>
-          ))}
-        </Dropdown>
-
-        <Dropdown
-          value={year}
-          open={openDropdown === "year"}
-          onOpen={() => setOpenDropdown(openDropdown === "year" ? null : "year")}
-        >
-          {years.map(y => (
-            <Option
-              key={y}
-              onClick={() => {
-                setYear(y)
-                setOpenDropdown(null)
-              }}
-            >
-              {y}
-            </Option>
-          ))}
-        </Dropdown>
-      </div>
-
-      <div className="flex justify-center items-center gap-2">
-        <GenderButton
-          value="Male"
-          icon={Mars}
-          active={gender}
-          setActive={setGender}
-          color="text-sky-400"
-        />
-        <GenderButton
-          value="Female"
-          icon={Venus}
-          active={gender}
-          setActive={setGender}
-          color="text-rose-400"
-        />
-      </div>
-
-      <button onClick={handleSave}>Save Changes</button>
-      {error && (
-        <div className="flex gap-1 justify-center items-center">
-          <span className="text-red-500">{error}</span>
-          <Link to="/login" className="text-blue-400 underline font-light">
-            Sign in instead?
-          </Link>
+          {preview && <button onClick={() => setPreview(null)} className="bg-transparent w-50 p-0">Remove profile picture</button>}
         </div>
-      )}
+
+        <input
+          placeholder="Display Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+
+        <div className="flex gap-2">
+          <Dropdown
+            value={month}
+            open={openDropdown === "month"}
+            onOpen={() => setOpenDropdown(openDropdown === "month" ? null : "month")}
+          >
+            {MONTHS.map(m => (
+              <Option
+                key={m}
+                onClick={() => {
+                  setMonth(m)
+                  setOpenDropdown(null)
+                }}
+              >
+                {m}
+              </Option>
+            ))}
+          </Dropdown>
+
+          <Dropdown
+            value={day}
+            open={openDropdown === "day"}
+            onOpen={() => setOpenDropdown(openDropdown === "day" ? null : "day")}
+          >
+            {days.map(d => (
+              <Option
+                key={d}
+                onClick={() => {
+                  setDay(d)
+                  setOpenDropdown(null)
+                }}
+              >
+                {d}
+              </Option>
+            ))}
+          </Dropdown>
+
+          <Dropdown
+            value={year}
+            open={openDropdown === "year"}
+            onOpen={() => setOpenDropdown(openDropdown === "year" ? null : "year")}
+          >
+            {years.map(y => (
+              <Option
+                key={y}
+                onClick={() => {
+                  setYear(y)
+                  setOpenDropdown(null)
+                }}
+              >
+                {y}
+              </Option>
+            ))}
+          </Dropdown>
+        </div>
+
+        <div className="flex justify-center items-center gap-2">
+          <GenderButton
+            value="Male"
+            icon={Mars}
+            active={gender}
+            setActive={setGender}
+            color="text-sky-400"
+          />
+          <GenderButton
+            value="Female"
+            icon={Venus}
+            active={gender}
+            setActive={setGender}
+            color="text-rose-400"
+          />
+        </div>
+
+        <button onClick={handleSave}>Save Changes</button>
+        {error && (
+          <div className="flex gap-1 justify-center items-center">
+            <span className="text-red-500">{error}</span>
+            <Link to="/login" className="text-blue-400 underline font-light">
+              Sign in instead?
+            </Link>
+          </div>
+        )}
+      </div>
+
+      <footer className="flex items-end justify-center">
+        <span className="text-white/30 text-sm text-center flex justify-center items-center gap-1">
+          This is a prototype created by Fizz 
+          <FaceSmileIcon className="size-[15px]"/>
+        </span>
+      </footer>
     </div>
   )
 }

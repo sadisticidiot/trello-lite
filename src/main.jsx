@@ -10,26 +10,21 @@ import ProtectedRoute from './ProtectedRoute.jsx'
 import App from './pages/App.jsx'
 import Landing from './pages/Landing.jsx'
 import Login from './pages/Login.jsx'
-import Signup from './pages/Signup.jsx'
-import Email from './pages/Email.jsx'
 import CreateAccount from './pages/CreateAccount.jsx'
+import Signup from './pages/Signup.jsx'
+import FinishSetup from './pages/FinishSetup.jsx'
 
 const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
   { path: '/login', element: <Login /> },
-  { 
-    path: '/signup', 
-    element: <Signup />,
-    children: [
-      { index: true, element: <Email />},
-      { path: 'create-account', element: <CreateAccount /> },
-    ]
-  },
+  { path: '/signup', element: <Signup /> },
   {
     element: <ProtectedRoute />,
-    children: [{
-      path: '/app', element: <App />
-    }]
+    children: [
+      { path: '/app', element: <App /> },
+      { path: '/create-account', element: <CreateAccount /> },
+      { path: '/finish-setup', element: <FinishSetup /> },
+    ]
   },
 ])
 
