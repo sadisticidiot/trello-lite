@@ -26,6 +26,7 @@ export default function Login() {
     const [gglLoad, setGglLoad] = useState(false)
     const [holding, setHolding] = useState(false)
     const [btnHolding, setBtnHolding] = useState(false)
+    const [gglHolding, setGglHolding] = useState(false)
 
     useEffect(() => {
         if (Object.keys(errors).length === 0) return;
@@ -214,12 +215,12 @@ export default function Login() {
                         </div>
 
                         <motion.button 
-                            onTapStart={() => setBtnHolding(true)}
-                            onTapCancel={() => setBtnHolding(false)} 
-                            onTap={() => setBtnHolding(false)} 
+                            onTapStart={() => setGglHolding(true)}
+                            onTapCancel={() => setGglHolding(false)} 
+                            onTap={() => setGglHolding(false)} 
                             animate={{ 
-                                scale: btnHolding ? 0.96 : 1,
-                                backgroundColor: btnHolding ? "#111111" : "#171717"
+                                scale: gglHolding ? 0.96 : 1,
+                                backgroundColor: gglHolding ? "#111111" : "#171717"
                             }}
                             type="button"
                             disabled={gglLoad} 
