@@ -47,8 +47,8 @@ body{
     @apply 
       appearance-none
       bg-neutral-900
-      inset-shadow-sm inset-shadow-neutral-900/20
-      rounded
+      inset-shadow-sm inset-shadow-zinc-950
+      rounded-2xl
       px-2 py-3
       w-full
       outline-none
@@ -86,8 +86,7 @@ body{
 @layer base {
   button {
     @apply
-      bg-neutral-700
-      border-neutral-500
+      border-neutral-500/50
       border-1
       md:border-2
       rounded-lg

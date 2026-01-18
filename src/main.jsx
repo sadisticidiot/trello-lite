@@ -16,7 +16,7 @@ import FinishSetup from './pages/FinishSetup.jsx'
 
 const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
-  { path: '/login', element: <Login /> },
+  { path: '/signin', element: <Login /> },
   { path: '/signup', element: <Signup /> },
   {
     element: <ProtectedRoute />,

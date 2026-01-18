@@ -1,21 +1,17 @@
-import { EnvelopeIcon, FaceSmileIcon, XMarkIcon } from "@heroicons/react/24/outline"
+import { FaceSmileIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import { useEffect, useState } from "react"
 import { supabase } from "../data/supabase-client"
 import clsx from "clsx"
 import { AnimatePresence, motion } from "motion/react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../AuthProvider"
+import basta from "/ewan.jfif"
 
 export default function Signup() {
     const { session } = useAuth()
     const navigate = useNavigate()
+    const MotionLink = motion(Link)
 
-    useEffect(() => {
-        if (session) {
-            navigate("/app", { replace: true })
-        }
-    }, [session])
-    
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPass, setConfirmPass] = useState("")
@@ -23,8 +19,9 @@ export default function Signup() {
     const [errors, setErrors] = useState({})
 
     const [loading, setLoading] = useState(false)
-    const [gglLoad, setGglLoad] = useState(false)
     const [submitted, setSubmitted] = useState(false)
+    const [holding, setHolding] = useState(false)
+    const [btnHolding, setBtnHolding] = useState(false)
 
     const handleSignup = async (e) => {
         e.preventDefault()
@@ -64,24 +61,12 @@ export default function Signup() {
         setSubmitted(true)
     }
 
-    const handleGoogle = async (e) => {
-        e.preventDefault()
-        setGglLoad(true)
-
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: {
-                redirectTo: `${window.location.origin}/finish-setup`
-            }
-        })
-
-        if (error) {
-            setErrors({ form: "Error logging in using Google" })
-            setGglLoad(false)
-            return 
+    useEffect(() => {
+        if (session) {
+            navigate("/app", { replace: true })
         }
-    }
-    
+    }, [session])
+      
     useEffect(() => {
         if (Object.keys(errors).length === 0) return;
 
@@ -98,16 +83,19 @@ export default function Signup() {
     }
 
     return(
-        <form>
-            <div className="flex flex-col gap-3 pb-2">
-                <header className="relative my-5 flex gap-2 items-center justify-center pb-2">
-                    <Link to='/' className="fixed left-3">
-                        <XMarkIcon className="size-[22px]"/>
-                    </Link>
-                    <h1 className="flex-1">Create your account</h1>
-                </header>
+        <form className="fixed inset-0  flex flex-col justify-between items-center bg-neutral-900">
+            <header className="relative flex w-full items-center justify-center">
+                <Link to='/' className="absolute left-3">
+                    <XMarkIcon className="size-[15px]"/>
+                </Link>
 
-                <div className="flex flex-col">
+                <h1>Create your account</h1>
+            </header>
+
+            <div className="rounded-lg flex flex-1 flex-col items-center justify-center gap-2 w-99/100 p-3 bg-neutral-950">
+                <img src={basta} className="rounded-full size-25"/>
+
+                <div className="flex flex-col w-full">
                     <motion.input 
                         type="email"
                         placeholder="Email"
@@ -118,11 +106,12 @@ export default function Signup() {
                             setEmail(e.target.value)
                         }}
                         animate={{
-                            boxShadow: errors.email
-                                ? "0 0 0 2px rgba(251, 44, 54, 1)"
-                                : "0 0 0 0 rgba(251, 44, 54, 0)",
+                            borderColor: errors.email
+                                ? "rgba(251, 44, 54, 1)"
+                                : "rgba(251, 44, 54, 0)",
                         }}
                         transition={{ duration: 0.12, ease: "easeIn"}}
+                        className={clsx(errors.email && "border-2")}
                         
                     />
                     <AnimatePresence>
@@ -139,7 +128,7 @@ export default function Signup() {
                     </AnimatePresence>
                 </div>
 
-                <div className="flex flex-col">
+                <div className="flex flex-col w-full">
                     <motion.input 
                         type="password"
                         placeholder="Password"
@@ -150,11 +139,12 @@ export default function Signup() {
                             setPassword(e.target.value)
                         }}
                         animate={{
-                            boxShadow: errors.password
-                                ? "0 0 0 2px rgba(251, 44, 54, 1)"
-                                : "0 0 0 0 rgba(251, 44, 54, 0)",
+                            borderColor: errors.password
+                                ? "rgba(251, 44, 54, 1)"
+                                : "rgba(251, 44, 54, 0)",
                         }}
                         transition={{ duration: 0.12, ease: "easeIn"}}
+                        className={clsx(errors.password && "border-2")}
                         
                     />
                     <AnimatePresence>
@@ -171,7 +161,7 @@ export default function Signup() {
                     </AnimatePresence>
                 </div>
 
-                <div className="flex flex-col">
+                <div className="flex flex-col w-full mb-2">
                     <motion.input 
                         type="password"
                         placeholder="Confirm Password"
@@ -182,11 +172,12 @@ export default function Signup() {
                             setConfirmPass(e.target.value)
                         }}
                         animate={{
-                            boxShadow: errors.confirmPass
-                                ? "0 0 0 2px rgba(251, 44, 54, 1)"
-                                : "0 0 0 0 rgba(251, 44, 54, 0)",
+                            borderColor: errors.confirmPass
+                                ? "rgba(251, 44, 54, 1)"
+                                : "rgba(251, 44, 54, 0)",
                         }}
                         transition={{ duration: 0.12, ease: "easeIn"}}
+                        className={clsx(errors.confirmPass && "border-2")}
                         
                     />
                     <AnimatePresence>
@@ -203,13 +194,19 @@ export default function Signup() {
                     </AnimatePresence>
                 </div>
 
-                <button 
+                <motion.button 
+                    onTapStart={() => setBtnHolding(true)}
+                    onTapCancel={() => setBtnHolding(false)} 
+                    onTap={() => setBtnHolding(false)} 
+                    animate={{ 
+                        scale: btnHolding ? 0.96 : 1,
+                        backgroundColor: btnHolding ? "#111111" : "#171717"
+                    }}
                     disabled={loading} 
                     onClick={handleSignup} 
                     className={clsx(
                         "flex gap-3 items-center justify-center",
                         loading && "cursor-default border-none bg-neutral-900 scale-98",
-                        gglLoad && "cursor-disabled border-none bg-neutral-800"
                     )}
                 >
                     {loading ? (
@@ -222,7 +219,7 @@ export default function Signup() {
                             Sign up
                         </>
                     )}
-                </button>
+                </motion.button>
 
                 <AnimatePresence>
                     {errors.form && 
@@ -236,35 +233,23 @@ export default function Signup() {
                             {errors.form}
                         </motion.p>}
                 </AnimatePresence>
+
+                <MotionLink
+                    to="/signin"
+                    onTapStart={() => setHolding(true)}
+                    onTapCancel={() => setHolding(false)} 
+                    onTap={() => setHolding(false)} 
+                    animate={{ 
+                        scale: holding ? 0.96 : 1,
+                        color: holding ? "#e7e7e7b2" : "#ffffff"
+                    }} 
+                    className="text-sm text-center w-25"
+                >
+                    Sign in instead?
+                </MotionLink>
             </div>
 
-            <div className="flex w-full items-center gap-2 my-2 pb-2">
-                <hr className="border-t border-white/50 flex-1" />
-                <p className="text-white/50">OR</p>
-                <hr className="border-t border-white/60 flex-1" />
-            </div>
-
-            <button 
-                type="button"
-                disabled={gglLoad} 
-                onClick={handleGoogle} 
-                className={clsx(
-                    "flex gap-3 items-center justify-center",
-                    gglLoad && "cursor-default border-none bg-neutral-900 scale-98",
-                    loading && "cursor-disabled border-none bg-neutral-800"
-                )}
-            >
-                {gglLoad ? (
-                    <span className="spinner" />
-                ) : (
-                    <>
-                        <EnvelopeIcon className="size-[25px]" />
-                        Continue with Google
-                    </>
-                )}
-            </button>
-
-            <footer className="flex-1 flex items-end justify-center">
+            <footer className="flex items-end justify-center py-1">
                 <span className="text-white/30 text-sm text-center flex justify-center items-center gap-1">
                     This is a prototype created by Fizz 
                     <FaceSmileIcon className="size-[15px]"/>
