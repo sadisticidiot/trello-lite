@@ -83,7 +83,11 @@ export default function Signup() {
     }
 
     return(
-        <form className="fixed inset-0  flex flex-col justify-between items-center bg-neutral-900">
+        <motion.form 
+            className="fixed inset-0  flex flex-col justify-between items-center bg-neutral-900"
+            initial={{ x: 100 }}
+            animate={{ x: 0 }}
+        >
             <header className="relative flex w-full items-center justify-center">
                 <Link to='/' className="absolute left-3">
                     <XMarkIcon className="size-[15px]"/>
@@ -255,6 +259,6 @@ export default function Signup() {
                     <FaceSmileIcon className="size-[15px]"/>
                 </span>
             </footer>
-        </form>
+        </motion.form>
     )
 }
