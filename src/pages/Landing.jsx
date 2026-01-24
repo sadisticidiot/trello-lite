@@ -26,7 +26,7 @@ function MobileDisplay() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}    
         >
-          <div className="absolute inset-0 bg-linear-to-b from-neutral-900/95 to-black/95" />
+          <div className="absolute inset-0 bg-linear-to-b from-neutral-900/75 to-black/75" />
 
           <div className="flex-1 flex justify-center items-center z-3">
             <h1 className="text-[30px]">ewan ko na lang talaga</h1>

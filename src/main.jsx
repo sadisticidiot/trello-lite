@@ -30,8 +30,12 @@ const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       { path: '/app', element: <App /> },
-      { path: '/create-account', element: <CreateAccount /> },
-      { path: '/finish-setup', element: <FinishSetup /> },
+      { element: <Interface />,
+        children: [
+          { path: '/create-account', element: <CreateAccount /> },
+          { path: '/finish-setup', element: <FinishSetup /> },
+        ]
+      },
     ]
   },
 ])

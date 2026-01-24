@@ -5,11 +5,11 @@ import { AnimatePresence, motion } from "motion/react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../AuthProvider"
 import basta from "/ewan.jfif"
+import MotionLink from "../ui/MotionLink"
 
 export default function Signup() {
     const { session } = useAuth()
     const navigate = useNavigate()
-    const MotionLink = motion(Link)
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -18,7 +18,6 @@ export default function Signup() {
 
     const [loading, setLoading] = useState(false)
     const [submitted, setSubmitted] = useState(false)
-    const [holding, setHolding] = useState(false)
     const [btnHolding, setBtnHolding] = useState(false)
 
     const handleSignup = async (e) => {
@@ -201,25 +200,15 @@ export default function Signup() {
                             scale: btnHolding ? 0.98 : 1, 
                             backgroundColor: btnHolding ? "#111111" : "#171717"
                         }}
+                        className="flex items-center justify-center"
                     >
-                        Sign up
+                        {loading ? <span className="spinner" /> : "Sign up"}
                     </motion.button>
 
-                    <MotionLink
-                        to="/signin"
-                        onTapStart={() => setHolding(true)}
-                        onTapCancel={() => setHolding(false)} 
-                        onTap={() => setHolding(false)} 
-                        animate={{ 
-                            scale: holding ? 0.96 : 1,
-                            color: holding ? "#e7e7e7b2" : "#ffffff"
-                        }} 
-                        className="text-sm text-center"
-                    >
-                        Don't have an account?
-                    </MotionLink>
+                    <MotionLink variant="signup"/>
                 </motion.form>
             </div>
         </>
     )
 }
+   

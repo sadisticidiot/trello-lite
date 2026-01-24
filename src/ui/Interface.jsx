@@ -3,6 +3,8 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 
 export default function Interface() {
     const location = useLocation()
+    const loc = location.pathname
+
     return(
         <div className="fixed inset-0 p-2 flex flex-col justify-center items-center bg-neutral-900">
             <header className="relative flex w-full items-center justify-center">
@@ -10,7 +12,14 @@ export default function Interface() {
                     <XMarkIcon className="size-[15px]"/>
                 </Link>
 
-                <h1>{location.pathname === "/signup" ? "Create your account" : "Sign in"}</h1>
+                <h1>
+                    { 
+                        loc === "/signup" ? "Create your account" 
+                        : loc === "/finish-setup" ? "Setup your password" 
+                        : loc === "create-account" ? "Finishing touches"
+                        : "Sign in"
+                    }
+                </h1>
             </header>
 
                 <Outlet />

@@ -1,16 +1,16 @@
-import { Link, useNavigate } from "react-router-dom";
-import { EnvelopeIcon, FaceSmileIcon, XMarkIcon } from "@heroicons/react/24/outline"
+import { useNavigate } from "react-router-dom";
+import { EnvelopeIcon } from "@heroicons/react/24/outline"
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react"
 import clsx from "clsx";
 import { supabase } from "../data/supabase-client";
 import { useAuth } from "../AuthProvider";
 import basta from "/ewan.jfif"
+import MotionLink from "../ui/MotionLink";
 
 export default function Login() {
     const { session } = useAuth()
     const navigate = useNavigate()
-    const MotionLink = motion(Link)
 
     useEffect(() => {
         if (session) {
@@ -24,7 +24,6 @@ export default function Login() {
 
     const [loading, setLoading] = useState(false)
     const [gglLoad, setGglLoad] = useState(false)
-    const [holding, setHolding] = useState(false)
     const [btnHolding, setBtnHolding] = useState(false)
     const [gglHolding, setGglHolding] = useState(false)
 
@@ -186,6 +185,7 @@ export default function Login() {
                     <motion.button
                         className="flex gap-2 items-center justify-center"
                         type="button"
+                        onClick={handleGoogle}
                         onTapStart={() => setGglHolding(true)}
                         onTapCancel={() => setGglHolding(false)}
                         onTap={() => setGglHolding(false)}
@@ -198,19 +198,7 @@ export default function Login() {
                         Continue with Google
                     </motion.button>
 
-                    <MotionLink
-                        to="/signup"
-                        onTapStart={() => setHolding(true)}
-                        onTapCancel={() => setHolding(false)} 
-                        onTap={() => setHolding(false)} 
-                        animate={{ 
-                            scale: holding ? 0.96 : 1,
-                            color: holding ? "#e7e7e7b2" : "#ffffff"
-                        }} 
-                        className="text-sm text-center"
-                    >
-                        Already have an account?
-                    </MotionLink>
+                    <MotionLink variant="login"/>
                 </motion.form>
             </div>
         </>
