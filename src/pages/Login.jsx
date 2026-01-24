@@ -87,12 +87,10 @@ export default function Login() {
     
     return(
         <>
-            <div className="block md:hidden size-full p-3 border-1 border-white/12 rounded bg-neutral-950">
-                <motion.form 
+            <div className="block md:hidden size-full">
+                <form 
                     className="size-full flex flex-col justify-center items-center gap-3" 
                     onSubmit={handleLogin}
-                    initial={{ x: -100, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1}}
                 >
                     <img src={basta} className="rounded-full size-25" />
 
@@ -199,7 +197,7 @@ export default function Login() {
                     </motion.button>
 
                     <MotionLink variant="login"/>
-                </motion.form>
+                </form>
             </div>
         </>
     )

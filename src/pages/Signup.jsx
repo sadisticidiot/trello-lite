@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../data/supabase-client"
 import clsx from "clsx"
 import { AnimatePresence, motion } from "motion/react"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useAuth } from "../AuthProvider"
 import basta from "/ewan.jfif"
 import MotionLink from "../ui/MotionLink"
@@ -81,12 +81,10 @@ export default function Signup() {
 
     return(
         <>
-            <div className="block md:hidden size-full p-3 border-1 border-white/12 rounded bg-neutral-950">
-                <motion.form 
+            <div className="block md:hidden size-full">
+                <form 
                     className="size-full flex flex-col justify-center items-center gap-3" 
                     onSubmit={handleSignup}
-                    initial={{ x: 100, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1}}
                 >
                     <img src={basta} className="rounded-full size-25" />
 
@@ -206,7 +204,7 @@ export default function Signup() {
                     </motion.button>
 
                     <MotionLink variant="signup"/>
-                </motion.form>
+                </form>
             </div>
         </>
     )
