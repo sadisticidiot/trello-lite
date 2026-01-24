@@ -1,24 +1,158 @@
-import { Link } from "react-router-dom"
+import { useState } from "react"
 import { useAuth } from "../AuthProvider"
 import MotionLink from "../ui/MotionLink"
+import { AnimatePresence, motion } from "motion/react"
+import { supabase } from "../data/supabase-client"
+import { useNavigate } from "react-router-dom"
+import clsx from "clsx"
 
 export default function FinishSetup() {
     const { session } = useAuth()
     const user = session.user
 
+    const navigate = useNavigate()
+
+    const [newPass, setNewPass] = useState("")
+    const [passStrength, setPassStrength] = useState("")
+    const [error, setError] = useState()
+
+    const [score, setScore] = useState(0)
+
+    const [btnHolding, setBtnHolding] = useState(false)
+    const [loading, setLoading] = useState(false)
+
+    const calcScore = (pass) => {
+        let s = 0
+
+        if (pass.length > 5) s++
+        if (pass.length >= 8) s++
+        if (/[0-9]/.test(pass)) s++
+        if (/[A-Z]/.test(pass)) s++
+        if (/\s/.test(pass)) s--
+        return s
+    }
+
+    const checkStr = (pass) => {
+        if (!pass) {
+            setPassStrength("Decisions, decisions...")
+        } else if (pass.length < 8) {
+            setPassStrength("Password is too short (min. 8 chars).")
+        } else if (!/[0-9]/.test(pass)) {
+            setPassStrength("Password must include at least one number.")
+        } else if (/\s/.test(pass)) {
+            setPassStrength("Password cannot include a space.")
+        } else if (!/[A-Z]/.test(pass)) {
+            setPassStrength("Strong password 💪 (optional: Capital letters)")
+        } else {
+            setPassStrength("Strong password 💪")
+        }
+    }
+
+    const handleInput = (e) => {
+        const password = (e.target.value)
+
+        setNewPass(password)
+        checkStr(password)
+        setScore(calcScore(password))
+    }
+
+    const handleCreate = async (e) => {
+        e.preventDefault()
+
+        if (passStrength !== "Strong password 💪") {
+            setError("Please enter a strong password before continuing.")
+            return
+        }
+
+        setError()
+        setLoading(true)
+
+        const { error: supabaseError } = await supabase.auth.updateUser({ password: newPass })
+
+        if (supabaseError) {
+            setError("An unexpected error occured. Please try again.")
+            setLoading(false)
+            return
+        }
+        navigate("/app")
+    }
+
+    const strColor = 
+        passStrength.includes("decisions...") 
+        ? "#737373" 
+        : passStrength.includes("Strong") 
+        ? "#22c55e"
+        : "#ef4444"
+    
+    const barWidth = score * 25 + "%"
+
     return(
-        <header className="size-full flex flex-col p-8 justify-center items-center bg-neutral-950 gap-5">
-            <div className="flex-1 text-justify flex flex-col items-center justify-center">
+        <div className="size-full flex flex-col p-8 justify-center items-center bg-neutral-950 gap-5">
+            <div className="flex-1 text-center flex flex-col items-center justify-center">
                 <h1>Successfully logged in!</h1>
                 <h2>
-                    For easier accessibility, please check the email sent to {user.email}. 
-                    Passwords are optional when using Google accounts but without one, you'll have to log in using OAuth everytime.
+                    For easier accessibility, set up a strong password.
+                    They're optional when using Google accounts but without one, you'll have to log in using OAuth everytime.
                 </h2>
             </div>
-            <div className="flex justify-between items-center gap-2 w-full">
-                <MotionLink variant="password" />
+
+            <div className="flex flex-col justify-between items-center gap-2 w-full">
+                <p className="text-white/20">Currently logged in as {user.email}</p>
+
+                <div className="flex flex-col w-full">
+                    <motion.input
+                        placeholder="Enter password here"
+                        autoComplete="new-password"
+                        value={newPass}
+                        onChange={handleInput}
+                    />
+
+                    <div className="flex gap-2">
+                        <p className="text-xs">Password strength: </p>
+                        <motion.p 
+                            className="text-xs"
+                            initial={{ opacity: 0 }}
+                            animate={{ color: strColor, opacity: 1 }}
+                        >
+                            {passStrength}
+                        </motion.p>
+                    </div>
+
+                    <div className="w-full h-2 bg-white/10 rounded overflow-hidden mb-2">
+                        <motion.div className="h-full rounded min-w-2" animate={{ width: barWidth, backgroundColor: strColor }} />
+                    </div>
+                </div>
+
+                <motion.button
+                    onTapStart={() => setBtnHolding(true)}
+                    onTapCancel={() => setBtnHolding(false)}
+                    onTap={() => setBtnHolding(false)}
+                    animate={{ 
+                        scale: btnHolding ? 0.98 : 1, 
+                        backgroundColor: btnHolding ? "#111111" : "#171717"
+                    }}
+                    className="flex items-center justify-center"
+                    onClick={handleCreate}
+                >
+                    {loading ? <span className="spinner" /> : "Create Password"}
+                </motion.button>
+
+                <AnimatePresence mode="wait">
+                    {error &&
+                        <motion.p
+                            className="text-red-400"
+                            initial={{ opacity: 0, y: -5}}
+                            animate={{ opacity: 1, y: 0}}
+                            exit={{ opacity: 0, y: -5}}
+                            transition={{ duration: 0.2, ease: "easeIn" }}
+                        >
+                            {error}
+                        </motion.p>
+                    }
+                </AnimatePresence>
+
                 <MotionLink variant="later"/>
             </div>
-        </header>
+        </div>
     )
 }

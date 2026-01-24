@@ -1,10 +1,12 @@
 import { FaceSmileIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { AnimatePresence, motion } from "motion/react";
+import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
 export default function Interface() {
     const location = useLocation()
     const loc = location.pathname
+    const [displayLoc, setDisplayLoc] = useState(loc)
 
     return(
         <div className="fixed inset-0 p-2 flex flex-col justify-center items-center bg-neutral-900">
@@ -15,16 +17,15 @@ export default function Interface() {
 
                 <AnimatePresence mode="wait">
                     <motion.h1
-                        key={loc}
+                        key={displayLoc}
                         initial={{ y: -100, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: -20, opacity: 0 }}
-                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        transition={{ duration: 0.1, ease: "easeOut" }}
                     >
-                        { 
-                            loc === "/signup" ? "Create your account" 
-                            : loc === "/finish-setup" ? "Setup your password" 
-                            : loc === "/create-account" ? "Finishing touches"
+                        {displayLoc === "/signup" ? "Create your account" 
+                            : displayLoc === "/finish-setup" ? "Setup your password" 
+                            : displayLoc === "/create-account" ? "Finishing touches"
                             : "Sign in"
                         }
                     </motion.h1>
@@ -32,7 +33,7 @@ export default function Interface() {
             </header>
 
             <div className="size-full p-3 border-1 border-white/12 rounded bg-neutral-950">
-                <AnimatePresence mode="wait">
+                <AnimatePresence mode="wait" onExitComplete={() => setDisplayLoc(loc)}>
                     <motion.div 
                         key={loc}
                         className="size-full"
@@ -49,7 +50,7 @@ export default function Interface() {
                             opacity: 0,
                             scale: 0.95
                         }}
-                        transition={{ duration: 0.2, ease: "easeInOut"}}
+                        transition={{ duration: 0.2, ease: "easeIn"}}
                     >
                         <Outlet />
                     </motion.div>
