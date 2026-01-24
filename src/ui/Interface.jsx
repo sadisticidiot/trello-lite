@@ -19,7 +19,7 @@ export default function Interface() {
                         initial={{ y: -100, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: -20, opacity: 0 }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
                     >
                         { 
                             loc === "/signup" ? "Create your account" 
@@ -37,16 +37,19 @@ export default function Interface() {
                         key={loc}
                         className="size-full"
                         initial={{
-                            x: loc === "/signin" ? -1000 
-                            : 1000,
-                            opacity: 0
+                            x: loc === "/signin" ? -200 
+                            : 200,
+                            opacity: 0,
+                            scale: 0.98
                         }}
-                        animate={{ x: 0, opacity: 1 }}
+                        animate={{ x: 0, opacity: 1, scale: 1 }}
                         exit={{
-                            x: loc === "/signin" ? -1000 
-                            : 1000,
-                            opacity: 0
+                            x: loc === "/signin" ? -200 
+                            : 200,
+                            opacity: 0,
+                            scale: 0.95
                         }}
+                        transition={{ duration: 0.2, ease: "easeInOut"}}
                     >
                         <Outlet />
                     </motion.div>
