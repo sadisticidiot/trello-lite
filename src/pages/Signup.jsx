@@ -1,4 +1,3 @@
-import { FaceSmileIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import { useEffect, useState } from "react"
 import { supabase } from "../data/supabase-client"
 import clsx from "clsx"
@@ -15,7 +14,6 @@ export default function Signup() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPass, setConfirmPass] = useState("")
-
     const [errors, setErrors] = useState({})
 
     const [loading, setLoading] = useState(false)
@@ -83,182 +81,145 @@ export default function Signup() {
     }
 
     return(
-        <motion.form 
-            className="fixed inset-0  flex flex-col justify-between items-center bg-neutral-900"
-            initial={{ x: 100 }}
-            animate={{ x: 0 }}
-        >
-            <header className="relative flex w-full items-center justify-center">
-                <Link to='/' className="absolute left-3">
-                    <XMarkIcon className="size-[15px]"/>
-                </Link>
-
-                <h1>Create your account</h1>
-            </header>
-
-            <div className="rounded-lg flex flex-1 flex-col items-center justify-center gap-2 w-99/100 p-3 bg-neutral-950">
-                <img src={basta} className="rounded-full size-25"/>
-
-                <div className="flex flex-col w-full">
-                    <motion.input 
-                        type="email"
-                        placeholder="Email"
-                        autoComplete="username"
-                        value={email}
-                        onChange={(e) => {
-                            setErrors({})
-                            setEmail(e.target.value)
-                        }}
-                        animate={{
-                            borderColor: errors.email
-                                ? "rgba(251, 44, 54, 1)"
-                                : "rgba(251, 44, 54, 0)",
-                        }}
-                        transition={{ duration: 0.12, ease: "easeIn"}}
-                        className={clsx(errors.email && "border-2")}
-                        
-                    />
-                    <AnimatePresence>
-                        {errors.email && 
-                            <motion.p 
-                                className="text-red-400"
-                                initial={{ opacity: 0, y: -5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -5 }}
-                                transition={{ duration: 0.2, ease: "easeIn" }}   
-                            >
-                                {errors.email}
-                            </motion.p>}
-                    </AnimatePresence>
-                </div>
-
-                <div className="flex flex-col w-full">
-                    <motion.input 
-                        type="password"
-                        placeholder="Password"
-                        autoComplete="off"
-                        value={password}
-                        onChange={(e) => {
-                            setErrors({})
-                            setPassword(e.target.value)
-                        }}
-                        animate={{
-                            borderColor: errors.password
-                                ? "rgba(251, 44, 54, 1)"
-                                : "rgba(251, 44, 54, 0)",
-                        }}
-                        transition={{ duration: 0.12, ease: "easeIn"}}
-                        className={clsx(errors.password && "border-2")}
-                        
-                    />
-                    <AnimatePresence>
-                        {errors.password && 
-                            <motion.p 
-                                className="text-red-400"
-                                initial={{ opacity: 0, y: -5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -5 }}
-                                transition={{ duration: 0.2, ease: "easeIn" }}   
-                            >
-                                {errors.password}
-                            </motion.p>}
-                    </AnimatePresence>
-                </div>
-
-                <div className="flex flex-col w-full mb-2">
-                    <motion.input 
-                        type="password"
-                        placeholder="Confirm Password"
-                        autoComplete="off"
-                        value={confirmPass}
-                        onChange={(e) => {
-                            setErrors({})
-                            setConfirmPass(e.target.value)
-                        }}
-                        animate={{
-                            borderColor: errors.confirmPass
-                                ? "rgba(251, 44, 54, 1)"
-                                : "rgba(251, 44, 54, 0)",
-                        }}
-                        transition={{ duration: 0.12, ease: "easeIn"}}
-                        className={clsx(errors.confirmPass && "border-2")}
-                        
-                    />
-                    <AnimatePresence>
-                        {errors.confirmPass && 
-                            <motion.p 
-                                className="text-red-400"
-                                initial={{ opacity: 0, y: -5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -5 }}
-                                transition={{ duration: 0.2, ease: "easeIn" }}   
-                            >
-                                {errors.confirmPass}
-                            </motion.p>}
-                    </AnimatePresence>
-                </div>
-
-                <motion.button 
-                    onTapStart={() => setBtnHolding(true)}
-                    onTapCancel={() => setBtnHolding(false)} 
-                    onTap={() => setBtnHolding(false)} 
-                    animate={{ 
-                        scale: btnHolding ? 0.96 : 1,
-                        backgroundColor: btnHolding ? "#111111" : "#171717"
-                    }}
-                    disabled={loading} 
-                    onClick={handleSignup} 
-                    className={clsx(
-                        "flex gap-3 items-center justify-center",
-                        loading && "cursor-default border-none bg-neutral-900 scale-98",
-                    )}
+        <>
+            <div className="block md:hidden size-full p-3 border-1 border-white/12 rounded bg-neutral-950">
+                <motion.form 
+                    className="size-full flex flex-col justify-center items-center gap-3" 
+                    onSubmit={handleSignup}
+                    initial={{ x: 100, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1}}
                 >
-                    {loading ? (
-                        <>
-                            Signing up...
-                            <span className="spinner" />
-                        </>
-                    ) : (
-                        <>
-                            Sign up
-                        </>
-                    )}
-                </motion.button>
+                    <img src={basta} className="rounded-full size-25" />
 
-                <AnimatePresence>
-                    {errors.form && 
-                        <motion.p 
-                            className="text-red-400 text-center"
-                            initial={{ opacity: 0, y: -5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -5 }}
-                            transition={{ duration: 0.2, ease: "easeIn" }}   
-                        >
-                            {errors.form}
-                        </motion.p>}
-                </AnimatePresence>
+                    <div className="flex flex-col w-full">
+                            <motion.input
+                                type="email"
+                                placeholder="Email"
+                                autoComplete="username"
+                                value={email}
+                                onChange={(e) => {
+                                    setErrors({})
+                                    setEmail(e.target.value)
+                                }}
+                                animate={{
+                                    borderColor: errors.email
+                                        ? "rgba(251, 44, 54, 1)"
+                                        : "rgba(251, 44, 54, 0)",
+                                }}
+                                transition={{ duration: 0.12, ease: "easeIn" }}
+                                className={clsx(errors.email && "border-2")}
+                            />
 
-                <MotionLink
-                    to="/signin"
-                    onTapStart={() => setHolding(true)}
-                    onTapCancel={() => setHolding(false)} 
-                    onTap={() => setHolding(false)} 
-                    animate={{ 
-                        scale: holding ? 0.96 : 1,
-                        color: holding ? "#e7e7e7b2" : "#ffffff"
-                    }} 
-                    className="text-sm text-center w-25"
-                >
-                    Sign in instead?
-                </MotionLink>
+                            <AnimatePresence mpde="wait">
+                                {errors.email &&
+                                    <motion.p
+                                        className="text-red-400"
+                                        initial={{ opacity: 0, y: -5}}
+                                        animate={{ opacity: 1, y: 0}}
+                                        exit={{ opacity: 0, y: -5}}
+                                        transition={{ duration: 0.2, ease: "easeIn" }}
+                                    >
+                                        {errors.email}
+                                    </motion.p>
+                                }
+                            </AnimatePresence>
+                    </div>
+
+                    <div className="flex flex-col w-full">
+                            <motion.input
+                                type="password"
+                                placeholder="Create Password"
+                                autoComplete="new-password"
+                                value={password}
+                                onChange={(e) => {
+                                    setErrors({})
+                                    setPassword(e.target.value)
+                                }}
+                                animate={{
+                                    borderColor: errors.password
+                                        ? "rgba(251, 44, 54, 1)"
+                                        : "rgba(251, 44, 54, 0)",
+                                }}
+                                transition={{ duration: 0.12, ease: "easeIn" }}
+                                className={clsx(errors.password && "border-2")}
+                            />
+
+                            <AnimatePresence mpde="wait">
+                                {errors.password &&
+                                    <motion.p
+                                        className="text-red-400"
+                                        initial={{ opacity: 0, y: -5}}
+                                        animate={{ opacity: 1, y: 0}}
+                                        exit={{ opacity: 0, y: -5}}
+                                        transition={{ duration: 0.2, ease: "easeIn" }}
+                                    >
+                                        {errors.password}
+                                    </motion.p>
+                                }
+                            </AnimatePresence>
+                    </div>
+
+                    <div className="flex flex-col w-full">
+                            <motion.input
+                                type="password"
+                                placeholder="Confirm Password"
+                                autoComplete="new-password"
+                                value={confirmPass}
+                                onChange={(e) => {
+                                    setErrors({})
+                                    setConfirmPass(e.target.value)
+                                }}
+                                animate={{
+                                    borderColor: errors.email
+                                        ? "rgba(251, 44, 54, 1)"
+                                        : "rgba(251, 44, 54, 0)",
+                                }}
+                                transition={{ duration: 0.12, ease: "easeIn" }}
+                                className={clsx(errors.email && "border-2")}
+                            />
+
+                            <AnimatePresence mpde="wait">
+                                {errors.email &&
+                                    <motion.p
+                                        className="text-red-400"
+                                        initial={{ opacity: 0, y: -5}}
+                                        animate={{ opacity: 1, y: 0}}
+                                        exit={{ opacity: 0, y: -5}}
+                                        transition={{ duration: 0.2, ease: "easeIn" }}
+                                    >
+                                        {errors.email}
+                                    </motion.p>
+                                }
+                            </AnimatePresence>
+                    </div>
+
+                    <motion.button
+                        onTapStart={() => setBtnHolding(true)}
+                        onTapCancel={() => setBtnHolding(false)}
+                        onTap={() => setBtnHolding(false)}
+                        animate={{ 
+                            scale: btnHolding ? 0.98 : 1, 
+                            backgroundColor: btnHolding ? "#111111" : "#171717"
+                        }}
+                    >
+                        Sign up
+                    </motion.button>
+
+                    <MotionLink
+                        to="/signin"
+                        onTapStart={() => setHolding(true)}
+                        onTapCancel={() => setHolding(false)} 
+                        onTap={() => setHolding(false)} 
+                        animate={{ 
+                            scale: holding ? 0.96 : 1,
+                            color: holding ? "#e7e7e7b2" : "#ffffff"
+                        }} 
+                        className="text-sm text-center"
+                    >
+                        Don't have an account?
+                    </MotionLink>
+                </motion.form>
             </div>
-
-            <footer className="flex items-end justify-center py-1">
-                <span className="text-white/30 text-sm text-center flex justify-center items-center gap-1">
-                    This is a prototype created by Fizz 
-                    <FaceSmileIcon className="size-[15px]"/>
-                </span>
-            </footer>
-        </motion.form>
+        </>
     )
 }

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
 import { useEffect } from "react";
+import { motion } from "motion/react";
 
 export default function Landing() {
     const { session } = useAuth()
@@ -20,14 +21,22 @@ function DesktopDisplay() {
 
 function MobileDisplay() {
     return(
-        <div>
-            <h1 className="text-center text-xl p-5">Welcome</h1>
+        <motion.div 
+            className="flex flex-col items-center justify-center fixed inset-0 bg-[url('/maka.webp')] bg-cover bg-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}    
+        >
+          <div className="absolute inset-0 bg-linear-to-b from-neutral-900/95 to-black/95" />
 
-            <div className="flex justify-between items-center gap-5 mx-2">
-                <Link to='/signin' className="link-base">Sign in</Link>
-                <Link to ='/signup' className="link-base">Sign up</Link>
+          <div className="flex-1 flex justify-center items-center z-3">
+            <h1 className="text-[30px]">ewan ko na lang talaga</h1>
+          </div>
+
+            <div className="flex flex-col w-full justify-center items-center gap-2 z-3">
+                <Link to='/signin' className="link-base bg-white border-1 md:border-2 text-black">Sign in</Link>
+                <Link to ='/signup' className="link-base bg-black border-1 md:border-2">Sign up</Link>
             </div>
-        </div>
+        </motion.div>
     )
 }
     return(

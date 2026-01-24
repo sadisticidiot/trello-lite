@@ -29,11 +29,7 @@ body{
 @layer components {
   .link-base {
     @apply
-      bg-rose-500
-      border-rose-300
-      border-1
-      md:border-2
-      rounded-lg
+      rounded-xl
       w-full
       text-center
       p-2

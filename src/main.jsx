@@ -13,11 +13,19 @@ import Login from './pages/Login.jsx'
 import CreateAccount from './pages/CreateAccount.jsx'
 import Signup from './pages/Signup.jsx'
 import FinishSetup from './pages/FinishSetup.jsx'
+import Interface from './ui/Interface.jsx'
 
 const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
-  { path: '/signin', element: <Login /> },
-  { path: '/signup', element: <Signup /> },
+
+  {
+    element: <Interface />,
+      children: [
+        { path: '/signin', element: <Login /> },
+        { path: '/signup', element: <Signup /> },
+      ]
+  },
+  
   {
     element: <ProtectedRoute />,
     children: [
