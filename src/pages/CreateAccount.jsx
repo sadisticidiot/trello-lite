@@ -93,36 +93,14 @@ export default function CreateAccount() {
           ? "User already exists."
           : "Something went wrong."
       )
-    } 
-    navigate("/app")
+    } else {
+      navigate("/finish-setup", { replace: true })
+    }
     } catch (err) {
       console.error(err)
       setError(err.message)
     }
   }
-
-  useEffect(() => {
-    if (!user) return
-
-    const checkProfile = async () => {
-      const { data, error } = await supabase
-        .from("users")
-        .select("id")
-        .eq("user_id", user.id)
-        .single()
-
-      if (data) {
-        navigate("/app")
-      }
-
-      if (error && error.code !== "PGRST116") {
-        console.error("Profile check error:", error)
-      }
-    }
-
-    checkProfile()
-    setLoading(false)
-  }, [user])
 
   if (loading) {
     return(
@@ -133,11 +111,7 @@ export default function CreateAccount() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-between fixed inset-0 m-4 mb-0">
-      <header>
-        <h1>Finish setting up your account</h1>
-      </header>
-
+    <div className="flex flex-col items-center justify-between size-full">
       <div className="flex w-full flex-col gap-4 flex-1">
         <div className="flex flex-col items-center justify-center gap-2">
           <label className="flex-1 flex  justify-center items-center w-50 cursor-pointer">
@@ -248,13 +222,6 @@ export default function CreateAccount() {
           </div>
         )}
       </div>
-
-      <footer className="flex items-end justify-center">
-        <span className="text-white/30 text-sm text-center flex justify-center items-center gap-1">
-          This is a prototype created by Fizz 
-          <FaceSmileIcon className="size-[15px]"/>
-        </span>
-      </footer>
     </div>
   )
 }

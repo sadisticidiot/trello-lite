@@ -14,9 +14,11 @@ import CreateAccount from './pages/CreateAccount.jsx'
 import Signup from './pages/Signup.jsx'
 import FinishSetup from './pages/FinishSetup.jsx'
 import Interface from './ui/Interface.jsx'
+import PageLoadguard from './ui/PageLoadGuard.jsx'
 
 const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
+  { path: '/auth-intermission', element: <PageLoadguard /> },
 
   {
     element: <Interface />,

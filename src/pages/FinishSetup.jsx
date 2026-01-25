@@ -1,13 +1,21 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useAuth } from "../AuthProvider"
 import MotionLink from "../ui/MotionLink"
 import { AnimatePresence, motion } from "motion/react"
 import { supabase } from "../data/supabase-client"
 import { useNavigate } from "react-router-dom"
-import clsx from "clsx"
 
 export default function FinishSetup() {
-    const { session } = useAuth()
+    const { session, loading } = useAuth()
+
+    if (loading) {
+        return(
+            <div className="flex justify-center items-center">
+                <span className="spinner" />
+            </div>
+        )
+    }
+
     const user = session.user
 
     const navigate = useNavigate()
@@ -19,7 +27,7 @@ export default function FinishSetup() {
     const [score, setScore] = useState(0)
 
     const [btnHolding, setBtnHolding] = useState(false)
-    const [loading, setLoading] = useState(false)
+    const [btnLoading, setBtnLoading] = useState(false)
 
     const calcScore = (pass) => {
         let s = 0
@@ -28,7 +36,7 @@ export default function FinishSetup() {
         if (pass.length >= 8) s++
         if (/[0-9]/.test(pass)) s++
         if (/[A-Z]/.test(pass)) s++
-        if (/\s/.test(pass)) s--
+        if (/\s/.test(pass)) s -= 2
         return s
     }
 
@@ -59,22 +67,32 @@ export default function FinishSetup() {
     const handleCreate = async (e) => {
         e.preventDefault()
 
-        if (passStrength !== "Strong password 💪") {
+        if (!passStrength.includes("Strong password 💪")) {
             setError("Please enter a strong password before continuing.")
             return
         }
 
         setError()
-        setLoading(true)
+        setBtnLoading(true)
 
         const { error: supabaseError } = await supabase.auth.updateUser({ password: newPass })
 
         if (supabaseError) {
+            console.error(supabaseError.message)
             setError("An unexpected error occured. Please try again.")
-            setLoading(false)
+            setBtnLoading(false)
             return
+        } else {
+            const { error: savePassErr } = await supabase
+                .from("users")
+                .update({ has_password: true })
+                .eq("user_id", user.id)
+
+            if (savePassErr) {
+                setError("There was an issue saving your password. Please try again later.")
+            }
+            navigate("/app", { replace: true })
         }
-        navigate("/app")
     }
 
     const strColor = 
@@ -85,6 +103,23 @@ export default function FinishSetup() {
         : "#ef4444"
     
     const barWidth = score * 25 + "%"
+
+    useEffect(() => {
+        const checkUser = async () => {
+            const { data } = await supabase
+                .from("users")
+                .select("has_password, display_name")
+                .eq("user_id", user.id)
+                .single()
+            
+            if (data?.has_password && data?.display_name) {
+                navigate("/app")
+            } else {
+                navigate("/create-account")
+            }
+        }
+        checkUser() 
+    }, [])
 
     return(
         <div className="size-full flex flex-col p-8 justify-center items-center bg-neutral-950 gap-5">
@@ -107,8 +142,7 @@ export default function FinishSetup() {
                         onChange={handleInput}
                     />
 
-                    <div className="flex gap-2">
-                        <p className="text-xs">Password strength: </p>
+                    <div className="flex flex-col items-center justify-center gap-2 p-2">
                         <motion.p 
                             className="text-xs"
                             initial={{ opacity: 0 }}
@@ -116,10 +150,14 @@ export default function FinishSetup() {
                         >
                             {passStrength}
                         </motion.p>
-                    </div>
 
-                    <div className="w-full h-2 bg-white/10 rounded overflow-hidden mb-2">
-                        <motion.div className="h-full rounded min-w-2" animate={{ width: barWidth, backgroundColor: strColor }} />
+                        <div className="flex items-center justify-center gap-2 w-full">
+                            <p className="text-xs">Password strength: </p>
+
+                            <div className="flex-1 h-2 bg-white/10 rounded overflow-hidden">
+                                <motion.div className="h-full rounded min-w-2" animate={{ width: barWidth, backgroundColor: strColor }} />
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -134,7 +172,7 @@ export default function FinishSetup() {
                     className="flex items-center justify-center"
                     onClick={handleCreate}
                 >
-                    {loading ? <span className="spinner" /> : "Create Password"}
+                    {btnLoading ? <span className="spinner" /> : "Create Password"}
                 </motion.button>
 
                 <AnimatePresence mode="wait">

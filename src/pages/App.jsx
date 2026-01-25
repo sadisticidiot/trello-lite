@@ -3,13 +3,19 @@ import { supabase } from "../data/supabase-client"
 import { useAuth } from "../AuthProvider"
 
 export default function App(){
-    const { session } = useAuth()    
+    const { session, loading } = useAuth()  
+
+    if (loading) {
+        return(
+            <div className="fixed inset-0 flex items-center justify-center"><span className="spinner size-8" /></div>
+        )
+    }
+
     const user = session.user
 
     const [name, setName] = useState(null)
     const [gender, setGender] = useState(null)
     const [profile, setProfile] = useState(null)
-    const [loading, setLoading] = useState(true)
 
     const getInfo = async () => {
 
@@ -21,13 +27,11 @@ export default function App(){
 
         if (error) {
             console.error(error.message)
-            setLoading(false)
             return
         } else {
             setName(data.display_name)
             setGender(data.gender)
             setProfile(data.avatar_url)
-            setLoading(false)
         }
     }
 
@@ -38,12 +42,6 @@ export default function App(){
     useEffect(() => {
         getInfo()
     }, [])
-
-    if (loading) {
-        return(
-            <div className="fixed inset-0 flex items-center justify-center"><span className="spinner size-8" /></div>
-        )
-    }
 
     return(
         <>

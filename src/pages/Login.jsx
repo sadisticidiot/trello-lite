@@ -32,7 +32,7 @@ export default function Login() {
 
         const timer = setTimeout(() => setErrors({}), 6000);
         return () => clearTimeout(timer);
-    }, [errors]);
+    }, [errors])
     
     const handleLogin = async (e) => {
         e.preventDefault()
@@ -51,8 +51,8 @@ export default function Login() {
         }
 
         const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+            email,
+            password,
         });
 
         if (error) {
@@ -74,7 +74,7 @@ export default function Login() {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
-                redirectTo: `${window.location.origin}/finish-setup`
+                redirectTo: `${window.location.origin}/auth-intermission`
             }
         })
 
@@ -167,12 +167,18 @@ export default function Login() {
                         onTapCancel={() => setBtnHolding(false)}
                         onTap={() => setBtnHolding(false)}
                         animate={{ 
-                            scale: btnHolding ? 0.98 : 1, 
-                            backgroundColor: btnHolding ? "#111111" : "#171717"
+                            scale: btnHolding || loading || gglLoad ? 0.98 : 1, 
+                            backgroundColor: btnHolding || gglLoad ? "#111111" : loading ? "#0e0e0e" : "#171717"
                         }}
+                        className={clsx(
+                            "flex justify-center items-center",
+                            loading && "border-black"
+                        )}
                     >
-                        Sign in
+                        {loading ? <span className="spinner" /> : "Sign in"}
                     </motion.button>
+
+                    {errors.form && <span className="text-red-500">{errors.form}</span>}
 
                     <div className="flex w-full items-center gap-2 px-3 pt-3">
                         <hr className="border-t border-white/50 flex-1" />
@@ -181,19 +187,21 @@ export default function Login() {
                     </div>
 
                     <motion.button
-                        className="flex gap-2 items-center justify-center"
                         type="button"
                         onClick={handleGoogle}
                         onTapStart={() => setGglHolding(true)}
                         onTapCancel={() => setGglHolding(false)}
                         onTap={() => setGglHolding(false)}
                         animate={{ 
-                            scale: gglHolding ? 0.98 : 1, 
-                            backgroundColor: gglHolding ? "#111111" : "#171717"
+                            scale: gglHolding || gglLoad || loading ? 0.98 : 1, 
+                            backgroundColor: gglHolding || loading ? "#111111" : gglLoad ? "#0e0e0e" : "#171717"
                         }}
+                        className={clsx(
+                            "flex gap-2 items-center justify-center",
+                            gglLoad && "border-black"
+                        )}
                     >
-                        <EnvelopeIcon className="size-8"/>
-                        Continue with Google
+                        {gglLoad ? <span className="spinner" /> : <><EnvelopeIcon className="size-8"/>Continue with Google</>}
                     </motion.button>
 
                     <MotionLink variant="login"/>
