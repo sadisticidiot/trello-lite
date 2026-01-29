@@ -17,13 +17,12 @@ export default function Signup() {
     const [errors, setErrors] = useState({})
 
     const [loading, setLoading] = useState(false)
-    const [submitted, setSubmitted] = useState(false)
     const [btnHolding, setBtnHolding] = useState(false)
 
     const handleSignup = async (e) => {
         e.preventDefault()
         setErrors({})
-        setLoading (true)
+        setLoading(true)
 
         const newErrors = {}
 
@@ -32,6 +31,8 @@ export default function Signup() {
 
         if (!password) newErrors.password = "Password cannot be empty.";
         else if (password.length < 8) newErrors.password = "Password too short (min 8 chars).";
+        else if (!/[0-9]/.test(password)) newErrors.password = "Password must include at least one number.";
+        else if (/\s/.test(password)) newErrors.password = "Password cannot include a space.";
 
         if (password !== confirmPass) newErrors.confirmPass = "Passwords do not match.";
 
@@ -44,9 +45,6 @@ export default function Signup() {
         const { error } = await supabase.auth.signUp({
             email,
             password,
-            options: {
-                emailRedirectTo: `${window.location.origin}/login`
-            }
         })
 
         if (error) {
@@ -54,30 +52,22 @@ export default function Signup() {
             setLoading(false)
             return
         }
+        navigate("/auth-intermission", { replace: true })
         setLoading(false)
-        setSubmitted(true)
     }
-
+   
     useEffect(() => {
         if (session) {
-            navigate("/app", { replace: true })
+            navigate("/auth-intermission", { replace: true })
         }
     }, [session])
-      
+    
     useEffect(() => {
         if (Object.keys(errors).length === 0) return;
 
         const timer = setTimeout(() => setErrors({}), 6000);
         return () => clearTimeout(timer);
     }, [errors]);
-
-    if (submitted) {
-        return(
-            <div className="relative size-full">
-                <h1>Signed up succesfully. To proceed, please check the email verification sent to {email}.</h1>
-            </div>                
-        )
-    }
 
     return(
         <>
@@ -107,7 +97,7 @@ export default function Signup() {
                                 className={clsx(errors.email && "border-2")}
                             />
 
-                            <AnimatePresence mpde="wait">
+                            <AnimatePresence mode="wait">
                                 {errors.email &&
                                     <motion.p
                                         className="text-red-400"
@@ -141,7 +131,7 @@ export default function Signup() {
                                 className={clsx(errors.password && "border-2")}
                             />
 
-                            <AnimatePresence mpde="wait">
+                            <AnimatePresence mode="wait">
                                 {errors.password &&
                                     <motion.p
                                         className="text-red-400"
@@ -167,16 +157,16 @@ export default function Signup() {
                                     setConfirmPass(e.target.value)
                                 }}
                                 animate={{
-                                    borderColor: errors.email
+                                    borderColor: errors.confirmPass
                                         ? "rgba(251, 44, 54, 1)"
                                         : "rgba(251, 44, 54, 0)",
                                 }}
                                 transition={{ duration: 0.12, ease: "easeIn" }}
-                                className={clsx(errors.email && "border-2")}
+                                className={clsx(errors.confirmPass && "border-2")}
                             />
 
-                            <AnimatePresence mpde="wait">
-                                {errors.email &&
+                            <AnimatePresence mode="wait">
+                                {errors.confirmPass &&
                                     <motion.p
                                         className="text-red-400"
                                         initial={{ opacity: 0, y: -5}}
@@ -184,7 +174,7 @@ export default function Signup() {
                                         exit={{ opacity: 0, y: -5}}
                                         transition={{ duration: 0.2, ease: "easeIn" }}
                                     >
-                                        {errors.email}
+                                        {errors.confirmPass}
                                     </motion.p>
                                 }
                             </AnimatePresence>
@@ -195,10 +185,13 @@ export default function Signup() {
                         onTapCancel={() => setBtnHolding(false)}
                         onTap={() => setBtnHolding(false)}
                         animate={{ 
-                            scale: btnHolding ? 0.98 : 1, 
-                            backgroundColor: btnHolding ? "#111111" : "#171717"
+                            scale: btnHolding || loading ? 0.98 : 1, 
+                            backgroundColor: btnHolding ? "#111111" : loading ? "#0e0e0e" : "#171717"
                         }}
-                        className="flex items-center justify-center"
+                        className={clsx(
+                            "flex items-center justify-center",
+                            loading && "border-black"
+                        )}
                     >
                         {loading ? <span className="spinner" /> : "Sign up"}
                     </motion.button>

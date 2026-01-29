@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
 import { Mars, Venus } from "lucide-react"
 import clsx from "clsx"
-import { motion } from "motion/react"
+import { AnimatePresence, motion } from "motion/react"
 import { supabase } from "../data/supabase-client"
 import { useAuth } from "../AuthProvider"
 import { Link, useNavigate } from "react-router-dom"
-import { FaceSmileIcon, UserIcon } from "@heroicons/react/24/outline"
+import { UserIcon } from "@heroicons/react/24/outline"
 
 const MONTHS = [
   "January", "February", "March", "April",
@@ -31,8 +31,8 @@ export default function CreateAccount() {
   const [imageFile, setImageFile] = useState(null)
   const [preview, setPreview] = useState(null)
 
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState({})
   const [openDropdown, setOpenDropdown] = useState(null)
 
   const monthIndex = MONTHS.indexOf(month)
@@ -75,6 +75,18 @@ export default function CreateAccount() {
 
   const handleSave = async (e) => {
     e.preventDefault()
+    setErrors({})
+    setLoading(true)
+
+    const newErrors = {}
+
+    if (!name) newErrors.name = "Please enter a valid username."
+
+    if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        setLoading(false);
+        return;
+    }
 
     try {
       const avatarUrl = await uploadAvatar()
@@ -88,17 +100,19 @@ export default function CreateAccount() {
       })
 
     if (error) {
-      setError(
+      setErrors({ form:
         error.message.includes("violates unique constraint")
-          ? "User already exists."
+          ? "Username already in use."
           : "Something went wrong."
-      )
+      })
+      setLoading(false)
     } else {
-      navigate("/finish-setup", { replace: true })
+      navigate("/auth-intermission", { replace: true })
     }
     } catch (err) {
       console.error(err)
-      setError(err.message)
+      setErrors({ form: err.message})
+      setLoading(false)
     }
   }
 
@@ -111,33 +125,58 @@ export default function CreateAccount() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-between size-full">
-      <div className="flex w-full flex-col gap-4 flex-1">
-        <div className="flex flex-col items-center justify-center gap-2">
-          <label className="flex-1 flex  justify-center items-center w-50 cursor-pointer">
-            <input type="file" accept="image/*" onChange={handleImage} hidden/>
+      <div className="size-full flex flex-col items-center justify-center gap-4">
+        <div className="flex flex-col flex-1 items-center justify-center gap-5">
+          <label>
+            <input type="file" accept="image/*" onChange={handleImage} hidden />
       
             <div 
-              className="size-45 rounded-full flex items-center justify-center overflow-hidden"
+              className="cursor-pointer size-45 rounded-full flex items-center justify-center overflow-hidden border-2 border-white/15"
             >
               {preview ? (
-                <img src={preview} alt="Preview" className="size-50 object-cover rounded-full"/>
+                <img src={preview} alt="Preview" className="max-size-45 object-cover rounded-full"/>
               ) : (
-                <div className="bg-neutral relative size-full border-2 rounded-full flex items-center justify-center">
-                  <UserIcon className="size-20 absolute text-white/20 "/>
+                <div className="bg-neutral relative size-fullrounded-full flex items-center justify-center">
+                  <UserIcon className="size-20 absolute text-white/10 "/>
+                  <h3 className="text-white/50">Add a profile picture</h3>
                 </div>
               )}
             </div>
           </label>
 
-          {preview && <button onClick={() => setPreview(null)} className="bg-transparent w-50 p-0">Remove profile picture</button>}
+          {preview && <button onClick={() => {setPreview(null); setImageFile(null)}} className="bg-transparent w-50 p-0">Remove profile picture</button>}
         </div>
 
-        <input
-          placeholder="Display Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <div className="flex flex-col w-full">
+          <motion.input
+            placeholder="Display Name"
+            value={name}
+            onChange={(e) => {
+              setErrors({})
+              setName(e.target.value)
+            }}
+            animate={{
+              borderColor: errors.name
+              ? "rgba(251, 44, 54, 1)"
+              : "rgba(251, 44, 54, 0)",
+            }}
+            transition={{ duration: 0.12, ease: "easeIn" }}
+            className={clsx(errors.name && "border-2")}
+          />  
+          
+          <AnimatePresence mode="wait">
+            {errors.name &&
+            <motion.p
+            className="text-red-400"
+            initial={{ opacity: 0, y: -5}}
+            animate={{ opacity: 1, y: 0}}
+            exit={{ opacity: 0, y: -5}}
+            transition={{ duration: 0.2, ease: "easeIn" }}
+            >
+              {errors.name}
+            </motion.p>}
+          </AnimatePresence>
+        </div>
 
         <div className="flex gap-2">
           <Dropdown
@@ -195,7 +234,7 @@ export default function CreateAccount() {
           </Dropdown>
         </div>
 
-        <div className="flex justify-center items-center gap-2">
+        <div className="flex justify-center items-center gap-2 w-full">
           <GenderButton
             value="Male"
             icon={Mars}
@@ -213,16 +252,15 @@ export default function CreateAccount() {
         </div>
 
         <button onClick={handleSave}>Save Changes</button>
-        {error && (
+        {errors.form && (
           <div className="flex gap-1 justify-center items-center">
-            <span className="text-red-500">{error}</span>
+            <span className="text-red-500">{errors.form}</span>
             <Link to="/login" className="text-blue-400 underline font-light">
               Sign in instead?
             </Link>
           </div>
         )}
       </div>
-    </div>
   )
 }
 

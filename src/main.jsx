@@ -15,10 +15,12 @@ import Signup from './pages/Signup.jsx'
 import FinishSetup from './pages/FinishSetup.jsx'
 import Interface from './ui/Interface.jsx'
 import PageLoadguard from './ui/PageLoadGuard.jsx'
+import Submitted from './pages/Submitted.jsx'
 
 const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
   { path: '/auth-intermission', element: <PageLoadguard /> },
+  { path: '/verification', element: <Submitted /> },
 
   {
     element: <Interface />,

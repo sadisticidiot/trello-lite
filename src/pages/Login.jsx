@@ -62,7 +62,7 @@ export default function Login() {
         }
 
         setLoading(false);
-        navigate("/create-account", { replace: true });
+        navigate("/auth-intermission", { replace: true });
         setEmail("")
         setPassword("")
     }
@@ -131,7 +131,7 @@ export default function Login() {
                     <div className="flex flex-col w-full">
                             <motion.input
                                 type="password"
-                                placeholder="Create Password"
+                                placeholder="Password"
                                 autoComplete="new-password"
                                 value={password}
                                 onChange={(e) => {

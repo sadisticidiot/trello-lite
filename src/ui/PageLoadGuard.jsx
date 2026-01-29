@@ -20,12 +20,16 @@ export default function PageLoadguard() {
             .eq("user_id", userId)
             .single()
 
-        if (!data || !data.display_name) {
-            navigate("/create-account", { replace: true })
-        } else if (!data.has_password) {
-            navigate("/finish-setup", { replace: true })
-        } else {
-            navigate("/app", { replace: true })
+            if (!data || !data.display_name) {
+                navigate("/create-account", { replace: true })
+            } else if (!data.has_password) {
+                navigate("/finish-setup", { replace: true })
+            } else {
+                navigate("/app", { replace: true })
+            }
+
+        if (error) {
+            console.error(error.message)
         }
         }
 
@@ -35,7 +39,7 @@ export default function PageLoadguard() {
     return(
         <div className="fixed inset-0 flex flex-col gap-4 items-center justify-center">
             <img src={ewan} className="size-30 spinner"/>
-            <span className="text-white/60">Finding kung saan ba ako nagkulang...</span>
+            <span className="text-white/60">Finding my missing sock...</span>
         </div>
     )
 }

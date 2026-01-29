@@ -6,15 +6,7 @@ import { supabase } from "../data/supabase-client"
 import { useNavigate } from "react-router-dom"
 
 export default function FinishSetup() {
-    const { session, loading } = useAuth()
-
-    if (loading) {
-        return(
-            <div className="flex justify-center items-center">
-                <span className="spinner" />
-            </div>
-        )
-    }
+    const { session } = useAuth()
 
     const user = session.user
 
@@ -91,7 +83,7 @@ export default function FinishSetup() {
             if (savePassErr) {
                 setError("There was an issue saving your password. Please try again later.")
             }
-            navigate("/app", { replace: true })
+            navigate("/auth-intermission", { replace: true })
         }
     }
 
@@ -104,35 +96,18 @@ export default function FinishSetup() {
     
     const barWidth = score * 25 + "%"
 
-    useEffect(() => {
-        const checkUser = async () => {
-            const { data } = await supabase
-                .from("users")
-                .select("has_password, display_name")
-                .eq("user_id", user.id)
-                .single()
-            
-            if (data?.has_password && data?.display_name) {
-                navigate("/app")
-            } else {
-                navigate("/create-account")
-            }
-        }
-        checkUser() 
-    }, [])
-
     return(
         <div className="size-full flex flex-col p-8 justify-center items-center bg-neutral-950 gap-5">
             <div className="flex-1 text-center flex flex-col items-center justify-center">
                 <h1>Successfully logged in!</h1>
                 <h2>
-                    For easier accessibility, set up a strong password.
-                    They're optional when using Google accounts but without one, you'll have to log in using OAuth everytime.
+                    lagyan mo ng password para ano, para maangas.
+                    pwede ring wag kung ayaw mo...
                 </h2>
             </div>
 
             <div className="flex flex-col justify-between items-center gap-2 w-full">
-                <p className="text-white/20">Currently logged in as {user.email}</p>
+                <p className="text-sm text-white/20">Currently logged in as {user.email}</p>
 
                 <div className="flex flex-col w-full">
                     <motion.input
