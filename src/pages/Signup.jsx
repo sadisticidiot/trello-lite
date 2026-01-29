@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom"
 import { useAuth } from "../AuthProvider"
 import basta from "/ewan.jfif"
 import MotionLink from "../ui/MotionLink"
+import Interface from '../ui/Interface.jsx'
 
 export default function Signup() {
     const { session } = useAuth()
@@ -61,7 +62,7 @@ export default function Signup() {
             navigate("/auth-intermission", { replace: true })
         }
     }, [session])
-    
+
     useEffect(() => {
         if (Object.keys(errors).length === 0) return;
 
@@ -71,8 +72,11 @@ export default function Signup() {
 
     return(
         <>
-            <div className="block md:hidden size-full">
-                <form 
+        <Interface closable={true}>
+            <div className="block md:hidden size-full p-3 border-1 border-white/12 rounded bg-neutral-950">
+                <motion.form
+                    initial={{ opacity: 0.7, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }} 
                     className="size-full flex flex-col justify-center items-center gap-3" 
                     onSubmit={handleSignup}
                 >
@@ -197,8 +201,9 @@ export default function Signup() {
                     </motion.button>
 
                     <MotionLink variant="signup"/>
-                </form>
+                </motion.form>
             </div>
+        </Interface>
         </>
     )
 }

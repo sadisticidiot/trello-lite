@@ -7,6 +7,7 @@ import { supabase } from "../data/supabase-client";
 import { useAuth } from "../AuthProvider";
 import basta from "/ewan.jfif"
 import MotionLink from "../ui/MotionLink";
+import Interface from "../ui/Interface";
 
 export default function Login() {
     const { session } = useAuth()
@@ -22,7 +23,7 @@ export default function Login() {
     const [password, setPassword] = useState("")
     const [errors, setErrors] = useState({})
 
-    const [loading, setLoading] = useState(false)
+    const [btnLoad, setBtnLoad] = useState(false)
     const [gglLoad, setGglLoad] = useState(false)
     const [btnHolding, setBtnHolding] = useState(false)
     const [gglHolding, setGglHolding] = useState(false)
@@ -37,7 +38,7 @@ export default function Login() {
     const handleLogin = async (e) => {
         e.preventDefault()
         setErrors({})
-        setLoading(true)
+        setBtnLoad(true)
 
         const newErrors = {}
 
@@ -46,7 +47,7 @@ export default function Login() {
 
         if (Object.keys(newErrors).length > 0) {
         setErrors(newErrors);
-        setLoading(false);
+        setBtnLoad(false);
         return;
         }
 
@@ -57,11 +58,11 @@ export default function Login() {
 
         if (error) {
         setErrors({ form: "Incorrect username or password. Please try again or create an account." });
-        setLoading(false);
+        setBtnLoad(false);
         return;
         }
 
-        setLoading(false);
+        setBtnLoad(false);
         navigate("/auth-intermission", { replace: true });
         setEmail("")
         setPassword("")
@@ -87,8 +88,11 @@ export default function Login() {
     
     return(
         <>
-            <div className="block md:hidden size-full">
-                <form 
+        <Interface closable={true}>
+            <div className="block md:hidden size-full p-3 border-1 border-white/12 rounded bg-neutral-950">
+                <motion.form
+                    initial={{ opacity: 0.7, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }} 
                     className="size-full flex flex-col justify-center items-center gap-3" 
                     onSubmit={handleLogin}
                 >
@@ -163,19 +167,20 @@ export default function Login() {
                     </div>
 
                     <motion.button
+                        disabled={btnLoad}
                         onTapStart={() => setBtnHolding(true)}
                         onTapCancel={() => setBtnHolding(false)}
                         onTap={() => setBtnHolding(false)}
                         animate={{ 
-                            scale: btnHolding || loading || gglLoad ? 0.98 : 1, 
-                            backgroundColor: btnHolding || gglLoad ? "#111111" : loading ? "#0e0e0e" : "#171717"
+                            scale: btnHolding || btnLoad || gglLoad ? 0.98 : 1, 
+                            backgroundColor: btnHolding || gglLoad ? "#111111" : btnLoad ? "#0e0e0e" : "#171717"
                         }}
                         className={clsx(
                             "flex justify-center items-center",
-                            loading && "border-black"
+                            btnLoad && "border-black"
                         )}
                     >
-                        {loading ? <span className="spinner" /> : "Sign in"}
+                        {btnLoad ? <span className="spinner" /> : "Sign in"}
                     </motion.button>
 
                     {errors.form && <span className="text-red-500">{errors.form}</span>}
@@ -193,8 +198,8 @@ export default function Login() {
                         onTapCancel={() => setGglHolding(false)}
                         onTap={() => setGglHolding(false)}
                         animate={{ 
-                            scale: gglHolding || gglLoad || loading ? 0.98 : 1, 
-                            backgroundColor: gglHolding || loading ? "#111111" : gglLoad ? "#0e0e0e" : "#171717"
+                            scale: gglHolding || gglLoad || btnLoad ? 0.98 : 1, 
+                            backgroundColor: gglHolding || btnLoad ? "#111111" : gglLoad ? "#0e0e0e" : "#171717"
                         }}
                         className={clsx(
                             "flex gap-2 items-center justify-center",
@@ -205,8 +210,9 @@ export default function Login() {
                     </motion.button>
 
                     <MotionLink variant="login"/>
-                </form>
+                </motion.form>
             </div>
+        </Interface>
         </>
     )
 }

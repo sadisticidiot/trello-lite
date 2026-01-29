@@ -20,26 +20,15 @@ import Submitted from './pages/Submitted.jsx'
 const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
   { path: '/auth-intermission', element: <PageLoadguard /> },
-  { path: '/verification', element: <Submitted /> },
+  { path: '/signin', element: <Login /> },
+  { path: '/signup', element: <Signup /> },
 
-  {
-    element: <Interface />,
-      children: [
-        { path: '/signin', element: <Login /> },
-        { path: '/signup', element: <Signup /> },
-      ]
-  },
-  
   {
     element: <ProtectedRoute />,
     children: [
       { path: '/app', element: <App /> },
-      { element: <Interface />,
-        children: [
-          { path: '/create-account', element: <CreateAccount /> },
-          { path: '/finish-setup', element: <FinishSetup /> },
-        ]
-      },
+      { path: '/create-account', element: <CreateAccount /> },
+      { path: '/finish-setup', element: <FinishSetup /> },
     ]
   },
 ])

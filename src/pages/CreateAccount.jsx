@@ -6,6 +6,7 @@ import { supabase } from "../data/supabase-client"
 import { useAuth } from "../AuthProvider"
 import { Link, useNavigate } from "react-router-dom"
 import { UserIcon } from "@heroicons/react/24/outline"
+import Interface from "../ui/Interface"
 
 const MONTHS = [
   "January", "February", "March", "April",
@@ -116,151 +117,149 @@ export default function CreateAccount() {
     }
   }
 
-  if (loading) {
-    return(
-      <div className="fixed inset-0 flex gap-2 justify-center items-center">
-        <span className="spinner" />
-      </div>
-    )
-  }
-
   return (
-      <div className="size-full flex flex-col items-center justify-center gap-4">
-        <div className="flex flex-col flex-1 items-center justify-center gap-5">
-          <label>
-            <input type="file" accept="image/*" onChange={handleImage} hidden />
-      
-            <div 
-              className="cursor-pointer size-45 rounded-full flex items-center justify-center overflow-hidden border-2 border-white/15"
-            >
-              {preview ? (
-                <img src={preview} alt="Preview" className="max-size-45 object-cover rounded-full"/>
-              ) : (
-                <div className="bg-neutral relative size-fullrounded-full flex items-center justify-center">
-                  <UserIcon className="size-20 absolute text-white/10 "/>
-                  <h3 className="text-white/50">Add a profile picture</h3>
-                </div>
-              )}
-            </div>
-          </label>
-
-          {preview && <button onClick={() => {setPreview(null); setImageFile(null)}} className="bg-transparent w-50 p-0">Remove profile picture</button>}
-        </div>
-
-        <div className="flex flex-col w-full">
-          <motion.input
-            placeholder="Display Name"
-            value={name}
-            onChange={(e) => {
-              setErrors({})
-              setName(e.target.value)
-            }}
-            animate={{
-              borderColor: errors.name
-              ? "rgba(251, 44, 54, 1)"
-              : "rgba(251, 44, 54, 0)",
-            }}
-            transition={{ duration: 0.12, ease: "easeIn" }}
-            className={clsx(errors.name && "border-2")}
-          />  
-          
-          <AnimatePresence mode="wait">
-            {errors.name &&
-            <motion.p
-            className="text-red-400"
-            initial={{ opacity: 0, y: -5}}
-            animate={{ opacity: 1, y: 0}}
-            exit={{ opacity: 0, y: -5}}
-            transition={{ duration: 0.2, ease: "easeIn" }}
-            >
-              {errors.name}
-            </motion.p>}
-          </AnimatePresence>
-        </div>
-
-        <div className="flex gap-2">
-          <Dropdown
-            value={month}
-            open={openDropdown === "month"}
-            onOpen={() => setOpenDropdown(openDropdown === "month" ? null : "month")}
-          >
-            {MONTHS.map(m => (
-              <Option
-                key={m}
-                onClick={() => {
-                  setMonth(m)
-                  setOpenDropdown(null)
-                }}
+    <>
+    <Interface closable={false}>
+      <div className="block md:hidden size-full p-3 border-1 border-white/12 rounded bg-neutral-950">
+        <div className="size-full flex flex-col items-center justify-center gap-4">
+          <div className="flex flex-col flex-1 items-center justify-center gap-5">
+            <label>
+              <input type="file" accept="image/*" onChange={handleImage} hidden />
+        
+              <div 
+                className="cursor-pointer size-45 rounded-full flex items-center justify-center overflow-hidden border-2 border-white/15"
               >
-                {m}
-              </Option>
-            ))}
-          </Dropdown>
+                {preview ? (
+                  <img src={preview} alt="Preview" className="max-size-45 object-cover rounded-full"/>
+                ) : (
+                  <div className="bg-neutral relative size-fullrounded-full flex items-center justify-center">
+                    <UserIcon className="size-20 absolute text-white/10 "/>
+                    <h3 className="text-white/50">Add a profile picture</h3>
+                  </div>
+                )}
+              </div>
+            </label>
 
-          <Dropdown
-            value={day}
-            open={openDropdown === "day"}
-            onOpen={() => setOpenDropdown(openDropdown === "day" ? null : "day")}
-          >
-            {days.map(d => (
-              <Option
-                key={d}
-                onClick={() => {
-                  setDay(d)
-                  setOpenDropdown(null)
-                }}
-              >
-                {d}
-              </Option>
-            ))}
-          </Dropdown>
-
-          <Dropdown
-            value={year}
-            open={openDropdown === "year"}
-            onOpen={() => setOpenDropdown(openDropdown === "year" ? null : "year")}
-          >
-            {years.map(y => (
-              <Option
-                key={y}
-                onClick={() => {
-                  setYear(y)
-                  setOpenDropdown(null)
-                }}
-              >
-                {y}
-              </Option>
-            ))}
-          </Dropdown>
-        </div>
-
-        <div className="flex justify-center items-center gap-2 w-full">
-          <GenderButton
-            value="Male"
-            icon={Mars}
-            active={gender}
-            setActive={setGender}
-            color="text-sky-400"
-          />
-          <GenderButton
-            value="Female"
-            icon={Venus}
-            active={gender}
-            setActive={setGender}
-            color="text-rose-400"
-          />
-        </div>
-
-        <button onClick={handleSave}>Save Changes</button>
-        {errors.form && (
-          <div className="flex gap-1 justify-center items-center">
-            <span className="text-red-500">{errors.form}</span>
-            <Link to="/login" className="text-blue-400 underline font-light">
-              Sign in instead?
-            </Link>
+            {preview && <button onClick={() => {setPreview(null); setImageFile(null)}} className="bg-transparent w-50 p-0">Remove profile picture</button>}
           </div>
-        )}
+
+          <div className="flex flex-col w-full">
+            <motion.input
+              placeholder="Display Name"
+              value={name}
+              onChange={(e) => {
+                setErrors({})
+                setName(e.target.value)
+              }}
+              animate={{
+                borderColor: errors.name
+                ? "rgba(251, 44, 54, 1)"
+                : "rgba(251, 44, 54, 0)",
+              }}
+              transition={{ duration: 0.12, ease: "easeIn" }}
+              className={clsx(errors.name && "border-2")}
+            />  
+            
+            <AnimatePresence mode="wait">
+              {errors.name &&
+              <motion.p
+              className="text-red-400"
+              initial={{ opacity: 0, y: -5}}
+              animate={{ opacity: 1, y: 0}}
+              exit={{ opacity: 0, y: -5}}
+              transition={{ duration: 0.2, ease: "easeIn" }}
+              >
+                {errors.name}
+              </motion.p>}
+            </AnimatePresence>
+          </div>
+
+          <div className="flex gap-2">
+            <Dropdown
+              value={month}
+              open={openDropdown === "month"}
+              onOpen={() => setOpenDropdown(openDropdown === "month" ? null : "month")}
+            >
+              {MONTHS.map(m => (
+                <Option
+                  key={m}
+                  onClick={() => {
+                    setMonth(m)
+                    setOpenDropdown(null)
+                  }}
+                >
+                  {m}
+                </Option>
+              ))}
+            </Dropdown>
+
+            <Dropdown
+              value={day}
+              open={openDropdown === "day"}
+              onOpen={() => setOpenDropdown(openDropdown === "day" ? null : "day")}
+            >
+              {days.map(d => (
+                <Option
+                  key={d}
+                  onClick={() => {
+                    setDay(d)
+                    setOpenDropdown(null)
+                  }}
+                >
+                  {d}
+                </Option>
+              ))}
+            </Dropdown>
+
+            <Dropdown
+              value={year}
+              open={openDropdown === "year"}
+              onOpen={() => setOpenDropdown(openDropdown === "year" ? null : "year")}
+            >
+              {years.map(y => (
+                <Option
+                  key={y}
+                  onClick={() => {
+                    setYear(y)
+                    setOpenDropdown(null)
+                  }}
+                >
+                  {y}
+                </Option>
+              ))}
+            </Dropdown>
+          </div>
+
+          <div className="flex justify-center items-center gap-2 w-full">
+            <GenderButton
+              value="Male"
+              icon={Mars}
+              active={gender}
+              setActive={setGender}
+              color="text-sky-400"
+            />
+            <GenderButton
+              value="Female"
+              icon={Venus}
+              active={gender}
+              setActive={setGender}
+              color="text-rose-400"
+            />
+          </div>
+
+          <button disabled={loading} onClick={handleSave} className={clsx("flex items-center justify-center", loading && "-scale-98")}>{loading ? <span className="spinner" /> : "Save Changes"}</button>
+          {errors.form && (
+            <div className="flex gap-1 justify-center items-center">
+              <span className="text-red-500">{errors.form}</span>
+              <Link to="/login" className="text-blue-400 underline font-light">
+                Sign in instead?
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
+    </Interface>
+    </>
   )
 }
 

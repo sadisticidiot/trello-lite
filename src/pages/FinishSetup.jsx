@@ -4,9 +4,10 @@ import MotionLink from "../ui/MotionLink"
 import { AnimatePresence, motion } from "motion/react"
 import { supabase } from "../data/supabase-client"
 import { useNavigate } from "react-router-dom"
+import Interface from "../ui/Interface"
 
 export default function FinishSetup() {
-    const { session } = useAuth()
+    const { session, loading } = useAuth()
 
     const user = session.user
 
@@ -20,6 +21,7 @@ export default function FinishSetup() {
 
     const [btnHolding, setBtnHolding] = useState(false)
     const [btnLoading, setBtnLoading] = useState(false)
+    const [success, setSuccess] = useState(false)
 
     const calcScore = (pass) => {
         let s = 0
@@ -87,6 +89,25 @@ export default function FinishSetup() {
         }
     }
 
+    useEffect(() => {
+        if (!session) return
+
+        const check = async () => {
+            const { data, error } = await supabase
+                .from("users")
+                .select("has_password")
+                .eq("user_id", user.id)
+                .single()
+            
+            if (data.has_password) {
+                navigate("/auth-intermission", { replace: true })
+            } else {
+                setSuccess(true)
+            }
+        }
+        check()
+    }, [session])
+
     const strColor = 
         passStrength.includes("decisions...") 
         ? "#737373" 
@@ -96,76 +117,84 @@ export default function FinishSetup() {
     
     const barWidth = score * 25 + "%"
 
+    if (loading) return
+    
     return(
-        <div className="size-full flex flex-col p-8 justify-center items-center bg-neutral-950 gap-5">
-            <div className="flex-1 text-center flex flex-col items-center justify-center">
-                <h1>Successfully logged in!</h1>
-                <h2>
-                    lagyan mo ng password para ano, para maangas.
-                    pwede ring wag kung ayaw mo...
-                </h2>
-            </div>
+        <>
+        <Interface closable={false}>
+            <div className="block md:hidden size-full p-3 border-1 border-white/12 rounded bg-neutral-950">
+                <div className="size-full flex flex-col p-8 justify-center items-center bg-neutral-950 gap-5">
+                    <div className="flex-1 text-center flex flex-col items-center justify-center">
+                        <h1>Successfully logged in!</h1>
+                        <h2>
+                            lagyan mo ng password para ano, para maangas.
+                            pwede ring wag kung ayaw mo...
+                        </h2>
+                    </div>
 
-            <div className="flex flex-col justify-between items-center gap-2 w-full">
-                <p className="text-sm text-white/20">Currently logged in as {user.email}</p>
+                    <div className="flex flex-col justify-between items-center gap-2 w-full">
+                        <p className="text-sm text-white/20">Currently logged in as {user.email}</p>
 
-                <div className="flex flex-col w-full">
-                    <motion.input
-                        placeholder="Enter password here"
-                        autoComplete="new-password"
-                        value={newPass}
-                        onChange={handleInput}
-                    />
+                        <div className="flex flex-col w-full">
+                            <motion.input
+                                placeholder="Enter password here"
+                                autoComplete="new-password"
+                                value={newPass}
+                                onChange={handleInput}
+                            />
 
-                    <div className="flex flex-col items-center justify-center gap-2 p-2">
-                        <motion.p 
-                            className="text-xs"
-                            initial={{ opacity: 0 }}
-                            animate={{ color: strColor, opacity: 1 }}
-                        >
-                            {passStrength}
-                        </motion.p>
+                            <div className="flex flex-col items-center justify-center gap-2 p-2">
+                                <motion.p 
+                                    className="text-xs"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ color: strColor, opacity: 1 }}
+                                >
+                                    {passStrength}
+                                </motion.p>
 
-                        <div className="flex items-center justify-center gap-2 w-full">
-                            <p className="text-xs">Password strength: </p>
+                                <div className="flex items-center justify-center gap-2 w-full">
+                                    <p className="text-xs">Password strength: </p>
 
-                            <div className="flex-1 h-2 bg-white/10 rounded overflow-hidden">
-                                <motion.div className="h-full rounded min-w-2" animate={{ width: barWidth, backgroundColor: strColor }} />
+                                    <div className="flex-1 h-2 bg-white/10 rounded overflow-hidden">
+                                        <motion.div className="h-full rounded min-w-2" animate={{ width: barWidth, backgroundColor: strColor }} />
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        <motion.button
+                            onTapStart={() => setBtnHolding(true)}
+                            onTapCancel={() => setBtnHolding(false)}
+                            onTap={() => setBtnHolding(false)}
+                            animate={{ 
+                                scale: btnHolding ? 0.98 : 1, 
+                                backgroundColor: btnHolding ? "#111111" : "#171717"
+                            }}
+                            className="flex items-center justify-center"
+                            onClick={handleCreate}
+                        >
+                            {btnLoading ? <span className="spinner" /> : "Create Password"}
+                        </motion.button>
+
+                        <AnimatePresence mode="wait">
+                            {error &&
+                                <motion.p
+                                    className="text-red-400"
+                                    initial={{ opacity: 0, y: -5}}
+                                    animate={{ opacity: 1, y: 0}}
+                                    exit={{ opacity: 0, y: -5}}
+                                    transition={{ duration: 0.2, ease: "easeIn" }}
+                                >
+                                    {error}
+                                </motion.p>
+                            }
+                        </AnimatePresence>
+
+                        <MotionLink variant="later"/>
                     </div>
                 </div>
-
-                <motion.button
-                    onTapStart={() => setBtnHolding(true)}
-                    onTapCancel={() => setBtnHolding(false)}
-                    onTap={() => setBtnHolding(false)}
-                    animate={{ 
-                        scale: btnHolding ? 0.98 : 1, 
-                        backgroundColor: btnHolding ? "#111111" : "#171717"
-                    }}
-                    className="flex items-center justify-center"
-                    onClick={handleCreate}
-                >
-                    {btnLoading ? <span className="spinner" /> : "Create Password"}
-                </motion.button>
-
-                <AnimatePresence mode="wait">
-                    {error &&
-                        <motion.p
-                            className="text-red-400"
-                            initial={{ opacity: 0, y: -5}}
-                            animate={{ opacity: 1, y: 0}}
-                            exit={{ opacity: 0, y: -5}}
-                            transition={{ duration: 0.2, ease: "easeIn" }}
-                        >
-                            {error}
-                        </motion.p>
-                    }
-                </AnimatePresence>
-
-                <MotionLink variant="later"/>
             </div>
-        </div>
+        </Interface>
+        </>
     )
 }
