@@ -90,6 +90,8 @@ export default function CreateAccount() {
     }
 
     try {
+      const provider = user.app_metadata.provider
+      const hasPassword = provider === "email"
       const avatarUrl = await uploadAvatar()
     
       const { error } = await supabase.from("users").insert({
@@ -98,6 +100,7 @@ export default function CreateAccount() {
         birthday: birthdayStr,
         gender,
         avatar_url: avatarUrl,
+        has_password: hasPassword
       })
 
     if (error) {
