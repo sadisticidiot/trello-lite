@@ -37,9 +37,14 @@ const router = createBrowserRouter([
         element: <App />,
         children: [
           { index: true, element: <Home />},
-          { path: 'profile', element: <Profile />},
-          { path: 'bookmarks', element: <Bookmark />},
           { path: 'menu', element: <Menu />},
+          { 
+            path: 'profile', 
+            element: <Profile />,
+            children: [
+              { path: 'bookmarks', element: <Bookmark />},
+            ]
+          },
         ]
       },
     ]
@@ -51,5 +56,5 @@ createRoot(document.getElementById('root')).render(
     <AuthProvider>
       <RouterProvider router={router} />
     </AuthProvider>
-  </StrictMode>,
+  </StrictMode>
 )

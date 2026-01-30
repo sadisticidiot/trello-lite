@@ -19,14 +19,9 @@ export default function App(){
 
     const user = session.user
 
-    const [name, setName] = useState(null)
-    const [gender, setGender] = useState(null)
-    const [profile, setProfile] = useState(null)
-
     const navItems = [
         { name: "home", path: '/app', icon: HomeIcon, label: "Home" },
         { name: "profile", path: '/app/profile', icon: User, label: "Profile" },
-        { name: "bookmark", path: '/app/bookmarks', icon: BookmarkIcon, label: "Bookmarks" },
         { name: "menu", path: '/app/menu', icon: Menu, label: "Menu" },
     ]
 
@@ -42,36 +37,10 @@ export default function App(){
         }
     }
 
-    const getInfo = async () => {
-
-        const { data, error } = await supabase
-            .from("users")
-            .select("display_name, gender, avatar_url")
-            .eq("user_id", user.id)
-            .single()
-
-        if (error) {
-            console.error(error.message)
-            return
-        } else {
-            setName(data.display_name)
-            setGender(data.gender)
-            setProfile(data.avatar_url)
-        }
-    }
-
-    const handleOut = async () => {
-        await supabase.auth.signOut()
-    } 
-
-    useEffect(() => {
-        getInfo()
-    }, [])
-
     return(
         <>
             <div className="block md:hidden flex flex-col fixed inset-0 rounded-lg overflow-hidden">
-                <div className="flex-1 overflow-y">
+                <div className="flex-1 overflow-y-auto">
                     <Outlet />
                 </div>
 
