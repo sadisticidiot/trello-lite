@@ -7,10 +7,6 @@ export default function Profile() {
     const { profile, name, profileLoading } = useAuth()  
 
 
-    const handleOut = async () => {
-        await supabase.auth.signOut()
-    }
-
     return(
         <div className="size-full flex flex-col items-center justify-center pt-5 pb-0 overflow-y-auto gap-2">
             {profileLoading ? (
@@ -21,7 +17,7 @@ export default function Profile() {
             <h1>{name}</h1>
             
             <div className="flex-1 w-full">
-                <header className="flex w-full py-3 justify-between items-center px-20 border-b-1 border-white/50">
+                <header className="flex w-full py-3 justify-between items-center px-10 border-b-1 border-white/50">
                     <Book className="size-6" />
                     <Heart className="size-6" />
                     <BookmarkIcon className="size-6" />
