@@ -70,7 +70,7 @@ export default function App(){
 
     return(
         <>
-            <div className="block md:hidden flex flex-col fixed inset-0 border-1">
+            <div className="block md:hidden flex flex-col fixed inset-0 rounded-lg overflow-hidden">
                 <div className="flex-1 overflow-y">
                     <Outlet />
                 </div>
@@ -88,7 +88,7 @@ export default function App(){
                                 : "text-neutral-400 hover:bg-neutral-700 hover:text-neutral-100 cursor-pointer"
                             )}
                         >
-                            <item.icon className="w-6 h-6" />
+                            <item.icon className="w-6 h-10" />
                         </button>
 
                         {currentView === item.name && 
