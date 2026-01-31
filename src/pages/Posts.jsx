@@ -1,7 +1,12 @@
+import { useState } from "react"
 import { useAuth } from "../AuthProvider"
+import { Pen } from "lucide-react"
+import clsx from "clsx"
+import { motion, AnimatePresence } from "motion/react"
 
 export default function Posts() {
     const { posts } = useAuth()
+    const [open, setOpen] = useState(false)
 
     console.log(posts)
 
@@ -18,7 +23,24 @@ export default function Posts() {
                     </span>
                 )
             }
-            <button className="absolute bottom-4 right-4 size-12 bg-neutral-900 p-0 rounded-full">+</button>
+
+            <AnimatePresence mode="wait">
+                <motion.div 
+                    initial={{ height: open ? 150 : 48 }}
+                    animate={{ height: open ? 150 : 48 }}
+                    exit={{ height: open ? 150 : 48 }}
+                    className="absolute bottom-4 right-4 flex flex-col border-1 border-blue-900 w-12 rounded-full overflow-hidden"
+                >
+                    <button 
+                        className={clsx(
+                            "size-full bg-neutral-200 border-black/30 p-0 text-black",
+                        )}
+                        onClick={() => setOpen(p => !p)}
+                    >
+                        +
+                    </button>
+                </motion.div>
+            </AnimatePresence>
         </div>
     )
 }

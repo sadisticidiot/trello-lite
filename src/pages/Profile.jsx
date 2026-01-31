@@ -36,7 +36,7 @@ export default function Profile() {
                         <div className="animate-pulse rounded-full size-25 bg-neutral-800 pb-5" />
                     ) : ( 
                         <>
-                            <img src={profile} width={100} className="rounded-full" />
+                            <img src={profile} width={80} className="rounded-full" />
                             <h1 className="text-[20px] p-0">{name}</h1>
                         </>
                     )
