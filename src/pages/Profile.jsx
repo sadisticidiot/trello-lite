@@ -1,36 +1,71 @@
-import { supabase } from "../data/supabase-client"
 import { useAuth } from "../AuthProvider"
-import { Archive, Book, BookmarkIcon, Heart } from "lucide-react"
-import minion from "/minions.png"
+import { Archive, Book, BookmarkIcon, Heart, PencilLine } from "lucide-react"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import clsx from "clsx"
 
 export default function Profile() {
+    const location = useLocation()
+    const navigate = useNavigate()
+
     const { profile, name, profileLoading } = useAuth()  
 
+    const navItems = [
+        { name: "posts", path: '/app/profile', icon: Book, label: "Posts" },
+        { name: "liked", path: '/app/profile/liked-posts', icon: Heart, label: "Liked Videos" },
+        { name: "bookmarked", path: '/app/profile/bookmarked-posts', icon: BookmarkIcon, label: "Bookmarked Icon" },
+        { name: "archived", path: '/app/profile/archived', icon: Archive, label: "Archived" },
+    ]
+
+    const currentView = navItems
+        .slice()
+        .sort((a ,b) => b.path.length - a.path.length)
+        .find((item) => location.pathname.startsWith(item.path))
+        ?.name ?? "home"
+
+    const handleNav = (item) => {
+        if (currentView !== item.name) {
+            navigate(item.path)
+        }
+    }
 
     return(
-        <div className="size-full flex flex-col items-center justify-center pt-5 pb-0 overflow-y-auto gap-2">
-            {profileLoading ? (
-                <div className="size-20 rounded-full animate-pulse border-2 bg-neutral-900" />
-                ) : (
-                <img src={profile} className="w-20 rounded-full" />
-            )}
-            <h1>{name}</h1>
-            
+        <div className="size-full flex flex-col items-center justify-center pt-5">
+            <div className="w-full flex flex-col justify-center items-center mb-4 relative">
+                {profileLoading 
+                    ? (
+                        <div className="animate-pulse rounded-full size-25 bg-neutral-800 pb-5" />
+                    ) : ( 
+                        <>
+                            <img src={profile} width={100} className="rounded-full" />
+                            <h1 className="text-[20px] p-0">{name}</h1>
+                        </>
+                    )
+                }
+
+                <PencilLine className="absolute right-4 top-1"/>
+            </div>
+
+            <div className="w-full flex items-center justify-between px-8 border-b-1 border-white/40 shadow-lg shadow-neutral-950">
+                {navItems.map((item) => (
+                    <div key={item.name}>
+                        <button
+                            onClick={handleNav}
+                            aria-label={item.label}
+                            className={clsx(
+                                "border-0",
+                                currentView === item.name
+                                ? "text-neutral-100"
+                                : "text-neutral-400 hover:bg-neutral-900"
+                            )}
+                        >
+                            <item.icon />
+                        </button>
+                    </div>
+                ))}
+            </div>
+
             <div className="flex-1 w-full">
-                <header className="flex w-full py-3 justify-between items-center px-10 border-b-1 border-white/50">
-                    <Book className="size-6" />
-                    <Heart className="size-6" />
-                    <BookmarkIcon className="size-6" />
-                    <Archive className="size-6" />
-                </header>
-
-                <div className="flex-1 flex flex-col items-center justify-center p-2">
-                    <img src={minion} className="spinner border-0 size-50" />
-
-                    <h3 className="flex justify-center items-center gap-3 text-white/30">
-                        Work in progress
-                    </h3>
-                </div>
+                <Outlet />
             </div>
         </div>
     )

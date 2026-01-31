@@ -40,7 +40,7 @@ export default function App(){
     return(
         <>
             <div className="block md:hidden flex flex-col fixed inset-0 rounded-lg overflow-hidden">
-                <div className="flex-1 overflow-y-auto">
+                <div className="flex-1">
                     <Outlet />
                 </div>
 
@@ -54,7 +54,7 @@ export default function App(){
                             "relative flex-1 flex justify-center items-center border-0 rounded-[0] transition-colors",
                             currentView === item.name
                                 ? "text-neutral-100"
-                                : "text-neutral-400 hover:bg-neutral-700 hover:text-neutral-100 cursor-pointer"
+                                : "text-neutral-400"
                             )}
                         >
                             <item.icon className="w-6 h-10" />

@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
     const [session, setSession] = useState(null)
     const [profile, setProfile] = useState(null)
     const [name, setName] = useState(null)
+    const [posts, setPosts] = useState([])
 
     const [profileLoading, setProfileLoading] = useState(true)
     const [loading, setLoading] = useState(true)
@@ -32,7 +33,25 @@ export function AuthProvider({ children }) {
             getInfo(session.user.id)
         }
     }, [session])
-    
+
+    useEffect(() => {
+        const getPosts = async (userId) => {
+            const { data, error } = await supabase
+                .from("posts")
+                .select("title")
+                .eq("user_id", userId)
+                .order("created_at", { ascending: false })
+
+            if (error) {
+                console.error(error.message)
+            } else {
+                setPosts(data)
+            }
+        }
+        if (session?.user && !posts) {
+            getPosts(session.user.id)
+        }
+    }, [session])
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: {session} }) => {
@@ -48,7 +67,7 @@ export function AuthProvider({ children }) {
     }, [])
 
     return (
-        <AuthContext.Provider value={{ session, loading, profile, name, profileLoading }}>
+        <AuthContext.Provider value={{ session, loading, profile, name, profileLoading, posts }}>
             {children}
         </AuthContext.Provider>
     )
