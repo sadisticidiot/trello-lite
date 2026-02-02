@@ -52,7 +52,7 @@ export default function App(){
                             <div className="size-full">
                                 <div className="absolute inset-0 backdrop-blur-[2px] bg-black/60" />
                             <div className="bg-neutral-900 w-full h-125 absolute bottom-0 rounded-t-[25px] flex flex-col items-center justify-center">
-                                <Minus className="scale-x-400" />
+                                <Minus className="size-10 scale-x-300 text-white/70" />
                                 <div className="flex-1" />
                             </div>
                             </div>
