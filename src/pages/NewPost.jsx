@@ -5,7 +5,7 @@ export default function NewPost() {
     return(
         <div className="size-full flex flex-col justify-center items-center p-5">
             <header className="relative flex w-full items-center justify-center">
-                <Link to='/' className="absolute left-2">
+                <Link to='/auth-intermission' className="absolute left-2">
                     <XMarkIcon className="size-[15px]" />
                 </Link>
                 <h1>New Post</h1>

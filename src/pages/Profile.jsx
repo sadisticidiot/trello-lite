@@ -1,5 +1,5 @@
 import { useAuth } from "../AuthProvider"
-import { Archive, Book, BookmarkIcon, Heart, PencilLine } from "lucide-react"
+import { Archive, Book, BookmarkIcon, Heart, PencilLine, UserIcon } from "lucide-react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import clsx from "clsx"
 
@@ -34,6 +34,10 @@ export default function Profile() {
                 {profileLoading 
                     ? (
                         <div className="animate-pulse rounded-full size-25 bg-neutral-800 pb-5" />
+                    ) : !profile ? ( 
+                        <div className="rounded-full size-25">
+                            <UserIcon className="size-full"/>
+                        </div>
                     ) : ( 
                         <>
                             <img src={profile} width={80} className="rounded-full" />
