@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../data/supabase-client"
 import { useAuth } from "../AuthProvider"
-import { BookmarkIcon, HomeIcon, Menu, User } from "lucide-react"
+import { BookmarkIcon, HomeIcon, Menu, Minus, User } from "lucide-react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import clsx from "clsx"
 import { motion, AnimatePresence } from "motion/react"
 
 export default function App(){
-    const { session, loading } = useAuth()  
+    const { loading } = useAuth()  
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -17,7 +17,9 @@ export default function App(){
         )
     }
 
-    const user = session.user
+    const params = new URLSearchParams(location.search)
+    const sheet = params.get("sheet")
+
 
     const navItems = [
         { name: "home", path: '/app', icon: HomeIcon, label: "Home" },
@@ -39,43 +41,57 @@ export default function App(){
 
     return(
         <>
-            <div className="block md:hidden flex flex-col fixed inset-0 rounded-lg overflow-hidden">
-                <div className="flex-1">
-                    <Outlet />
-                </div>
+            <div className="block md:hidden fixed inset-0">
+                <div className="size-full relative">
+                    <div className="size-full">
+                        <Outlet />
+                    </div>
 
-                {location.pathname !== '/app/new-post' && <div className="bg-neutral-900 shadow-lg flex items-center justify-between px-3 gap-2">
-                    {navItems.map((item) => (
-                       <div key={item.name} className="size-full flex flex-col items-stretch">
-                        <button
-                            onClick={() => handleNav(item)}
-                            aria-label={item.label}
-                            className={clsx(
-                            "relative flex-1 flex justify-center items-center border-0 rounded-[0] transition-colors",
-                            currentView === item.name
-                                ? "text-neutral-100"
-                                : "text-neutral-400"
-                            )}
-                        >
-                            <item.icon className="w-6 h-10" />
-                        </button>
-
-                        {currentView === item.name && 
-                            <AnimatePresence>
-                                {currentView === item.name && (
-                                <motion.div
-                                    className="w-full h-1 bg-neutral-100"
-                                    initial={{ scaleX: 0, opacity: 0 }}
-                                    animate={{ scaleX: 1, opacity: 1 }}
-                                    exit={{ scaleX: 0, opacity: 0 }}
-                                    transition={{ duration: 0.2, ease: "easeOut" }}
-                                />
+                    {sheet === "new-post"
+                        ? (
+                            <div className="size-full">
+                                <div className="absolute inset-0 backdrop-blur-[2px] bg-black/60" />
+                            <div className="bg-neutral-900 w-full h-125 absolute bottom-0 rounded-t-[25px] flex flex-col items-center justify-center">
+                                <Minus className="scale-x-400" />
+                                <div className="flex-1" />
+                            </div>
+                            </div>
+                        ) : (
+                        <div className="absolute bottom-0 w-full bg-neutral-900 shadow-lg flex items-center justify-between px-3 gap-2">
+                        {navItems.map((item) => (
+                        <div key={item.name} className="size-full flex flex-col items-stretch">
+                            <button
+                                onClick={() => handleNav(item)}
+                                aria-label={item.label}
+                                className={clsx(
+                                "relative flex-1 flex justify-center items-center border-0 rounded-[0] transition-colors",
+                                currentView === item.name
+                                    ? "text-neutral-100"
+                                    : "text-neutral-400"
                                 )}
-                            </AnimatePresence>
-                        }
+                            >
+                                <item.icon className="w-6 h-10" />
+                            </button>
+
+                            {currentView === item.name && 
+                                <AnimatePresence>
+                                    {currentView === item.name && (
+                                    <motion.div
+                                        className="w-full h-1 bg-neutral-100"
+                                        initial={{ scaleX: 0, opacity: 0 }}
+                                        animate={{ scaleX: 1, opacity: 1 }}
+                                        exit={{ scaleX: 0, opacity: 0 }}
+                                        transition={{ duration: 0.2, ease: "easeOut" }}
+                                    />
+                                    )}
+                                </AnimatePresence>
+                            }
+                            </div>
+                        ))}
                         </div>
-                    ))}
-                </div>}
+                        )
+                    }
+                </div>
             </div>
         </>
     )

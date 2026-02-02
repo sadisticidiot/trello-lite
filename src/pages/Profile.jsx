@@ -1,5 +1,5 @@
 import { useAuth } from "../AuthProvider"
-import { Archive, Book, BookmarkIcon, Heart, PencilLine, UserIcon } from "lucide-react"
+import { Archive, UserRound, BookmarkIcon, Heart, PencilLine, UserIcon } from "lucide-react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import clsx from "clsx"
 
@@ -8,11 +8,10 @@ export default function Profile() {
     const navigate = useNavigate()
 
     const { profile, name, profileLoading } = useAuth()  
-
     const navItems = [
-        { name: "posts", path: '/app/profile', icon: Book, label: "Posts" },
-        { name: "liked", path: '/app/profile/liked-posts', icon: Heart, label: "Liked Videos" },
-        { name: "bookmarked", path: '/app/profile/bookmarked-posts', icon: BookmarkIcon, label: "Bookmarked Icon" },
+        { name: "characters", path: '/app/profile', icon: UserRound, label: "Posts" },
+        { name: "liked", path: '/app/profile/liked-characters', icon: Heart, label: "Liked Videos" },
+        { name: "bookmarked", path: '/app/profile/bookmarked-characters', icon: BookmarkIcon, label: "Bookmarked Icon" },
         { name: "archived", path: '/app/profile/archived', icon: Archive, label: "Archived" },
     ]
 
