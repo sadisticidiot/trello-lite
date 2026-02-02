@@ -66,7 +66,7 @@ export default function App(){
 
                                 <motion.div
                                     drag="y" 
-                                    dragConstraints={{ top: -90, bottom: 125 }}
+                                    dragConstraints={{ top: -150, bottom: 20 }}
                                     dragElastic={0.12}
                                     initial={{ y: "20%" }}
                                     animate={{ y: 0 }}
