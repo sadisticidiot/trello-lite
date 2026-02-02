@@ -21,6 +21,7 @@ import PageLoadguard from './ui/PageLoadGuard.jsx'
 import Landing from './pages/Landing.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
+import NewPost from './pages/NewPost.jsx'
 
 const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
@@ -39,6 +40,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <Home />},
           { path: 'menu', element: <Menu />},
+          { path: 'new-post', element: <NewPost />},
           { 
             path: 'profile', 
             element: <Profile />,

@@ -44,7 +44,7 @@ export default function App(){
                     <Outlet />
                 </div>
 
-                <div className="bg-neutral-900 shadow-lg flex items-center justify-between px-3 gap-2">
+                {location.pathname !== '/app/new-post' && <div className="bg-neutral-900 shadow-lg flex items-center justify-between px-3 gap-2">
                     {navItems.map((item) => (
                        <div key={item.name} className="size-full flex flex-col items-stretch">
                         <button
@@ -75,7 +75,7 @@ export default function App(){
                         }
                         </div>
                     ))}
-                </div>
+                </div>}
             </div>
         </>
     )

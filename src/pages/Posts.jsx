@@ -1,14 +1,12 @@
 import { useState } from "react"
 import { useAuth } from "../AuthProvider"
-import { Pen } from "lucide-react"
-import clsx from "clsx"
-import { motion, AnimatePresence } from "motion/react"
+import { useNavigate } from "react-router-dom"
 
 export default function Posts() {
     const { posts } = useAuth()
-    const [open, setOpen] = useState(false)
+    const navigate = useNavigate()
 
-    console.log(posts)
+    const [open, setOpen] = useState(false)
 
     return(
         <div className="relative size-full flex items-center justify-center">
@@ -24,23 +22,12 @@ export default function Posts() {
                 )
             }
 
-            <AnimatePresence mode="wait">
-                <motion.div 
-                    initial={{ height: open ? 150 : 48 }}
-                    animate={{ height: open ? 150 : 48 }}
-                    exit={{ height: open ? 150 : 48 }}
-                    className="absolute bottom-4 right-4 flex flex-col border-1 border-blue-900 w-12 rounded-full overflow-hidden"
-                >
                     <button 
-                        className={clsx(
-                            "size-full bg-neutral-200 border-black/30 p-0 text-black",
-                        )}
-                        onClick={() => setOpen(p => !p)}
+                        className="absolute bottom-4 right-4 size-12 rounded-full bg-neutral-200 border-black/30 p-0 text-black"
+                        onClick={() => {navigate("/app/new-post"); setOpen(true)}}    
                     >
                         +
                     </button>
-                </motion.div>
-            </AnimatePresence>
         </div>
     )
 }
