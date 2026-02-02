@@ -35,8 +35,9 @@ export default function Profile() {
                     ? (
                         <div className="animate-pulse rounded-full size-25 bg-neutral-800 pb-5" />
                     ) : !profile ? ( 
-                        <div className="rounded-full size-25">
+                        <div className="rounded-full size-25 bg-neutral-900">
                             <UserIcon className="size-full"/>
+                            <h1 className="text-[20px] p-0">{name}</h1>
                         </div>
                     ) : ( 
                         <>
