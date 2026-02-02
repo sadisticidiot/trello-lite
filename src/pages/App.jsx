@@ -64,12 +64,14 @@ export default function App(){
                                     className="backdrop-blur-[2px] bg-black/60 absolute inset-0 z-10" 
                                 />
 
-                                <motion.div 
-                                    initial={{ y: "100%" }}
+                                <motion.div
+                                    drag="y" 
+                                    dragConstraints={{ top: -90, bottom: 125 }}
+                                    dragElastic={0.12}
+                                    initial={{ y: "20%" }}
                                     animate={{ y: 0 }}
                                     exit={{ y: "100%" }}
-                                    transition={{ duration: 0.2, ease: "easeInOut"}}
-                                    className="fixed bg-neutral-900 w-full min-h-115 rounded-t-[25px] flex flex-col items-center justify-center z-50"
+                                    className="fixed -bottom-40 bg-neutral-900 w-full h-full max-h-130 rounded-t-[25px] flex flex-col items-center justify-center z-50"
                                 >
                                     <Minus className="scale-x-220"/>
                                     <div className="flex-1" />
