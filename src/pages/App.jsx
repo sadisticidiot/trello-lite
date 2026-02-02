@@ -55,7 +55,7 @@ export default function App(){
                 <Overlay>
                     <AnimatePresence mode="wait">
                         {sheet === "new-post" &&
-                            <div className="flex items-end fixed inset-0">
+                            <div className="flex flex-col items-center justify-center fixed inset-0">
                                 <motion.div 
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
@@ -64,9 +64,15 @@ export default function App(){
                                     className="backdrop-blur-[2px] bg-black/60 absolute inset-0 z-10" 
                                 />
 
+                                <motion.div 
+                                    className="bg-neutral-950 rounded-md border-1 border-white/20 z-40 p-2 shadow-sm"
+                                >
+                                    <h1>Test</h1>
+                                </motion.div>
+
                                 <motion.div
                                     drag="y" 
-                                    dragConstraints={{ top: -150, bottom: 20 }}
+                                    dragConstraints={{ top: -125, bottom: 20 }}
                                     dragElastic={0.12}
                                     initial={{ y: "20%" }}
                                     animate={{ y: 0 }}
