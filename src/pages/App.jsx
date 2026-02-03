@@ -57,7 +57,7 @@ export default function App(){
                         {sheet === "new-post" &&
                             <div className="fixed inset-0">
                                 <div className="flex flex-col justify-center items-center relative h-screen">
-                                    <div className="relative border-1 border-yellow-500 h-screen w-full">
+                                    <div className="relative h-screen w-full">
                                         <motion.div 
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
@@ -72,7 +72,7 @@ export default function App(){
                                             animate={{ y: 0 }}
                                             exit={{ y: "100%" }}
                                             drag="y"
-                                            dragConstraints={{ top: -190, bottom: 150 }}
+                                            dragConstraints={{ top: -180, bottom: 250 }}
                                             dragElastic={0.1}
                                             onDragEnd={(e, info) => {
                                                 if (info.offset.y > 120) {
