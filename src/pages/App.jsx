@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { supabase } from "../data/supabase-client"
 import { useAuth } from "../AuthProvider"
 import { HomeIcon, Menu, Minus, User } from "lucide-react"
@@ -55,33 +55,38 @@ export default function App(){
                 <Overlay>
                     <AnimatePresence mode="wait">
                         {sheet === "new-post" &&
-                            <div className="flex flex-col items-center justify-center fixed inset-0">
-                                <motion.div 
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    onClick={closeSheet} 
-                                    className="backdrop-blur-[2px] bg-black/60 absolute inset-0 z-10" 
-                                />
+                            <div className="fixed inset-0">
+                                <div className="flex flex-col justify-center items-center relative h-screen">
+                                    <div className="relative border-1 border-yellow-500 h-screen w-full">
+                                        <motion.div 
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            onClick={closeSheet} 
+                                            className="absolute inset-0 
+                                            backdrop-blur-[1px] bg-black/40" 
+                                        />
 
-                                <motion.div 
-                                    className="bg-neutral-950 rounded-md border-1 border-white/20 z-40 p-2 shadow-sm"
-                                >
-                                    <h1>Test</h1>
-                                </motion.div>
-
-                                <motion.div
-                                    drag="y" 
-                                    dragConstraints={{ top: -125, bottom: 20 }}
-                                    dragElastic={0.12}
-                                    initial={{ y: "20%" }}
-                                    animate={{ y: 0 }}
-                                    exit={{ y: "100%" }}
-                                    className="fixed -bottom-40 bg-neutral-900 w-full h-full max-h-130 rounded-t-[25px] flex flex-col items-center justify-center z-50"
-                                >
-                                    <Minus className="scale-x-220"/>
-                                    <div className="flex-1" />
-                                </motion.div>
+                                        <motion.div
+                                            initial={{ y: "100%" }}
+                                            animate={{ y: 0 }}
+                                            exit={{ y: "100%" }}
+                                            drag="y"
+                                            dragConstraints={{ top: -190, bottom: 150 }}
+                                            dragElastic={0.1}
+                                            onDragEnd={(e, info) => {
+                                                if (info.offset.y > 120) {
+                                                    closeSheet()
+                                                }
+                                            }}
+                                            className="flex items-start justify-center 
+                                            absolute -bottom-50 size-full bg-neutral-900
+                                            rounded-[20px]" 
+                                        >
+                                            <Minus className="size-8 scale-x-[2]"/>
+                                        </motion.div>
+                                    </div>
+                                </div>
                             </div>
                         }
                     </AnimatePresence>
