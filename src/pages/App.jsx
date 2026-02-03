@@ -4,13 +4,19 @@ import { useAuth } from "../AuthProvider"
 import { HomeIcon, Menu, Minus, User } from "lucide-react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import clsx from "clsx"
-import { motion, AnimatePresence } from "motion/react"
+import { motion, AnimatePresence, useMotionValue, animate, useTransform } from "motion/react"
 import { Overlay } from "../ui/Overlay"
 
 export default function App(){
     const { loading } = useAuth()  
     const navigate = useNavigate()
     const location = useLocation()
+
+    const y = useMotionValue(0)
+    const bgColor = useTransform(y, [0, 300], [
+        "rgba(0,0,0,0.6)",
+        "rgba(0,0,0,0)"
+    ])
 
     if (loading) {
         return(
@@ -25,7 +31,6 @@ export default function App(){
         params.delete("sheet")
         navigate(`?${params.toString()}`)
     }
-
 
     const navItems = [
         { name: "home", path: '/app', icon: HomeIcon, label: "Home" },
@@ -62,9 +67,10 @@ export default function App(){
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
                                             exit={{ opacity: 0 }}
+                                            style={{ backgroundColor: bgColor }}
                                             onClick={closeSheet} 
                                             className="absolute inset-0 
-                                            backdrop-blur-[1px] bg-black/40" 
+                                            backdrop-blur-[1px]" 
                                         />
 
                                         <motion.div
@@ -72,11 +78,18 @@ export default function App(){
                                             animate={{ y: 0 }}
                                             exit={{ y: "100%" }}
                                             drag="y"
-                                            dragConstraints={{ top: -180, bottom: 250 }}
-                                            dragElastic={0.1}
+                                            style={{ y }}
+                                            dragConstraints={{ top: -180, bottom: 300 }}
+                                            dragMomentum={false}
+                                            dragElastic={0}
                                             onDragEnd={(e, info) => {
-                                                if (info.offset.y > 120) {
+                                                const currentY = y.get()
+                                                if (currentY > 150) {
                                                     closeSheet()
+                                                } else if (currentY < -100) {
+                                                    animate(y, -150)
+                                                } else {
+                                                    animate(y, 0)
                                                 }
                                             }}
                                             className="flex items-start justify-center 
