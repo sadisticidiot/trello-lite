@@ -28,12 +28,10 @@ function MobileDisplay() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}    
         >
-            <div className="flex gap-6 justify-between items-center fixed top-0 bg-pink-500 p-2 w-full z-10">
-                <div className="flex-1 size-full">
-                    <img src={logo} className="size-10 rounded-full border-2 border-r-0 border-white/70" />
-                </div>
-                <button className="bg-teal-300 w-26 py-1 ring-1 ring-white text-black font-bold text-[14px]">Sign In</button>
-                <Menu className="size-8"/>
+            <div className="flex gap-6 justify-between items-center fixed top-0 bg-pink-500 p-2 px-4 w-full z-10">
+                <img src={logo} className="size-10 rounded-full border-2 border-r-0 border-white/70" />
+
+                <button className="bg-teal-300 w-35 py-1 ring-1 ring-white text-black font-bold text-[13px]">Sign In</button>
             </div>
 
 
