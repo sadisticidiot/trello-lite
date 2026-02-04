@@ -31,7 +31,7 @@ function MobileDisplay() {
             <div className="flex gap-6 justify-between items-center fixed top-0 bg-pink-500 p-2 px-4 w-full z-10">
                 <img src={logo} className="size-10 rounded-full border-2 border-r-0 border-white/70" />
 
-                <button className="bg-teal-300 w-35 py-1 ring-1 ring-white text-black font-bold text-[13px]">Sign In</button>
+                <button className="bg-teal-300 w-35 ring-1 ring-white text-black font-bold text-[13px]">Sign In</button>
             </div>
 
 
