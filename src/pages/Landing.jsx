@@ -52,7 +52,7 @@ function MobileDisplay() {
                     <h1 className="text-pink-500">Talaan</h1>
                 </div>
 
-                <button className="w-35 ring-1 ring-white/80 bg-pink-600 font-bold text-[15px] rounded-full">Sign In</button>
+                <button className="w-auto ring-1 ring-white/80 bg-pink-600 font-bold text-[15px] rounded-full">Sign In</button>
             </div>
 
 
@@ -62,7 +62,7 @@ function MobileDisplay() {
           >
             <motion.div 
                 style={{ opacity: divOpacity }}
-                className="top-30 opacity-0 relative w-full h-auto flex flex-col gap-4"
+                className="top-35 opacity-0 relative w-full h-auto flex flex-col gap-4"
             >
                 <h1 className="text-[40px] p-0">ginagawa ko pa 'to</h1>
                 <span className="text-white/80 text-[13px] text-center">
@@ -78,7 +78,7 @@ function MobileDisplay() {
                 </div>
             </motion.div>
 
-            <div className=" flex flex-col gap-5 w-full h-auto relative top-35 pb-2">
+            <div className=" flex flex-col gap-5 w-full h-auto relative top-39 pb-2">
                 <LandingDesc />
                 <LandingDesc />
                 <LandingDesc />
