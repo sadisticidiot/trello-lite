@@ -12,11 +12,13 @@ export default function App(){
     const navigate = useNavigate()
     const location = useLocation()
 
+    const x = useMotionValue(0)
     const y = useMotionValue(0)
     const bgColor = useTransform(y, [0, 300], [
         "rgba(0,0,0,0.6)",
         "rgba(0,0,0,0)"
     ])
+    const divOpacity = useTransform(y, [0, 300], [1, 0])
 
     if (loading) {
         return(
@@ -53,16 +55,18 @@ export default function App(){
     return(
         <>
             <div className="block md:hidden fixed inset-0 flex flex-col justify-center items-center">
-                <div className="flex-1 w-full">
+                <motion.div 
+                    dragMomentum={false}
+                    className="flex-1 w-full"
+                >
                     <Outlet />
-                </div>
+                </motion.div>
 
                 <Overlay>
                     <AnimatePresence mode="wait">
                         {sheet === "new-post" &&
-                            <div className="fixed inset-0">
-                                <div className="flex flex-col justify-center items-center relative h-screen">
-                                    <div className="relative h-screen w-full">
+                            <div className="fixed inset-0 border-2 border-green-500">
+                                    <div className="relative h-screen w-full border-2 border-blue-700 flex flex-col items-center justify-end">
                                         <motion.div 
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
@@ -92,21 +96,27 @@ export default function App(){
                                                     animate(y, 0)
                                                 }
                                             }}
-                                            className="flex items-start justify-center 
+                                            className="flex flex-col items-center justify-center 
                                             absolute -bottom-50 size-full bg-neutral-900
                                             rounded-[20px]" 
                                         >
                                             <Minus className="size-8 scale-x-[2]"/>
+
+
+                                            <div className="flex-1 w-full p-4">
+                                                <textarea placeholder="What's on your mind?" className="p-2 size-full resize-none rounded text-start bg-neutral-950"/>
+                                            </div>
                                         </motion.div>
-                                    </div>
-                                </div>
+                                        
+                                        <motion.div style={{ opacity: divOpacity }}  className="bg-neutral-700 w-94/100 py-4 z-50" />
+                                    </div> 
                             </div>
                         }
                     </AnimatePresence>
                 </Overlay>
 
                 {sheet !== "new-post" && 
-                    <div className="fixed bottom-0 w-full bg-neutral-900 shadow-lg flex items-center justify-between px-3 gap-2">
+                    <div className="w-full bg-neutral-900 shadow-lg flex items-center justify-between px-3 gap-2">
                         {navItems.map((item) => (
                             <div key={item.name} className="size-full flex flex-col items-stretch">
                                 <button

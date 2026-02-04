@@ -24,7 +24,7 @@ export default function Posts() {
                 }
 
                 <button 
-                    className="absolute bottom-18 right-4 size-12 rounded-full bg-neutral-200 border-black/30 p-0 text-black"
+                    className="absolute bottom-4 right-4 size-12 rounded-full bg-neutral-200 border-black/30 p-0 text-black"
                     onClick={() => {
                         const params = new URLSearchParams(location.search)
                         params.set("sheet", "new-post")

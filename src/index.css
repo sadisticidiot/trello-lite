@@ -28,11 +28,15 @@ body{
 @layer components {
   .link-base {
     @apply
-      rounded-xl
+      rounded-[10px]
       w-full
       text-center
       p-2
       cursor-pointer
+      bg-pink-600
+      font-bold
+      ring-1
+      ring-pink-400/40
   }
 }
 
