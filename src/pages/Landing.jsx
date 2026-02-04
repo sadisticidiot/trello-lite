@@ -25,10 +25,10 @@ export default function Landing() {
     }, [session])
 function LandingDesc() {
     return(
-        <motion.div style={{ opacity: divOpacity }} className="flex w-full flex-col justify-center items-start p-2 rounded-xl border-2 border-pink-500/80 bg-neutral-950">
+        <div className="flex w-full flex-col justify-center items-start p-2 rounded-xl border-2 border-pink-500/80 bg-neutral-950">
             <h1 className="text-[20px]">Fully customizable notes</h1>
             <span className="font-[15px]">i mean the title couldn't have been more self-explanatory if it tried. you can basically do whatever you want with your notes.</span>
-        </motion.div>
+        </div>
     )
 }
 function DesktopDisplay() {
