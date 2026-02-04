@@ -24,11 +24,11 @@ function DesktopDisplay() {
 function MobileDisplay() {
     return(
         <motion.div 
-            className="flex flex-col items-center justify-center fixed inset-0 bg-[url(/landing-bg.png)] bg-cover bg-cover p-4"
+            className="flex flex-col items-center justify-center fixed inset-0 bg-[url(/landing-bg.png)] bg-cover p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}    
         >
-            <div className="absolute inset-0 bg-gradient-to-b from-pink-500/60 from-20% via-black/90 via-50% to-black to-90%" />
+            <div className="absolute inset-0 bg-gradient-to-b from-pink-500/40 from-20% via-black/95 via-50% to-black to-90%" />
             <div className="flex gap-6 justify-between items-center fixed top-4 bg-neutral-950 p-4 px-6 w-9/10 rounded-full shadow-xl/30">
                 <img src={logo} className="size-10 rounded-full border-2 border-r-0 border-white/70" />
 
