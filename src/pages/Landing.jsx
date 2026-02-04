@@ -58,6 +58,9 @@ function MobileDisplay() {
 
           <motion.div 
             ref={scrollRef}
+            onScroll={(e) => {
+                y.set(e.currentTarget.scrollTop)
+            }}
             className="flex flex-col w-screen h-screen px-4 items-center z-40 overflow-y-auto no-scrollbar"
           >
             <motion.div 
