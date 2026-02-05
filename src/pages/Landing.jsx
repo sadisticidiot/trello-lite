@@ -3,14 +3,14 @@ import {
     motion, useMotionValueEvent, 
     useScroll, useTransform 
 } from "motion/react"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import logo from "/ewan.jfif"
 import { Link, useNavigate } from "react-router-dom"
 import { Menu } from "lucide-react"
 
 export default function Landing() {
     const scrollRef = useRef(null)
-    const navigate = useNavigate()
+    const [isOpen, setIsOpen] = useState(false)
 
     const { scrollY } = useScroll({
         container: scrollRef
@@ -18,19 +18,21 @@ export default function Landing() {
 
     const scale = useTransform(scrollY, [150, 545, 650, 900], [0.2, 1, 1, 0.2])
     const opacity = useTransform(scrollY, [150, 545], [0, 1])
-    const headerOpacity = useTransform(scrollY, [0, 80], [1, 0.8])
+    const headerOpacity = useTransform(scrollY, [0, 80], [1, 0.9])
     const mainDivOpacity = useTransform(scrollY, [30, 150], [1, 0])
+
+    console.log(isOpen)
 
     return(
         <motion.div 
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 0.8 }}
             animate={{ opacity: 1 }}
             ref={scrollRef}
-            className="h-screen overflow-y-auto flex 
+            className="relative h-screen overflow-y-auto flex 
             flex-col overscroll-contain no-scrollbar 
-            p-4 bg-[url(/landing-bg.png)] bg-cover gap-5"
+            px-4 bg-[url(/landing-bg.png)] bg-cover gap-5"
         >
-            <div className="absolute inset-0 bg-linear-to-b 
+            <div className="fixed inset-0 bg-linear-to-b 
                 from-pink-500/60 via-black/90 to-black/95
                 pointer-events-none"
             />
@@ -38,7 +40,7 @@ export default function Landing() {
             <AnimatePresence mode="wait">
                 <motion.div 
                     className="rounded shadow-xl/30 rounded-full 
-                    p-5 absolute top-4 w-9/10 flex justify-between 
+                    p-5 fixed top-4 w-9/10 flex justify-between
                     items-center bg-neutral-950 z-20 backdrop-blur-[1px]"
                     style={{ opacity: headerOpacity }}
                     initial={{ y: -150 }}
@@ -55,8 +57,36 @@ export default function Landing() {
                         </Link>
                         <h1 className="text-pink-500">Talaan</h1>
                     </div>
-                    <Menu className="size-7"/>
+                    <button 
+                        className="flex items-center justify-center w-auto border-0"
+                        onClick={() => setIsOpen(true)}
+                    >
+                        <Menu className="size-7"/>
+                    </button>
                 </motion.div>
+            </AnimatePresence>
+
+            <AnimatePresence mode="wait">
+                {isOpen && 
+                    <>
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsOpen(false)}  
+                            className="absolute inset-0 backdrop-blur-[2px] bg-black/40 z-30" 
+                        />
+
+                        <motion.div
+                            className="fixed right-0 h-full bg-neutral-950 z-40 shadow-xl/30"
+                            initial={{ width: "0vw" }}
+                            animate={{ width: "40vw" }}
+                            exit={{ width: "0vw" }}
+                        >
+
+                        </motion.div>   
+                    </> 
+                }
             </AnimatePresence>
 
             <div className="flex-none h-[8rem]" />
