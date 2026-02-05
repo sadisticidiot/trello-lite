@@ -6,7 +6,7 @@ import {
 } from "motion/react"
 import { useRef, useState } from "react"
 import logo from "/ewan.jfif"
-import fb from "/fb-logo.png"
+import pint from "/pinterest-logo.png"
 import discord from "/dc-logo.png"
 import { Link, useNavigate } from "react-router-dom"
 import { X, Menu } from "lucide-react"
@@ -23,10 +23,6 @@ export default function Landing() {
         stiffness: 120,
         damping: 30,
         mass: 0.8
-    })
-
-    useMotionValueEvent(velocity, "change", (val) => {
-        console.log(val)
     })
 
     const scale = useTransform(smoothScrollY, [140, 300], [1, 0.6])
@@ -114,7 +110,7 @@ export default function Landing() {
                             {isOpen && 
                                 <motion.div 
                                     initial={{ height: 0}} 
-                                    animate={{ height: "100px"}} 
+                                    animate={{ height: "150px"}} 
                                     exit={{ height: 0}}
                                     className="flex flex-col gap-2"
                                 >
@@ -131,7 +127,7 @@ export default function Landing() {
 
                                     <motion.a 
                                         initial={{ width: 0 }}
-                                        animate={{ width: "300px"}}
+                                        animate={{ width: "290px"}}
                                         exit={{ width: 0 }}
                                         href="https://discord.com/channels/@me"
                                         target="_blank"
@@ -140,6 +136,19 @@ export default function Landing() {
                                     >
                                         <img src={discord} className="h-4 w-6"/>
                                         <span>@fzxzzz</span>
+                                    </motion.a>
+
+                                    <motion.a 
+                                        initial={{ width: 0 }}
+                                        animate={{ width: "290px"}}
+                                        exit={{ width: 0 }}
+                                        href="https://pin.it/4FX7nJRIm"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="p-2 pl-5 border-1 rounded-full flex gap-2 items-center justify-start"
+                                    >
+                                        <img src={pint} className="size-5"/>
+                                        <span>sond1aaaaa</span>
                                     </motion.a>
                                 </motion.div>
                             }
