@@ -50,12 +50,13 @@ export default function App() {
 
     return(
         <div 
-            className="relative h-screen border-2 overflow-hidden
-            border-pink-500 flex flex-col no-scrollbar"
+            className="relative h-screen overflow-x-auto
+            flex flex-col no-scrollbar overscroll-contain"
         >
             <motion.div 
                 className="flex border-2 border-green-500 
-                h-full overflow-auto no-scrollbar w-auto"
+                h-screen w-[300vw] overflow-y-auto no-scrollbar
+                "
                 drag="x"
                 dragMomentum={false}
                 dragElastic={0}
