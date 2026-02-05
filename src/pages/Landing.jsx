@@ -43,7 +43,7 @@ export default function Landing() {
             <AnimatePresence mode="wait">
                 <motion.div 
                     className="rounded shadow-xl/30 p-5 fixed
-                    top-4 w-9/10 flex flex-col justify-center max-h-500
+                    top-4 w-9/10 flex flex-col justify-center max-h-900
                     bg-neutral-950 z-20 backdrop-blur-[1px] overflow-hidden"
                     style={{ opacity: headerOpacity }}
                     initial={{ 
@@ -106,11 +106,11 @@ export default function Landing() {
                         {isOpen && 
                             <motion.div 
                                 initial={{ height: 0}} 
-                                animate={{ height: "80px"}} 
+                                animate={{ height: "100px"}} 
                                 exit={{ height: 0}}
                                 className="flex flex-col gap-2"
                             >
-                                <div className="h-[30px]" />
+                                <div className="p-2" />
 
                                 <motion.span 
                                     initial={{ opacity: 0 }}
@@ -123,7 +123,7 @@ export default function Landing() {
 
                                 <motion.a 
                                     initial={{ width: 0 }}
-                                    animate={{ width: "100px"}}
+                                    animate={{ width: "200px"}}
                                     exit={{ width: 0 }}
                                     href="https://discord.com/channels/@me"
                                     target="_blank"
