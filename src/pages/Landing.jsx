@@ -80,7 +80,7 @@ export default function Landing() {
                         <motion.div
                             className="fixed right-0 h-full bg-neutral-950 z-40 shadow-xl/30"
                             initial={{ width: "0vw" }}
-                            animate={{ width: "40vw" }}
+                            animate={{ width: "60vw" }}
                             exit={{ width: "0vw" }}
                         >
 
