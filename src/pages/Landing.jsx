@@ -123,7 +123,7 @@ export default function Landing() {
 
                                 <motion.a 
                                     initial={{ width: 0 }}
-                                    animate={{ width: "330px"}}
+                                    animate={{ width: "100px"}}
                                     exit={{ width: 0 }}
                                     href="https://discord.com/channels/@me"
                                     target="_blank"
