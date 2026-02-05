@@ -5,8 +5,11 @@ import {
 } from "motion/react"
 import { useRef, useState } from "react"
 import logo from "/ewan.jfif"
+import fb from "/fb-logo.png"
+import discord from "/dc-logo.png"
 import { Link, useNavigate } from "react-router-dom"
-import { Menu } from "lucide-react"
+import { X, Menu } from "lucide-react"
+import clsx from "clsx"
 
 export default function Landing() {
     const scrollRef = useRef(null)
@@ -39,54 +42,101 @@ export default function Landing() {
 
             <AnimatePresence mode="wait">
                 <motion.div 
-                    className="rounded shadow-xl/30 rounded-full 
-                    p-5 fixed top-4 w-9/10 flex justify-between
-                    items-center bg-neutral-950 z-20 backdrop-blur-[1px]"
+                    className="rounded shadow-xl/30 p-5 fixed
+                    top-4 w-9/10 flex flex-col justify-center max-h-500
+                    bg-neutral-950 z-20 backdrop-blur-[1px] overflow-hidden"
                     style={{ opacity: headerOpacity }}
-                    initial={{ y: -150 }}
-                    animate={{ y: 0 }}
-                    exit={{ y: -150 }}
+                    initial={{ 
+                        y: -150, 
+                        borderRadius: "50px",
+                        opacity: 1
+                    }}
+                    animate={{ 
+                        y: 0, 
+                        borderRadius: isOpen ? "20px" : "50px",
+                        opacity: isOpen ? 0.95 : 1
+                    }}
+                    exit={{
+                        y: -150,
+                        borderRadius: "50px",
+                        opacity: 1
+                    }}
                 >
-                    <div className="flex items-center justify-center gap-3">
-                        <Link to='/'>
-                            <img 
-                                src={logo} 
-                                className="border-r-0 border-white/80 
-                                border-2 size-10 rounded-full"
-                            />
-                        </Link>
-                        <h1 className="text-pink-500">Talaan</h1>
-                    </div>
-                    <button 
-                        className="flex items-center justify-center w-auto border-0"
-                        onClick={() => setIsOpen(true)}
-                    >
-                        <Menu className="size-7"/>
-                    </button>
-                </motion.div>
-            </AnimatePresence>
-
-            <AnimatePresence mode="wait">
-                {isOpen && 
-                    <>
-                        <motion.div 
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setIsOpen(false)}  
-                            className="absolute inset-0 backdrop-blur-[2px] bg-black/40 z-30" 
-                        />
-
-                        <motion.div
-                            className="fixed right-0 h-full bg-neutral-950 z-40 shadow-xl/30"
-                            initial={{ width: "0vw" }}
-                            animate={{ width: "60vw" }}
-                            exit={{ width: "0vw" }}
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center justify-center gap-3">
+                            <Link to='/'>
+                                <img 
+                                    src={logo} 
+                                    className="border-r-0 border-white/80 
+                                    border-2 size-10 rounded-full"
+                                />
+                            </Link>
+                            <h1 className="flex items-center justify-center font-normal p-0"><span className="font-bold text-pink-500 text-[32px]">T</span>alaan</h1>
+                        </div>
+                        <button 
+                            className="flex items-center justify-center w-auto border-0"
+                            onClick={() => setIsOpen(p => !p)}
                         >
+                            <AnimatePresence mode="wait">
+                                {isOpen ? (
+                                    <motion.div
+                                        key="close"
+                                        initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                                        animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                                        exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                                    >
+                                        <X className="size-7 text-pink-500" />
+                                    </motion.div>
+                                ) : (
+                                    <motion.div
+                                        key="menu"
+                                        initial={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                                        animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                                        exit={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                                    >
+                                        <Menu className="size-7 text-pink-500"/>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </button>
 
-                        </motion.div>   
-                    </> 
-                }
+                    </div>
+
+                    <AnimatePresence>
+                        {isOpen && 
+                            <motion.div 
+                                initial={{ height: 0}} 
+                                animate={{ height: "80px"}} 
+                                exit={{ height: 0}}
+                                className="flex flex-col gap-2"
+                            >
+                                <div className="h-[30px]" />
+
+                                <motion.span 
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="text-white/80"
+                                >
+                                    Contact me:
+                                </motion.span>
+
+                                <motion.a 
+                                    initial={{ width: 0 }}
+                                    animate={{ width: "370px "}}
+                                    exit={{ width: 0 }}
+                                    href="https://discord.com/channels/@me"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="p-2 pl-5 border-1 rounded-full flex gap-2 items-center justify-start"
+                                >
+                                    <img src={discord} className="h-4 w-6"/>
+                                    <span>Discord</span>
+                                </motion.a>
+                            </motion.div>
+                        }
+                    </AnimatePresence>
+                </motion.div>
             </AnimatePresence>
 
             <div className="flex-none h-[8rem]" />
