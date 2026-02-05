@@ -6,6 +6,7 @@ import {
 import { useRef } from "react"
 import logo from "/ewan.jfif"
 import { Link, useNavigate } from "react-router-dom"
+import { Menu } from "lucide-react"
 
 export default function Landing() {
     const scrollRef = useRef(null)
@@ -17,7 +18,7 @@ export default function Landing() {
 
     const scale = useTransform(scrollY, [150, 545, 650, 900], [0.2, 1, 1, 0.2])
     const opacity = useTransform(scrollY, [150, 545], [0, 1])
-    const headerOpacity = useTransform(scrollY, [0, 80], [1, 0.98])
+    const headerOpacity = useTransform(scrollY, [0, 80], [1, 0.7])
     const mainDivOpacity = useTransform(scrollY, [30, 150], [1, 0])
 
     return(
@@ -54,12 +55,7 @@ export default function Landing() {
                         </Link>
                         <h1 className="text-pink-500">Talaan</h1>
                     </div>
-                    <button 
-                        onClick={() => navigate("/signin")} 
-                        className="w-auto rounded-full ring-1 bg-pink-500"
-                    >
-                        Sign in
-                    </button>
+                    <Menu />
                 </motion.div>
             </AnimatePresence>
 
