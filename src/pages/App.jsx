@@ -54,10 +54,10 @@ export default function App(){
 
     return(
         <>
-            <div className="block md:hidden fixed inset-0 flex flex-col justify-center items-center">
+            <div className="block md:hidden w-screen h-screen flex flex-col justify-center items-center">
                 <motion.div 
                     dragMomentum={false}
-                    className="flex-1 w-full"
+                    className="flex-1 no-scrollbar overflow-y-auto w-full"
                 >
                     <Outlet />
                 </motion.div>
