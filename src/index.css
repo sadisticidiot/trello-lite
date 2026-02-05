@@ -3,6 +3,7 @@
 body{
   background-color: black;
   color: white;
+  box-sizing: border-box;
 }
 
 .no-scrollbar::-webkit-scrollbar {
