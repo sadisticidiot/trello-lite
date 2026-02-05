@@ -123,7 +123,7 @@ export default function Landing() {
 
                                 <motion.a 
                                     initial={{ width: 0 }}
-                                    animate={{ width: "370px "}}
+                                    animate={{ width: "330px"}}
                                     exit={{ width: 0 }}
                                     href="https://discord.com/channels/@me"
                                     target="_blank"
@@ -131,7 +131,7 @@ export default function Landing() {
                                     className="p-2 pl-5 border-1 rounded-full flex gap-2 items-center justify-start"
                                 >
                                     <img src={discord} className="h-4 w-6"/>
-                                    <span>Discord</span>
+                                    <span>@fzxzzz</span>
                                 </motion.a>
                             </motion.div>
                         }
