@@ -18,7 +18,7 @@ export default function Landing() {
 
     const scale = useTransform(scrollY, [150, 545, 650, 900], [0.2, 1, 1, 0.2])
     const opacity = useTransform(scrollY, [150, 545], [0, 1])
-    const headerOpacity = useTransform(scrollY, [0, 80], [1, 0.7])
+    const headerOpacity = useTransform(scrollY, [0, 80], [1, 0.8])
     const mainDivOpacity = useTransform(scrollY, [30, 150], [1, 0])
 
     return(
@@ -55,7 +55,7 @@ export default function Landing() {
                         </Link>
                         <h1 className="text-pink-500">Talaan</h1>
                     </div>
-                    <Menu />
+                    <Menu className="size-7"/>
                 </motion.div>
             </AnimatePresence>
 
