@@ -4,15 +4,18 @@ import {
     useScroll, useSpring, useTransform, 
     useVelocity
 } from "motion/react"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import logo from "/ewan.jfif"
 import pint from "/pinterest-logo.png"
 import discord from "/dc-logo.png"
 import { Link, useNavigate } from "react-router-dom"
 import { X, Menu } from "lucide-react"
 import clsx from "clsx"
+import { useAuth } from "../AuthProvider"
 
 export default function Landing() {
+    const { session } = useAuth()
+    const navigate = useNavigate()
     const scrollRef = useRef(null)
     const [isOpen, setIsOpen] = useState(false)
 
@@ -25,10 +28,15 @@ export default function Landing() {
         mass: 0.8
     })
 
-    const scale = useTransform(smoothScrollY, [140, 300], [1, 0.6])
+    const scale = useTransform(smoothScrollY, [100, 160], [1, 0.6])
     const headerOpacity = useTransform(smoothScrollY, [0, 150], [1, 0.95])
-    const mainDivOpacity = useTransform(smoothScrollY, [140, 230], [1, 0])
+    const mainDivOpacity = useTransform(smoothScrollY, [100, 160], [1, 0])
     const firstChildOpacity = useTransform(smoothScrollY, [365, 720, 1060], [0, 1, 0])
+
+    useEffect(() => {
+        if (!session) return
+        navigate("/auth-intermission", { replace: true })
+    }, [session])
 
     return(
         <motion.div 
@@ -176,7 +184,7 @@ export default function Landing() {
                     </div>
                 </motion.div>
 
-                <div className="flex-none h-[40vh]" />
+                <div className="flex-none h-[30vh]" />
 
                 <motion.div 
                     style={{ opacity: firstChildOpacity }}

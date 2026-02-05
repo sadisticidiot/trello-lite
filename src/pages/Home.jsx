@@ -18,7 +18,7 @@ export default function Home() {
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
 
   return (
-    <div ref={ref} className="flex flex-col w-full h-auto overflow-y-auto px-6">
+    <div ref={ref} className="flex flex-col w-full h-full px-6">
 
       <motion.div
         style={{ opacity }}

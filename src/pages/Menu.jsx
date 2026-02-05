@@ -7,7 +7,7 @@ export default function Menu() {
     }
 
     return(
-        <div className="fixed inset-0 flex items-center justify-center p-5">
+        <div className="size-full flex items-center justify-center p-5">
             <button onClick={handleOut}>Log out</button>
         </div>
     )
