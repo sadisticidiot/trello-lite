@@ -26,8 +26,9 @@ export default function Landing() {
     })
 
     const scale = useTransform(smoothScrollY, [140, 300], [1, 0.6])
-    const headerOpacity = useTransform(smoothScrollY, [0, 80], [1, 0.9])
+    const headerOpacity = useTransform(smoothScrollY, [0, 150], [1, 0.95])
     const mainDivOpacity = useTransform(smoothScrollY, [140, 230], [1, 0])
+    const firstChildOpacity = useTransform(smoothScrollY, [365, 720, 1060], [0, 1, 0])
 
     return(
         <motion.div 
@@ -142,7 +143,7 @@ export default function Landing() {
                                         initial={{ width: 0 }}
                                         animate={{ width: "290px"}}
                                         exit={{ width: 0 }}
-                                        href="https://pin.it/4FX7nJRIm"
+                                        href="https://www.pinterest.com/sond1aaaaa/"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="p-2 pl-5 border-1 rounded-full flex gap-2 items-center justify-start"
@@ -178,6 +179,7 @@ export default function Landing() {
                 <div className="flex-none h-[40vh]" />
 
                 <motion.div 
+                    style={{ opacity: firstChildOpacity }}
                     className="flex-none flex items-center justify-center 
                     bg-neutral-900 p-4 rounded h-[20rem] border-2 z-10"
                 >
