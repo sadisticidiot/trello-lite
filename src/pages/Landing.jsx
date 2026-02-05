@@ -1,7 +1,7 @@
 import { 
     AnimatePresence,
     motion, useMotionValueEvent, 
-    useScroll, useTransform 
+    useScroll, useSpring, useTransform 
 } from "motion/react"
 import { useRef, useState } from "react"
 import logo from "/ewan.jfif"
@@ -15,14 +15,18 @@ export default function Landing() {
     const scrollRef = useRef(null)
     const [isOpen, setIsOpen] = useState(false)
 
-    const { scrollY } = useScroll({
-        container: scrollRef
+    const { scrollY } = useScroll({ container: scrollRef })
+
+    const smoothScrollY = useSpring(scrollY, {
+        stiffness: 120,
+        damping: 30,
+        mass: 0.8
     })
 
-    const scale = useTransform(scrollY, [140, 300], [1, 0.6])
-    const opacity = useTransform(scrollY, [150, 545], [0, 1])
-    const headerOpacity = useTransform(scrollY, [0, 80], [1, 0.9])
-    const mainDivOpacity = useTransform(scrollY, [140, 230], [1, 0])
+    const scale = useTransform(smoothScrollY, [140, 300], [1, 0.6])
+    const opacity = useTransform(smoothScrollY, [150, 545], [0, 1])
+    const headerOpacity = useTransform(smoothScrollY, [0, 80], [1, 0.9])
+    const mainDivOpacity = useTransform(smoothScrollY, [140, 230], [1, 0])
 
     return(
         <motion.div 
@@ -121,7 +125,7 @@ export default function Landing() {
 
                                 <motion.a 
                                     initial={{ width: 0 }}
-                                    animate={{ width: "250px"}}
+                                    animate={{ width: "270px"}}
                                     exit={{ width: 0 }}
                                     href="https://discord.com/channels/@me"
                                     target="_blank"
