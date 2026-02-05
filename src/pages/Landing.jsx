@@ -19,16 +19,14 @@ export default function Landing() {
         container: scrollRef
     })
 
-    const scale = useTransform(scrollY, [150, 545, 650, 900], [0.2, 1, 1, 0.2])
+    const scale = useTransform(scrollY, [140, 300], [1, 0.6])
     const opacity = useTransform(scrollY, [150, 545], [0, 1])
     const headerOpacity = useTransform(scrollY, [0, 80], [1, 0.9])
-    const mainDivOpacity = useTransform(scrollY, [30, 150], [1, 0])
-
-    console.log(isOpen)
+    const mainDivOpacity = useTransform(scrollY, [140, 230], [1, 0])
 
     return(
         <motion.div 
-            initial={{ opacity: 0.8 }}
+            initial={{ opacity: 0.5 }}
             animate={{ opacity: 1 }}
             ref={scrollRef}
             className="relative h-screen overflow-y-auto flex 
@@ -123,7 +121,7 @@ export default function Landing() {
 
                                 <motion.a 
                                     initial={{ width: 0 }}
-                                    animate={{ width: "200px"}}
+                                    animate={{ width: "250px"}}
                                     exit={{ width: 0 }}
                                     href="https://discord.com/channels/@me"
                                     target="_blank"
@@ -139,16 +137,26 @@ export default function Landing() {
                 </motion.div>
             </AnimatePresence>
 
-            <div className="flex-none h-[8rem]" />
-
             <motion.div 
-                className="flex-none bg-pink-500 flex flex-col 
+                className="flex-none flex flex-col h-[100vh]
                 items-center justify-center rounded p-2 z-10"
-                style={{ opacity: mainDivOpacity }}
+                style={{ opacity: mainDivOpacity, scale }}
             >
-                <h1>Talaan</h1>
-                <span>basta description 'yan</span>
+                <h1 className="py-0 text-[3rem]/13">insert maangas na one liner here</h1>
+                <span className="text-center text-[14px]">  
+                    basta description 'yan tapos kelangan mahaba
+                    para malaki yung space na inoocuppy para may
+                    laman naman  yung opening div kahit papano
+                    like siguro ganito yung minimum height
+                </span>
+
+                <div className="flex w-full gap-2 mt-4"> 
+                    <Link className="link-base w-6/10" to='/signin'>Sign in</Link>
+                    <Link className="ring-2 ring-white/40 rounded-xl shadow-xl/30 shadow-white/40 flex-1 text-center bg-neutral-500/20 p-2" to='/signup'>Sign up</Link>
+                </div>
             </motion.div>
+
+            <div className="flex-none h-[40vh]" />
 
             <motion.div 
                 className="flex-none flex items-center justify-center 
