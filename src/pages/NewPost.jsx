@@ -1,57 +1,97 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { ChevronLeft, Ellipsis, Globe, UserIcon, UserLock } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "motion/react"
+import { supabase } from "../data/supabase-client";
+import { useAuth } from "../AuthProvider";
 
 export default function NewPost() {
+    const { session } = useAuth()
+    const user = session.user
+
     const navigate = useNavigate()
-    const [avatar, setAvatar] = useState(null)
-    const [charName, setCharName] = useState("")
-    const [isOpen, setIsOpen] = useState(false)
+    const textareaRef = useRef(null)
+
+    const [title, setTitle] = useState("")
+    const [note, setNote] = useState("")
+
+    const autoResize = () => {
+        const el = textareaRef.current
+        if (!el) return
+        el.style.height = "auto"
+        el.style.height = `${el.scrollHeight}px`
+    }
+
+    const handleNote = (e) => {
+        setNote(e.target.value)
+        autoResize()
+    }
+
+    const submitNote = async () => {
+        
+        const { error } = await supabase
+            .from("posts")
+            .insert({
+                title,
+                post: note,
+                user_id: user.id
+            })
+        
+        if (error) {
+            console.error(error.message)
+        } else {
+            navigate('/app/profile')
+        }
+    }
+
+    const handleBack =  async (e) => {        
+        e.preventDefault()
+
+        if (!note.trim()) {
+            navigate(-1)
+            return
+        }
+
+        await submitNote()
+        navigate('/app', { replace: true })
+    }
 
     return(
         <motion.div 
-            className="w-screen h-screen overflow-y-auto 
-            overscroll-contain no-scroll p-4"
+            className="w-screen h-screen p-4"
         >
             <div className="size-full relative flex flex-col">
-                <header className="fixed top-4 left-6 w-9/10 flex 
-                items-center gap-5">
+                <header className="flex">
                     <div className="flex-1">
-                        <button className="p-0 border-0 w-auto" onClick={() => navigate(-1)}>
+                        <button className="w-auto p-0 border-0"
+                        onClick={handleBack}>
                             <ChevronLeft />
                         </button>
                     </div>
 
-                    <div className="relative h-8"> 
-                        <motion.div
-                            initial={{ y: 2, height: 32 }}
-                            animate={{ y: isOpen ? 1 : 2, height: isOpen ? 75 : 32 }}
-                            exit={{ y: 2, height: 32 }} 
-                            onClick={() => setIsOpen(p => !p)}
-                            className="flex flex-col py-1 px-2 rounded
-                            bg-neutral-700/60 gap-4 max-h-300
-                            overflow-hidden absolute right-0 top-0"
-                        >
-                            <div className="flex gap-2  
-                                justify-center"
-                            >
-                                <span>Public</span>
-                                <Globe />
-                            </div>
-
-                            {isOpen && <div className="flex gap-2 absolute top-12 justify-center">
-                                <span>Private</span>    
-                                <UserLock />
-                            </div>}
-                        </motion.div>
-                    </div>
-
-                    <div className="flex justify-end">
-                    <Ellipsis />
+                    <div>
+                        <Ellipsis />
                     </div>
                 </header>
+
+                <div className=" h-full overflow-y-auto
+                no-scrollbar p-4">
+                    <div className="mb-4">
+                        <input placeholder="Title" value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        className="bg-transparent shadow-none p-0
+                        focus:ring-0 rounded-none text-[2rem]" />
+                    </div>
+
+                    <div className="h-auto">
+                        <textarea placeholder="Note" 
+                        className="resize-none focus:ring-0 
+                        outline-none w-full" 
+                        ref={textareaRef} value={note}
+                        onChange={handleNote}/>
+                    </div>
+                </div>
             </div>
         </motion.div>
     )

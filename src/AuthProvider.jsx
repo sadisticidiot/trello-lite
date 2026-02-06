@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
         const getPosts = async (userId) => {
             const { data, error } = await supabase
                 .from("posts")
-                .select("title")
+                .select("title, post, created_at")
                 .eq("user_id", userId)
                 .order("created_at", { ascending: false })
 
@@ -48,7 +48,7 @@ export function AuthProvider({ children }) {
                 setPosts(data)
             }
         }
-        if (session?.user && !posts) {
+        if (session?.user) {
             getPosts(session.user.id)
         }
     }, [session])
