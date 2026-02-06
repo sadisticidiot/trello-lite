@@ -18,7 +18,7 @@ export default function Posts() {
                 </span>
 
                 <button 
-                    className="absolute bottom-18 right-4 size-12 rounded-full bg-neutral-200 border-black/30 p-0 text-black"
+                    className="absolute bottom-25 right-4 size-12 rounded-full bg-neutral-200 border-black/30 p-0 text-black"
                     onClick={() => navigate('/app/new-post')}
                 >
                     +
