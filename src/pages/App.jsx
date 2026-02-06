@@ -52,7 +52,7 @@ export default function App() {
 
     return(
         <div 
-            className="relative h-screen overflow-x-auto
+            className="relative h-screen overflow-y-auto
             flex flex-col no-scrollbar overscroll-contain"
         >
             <motion.div 
@@ -67,8 +67,8 @@ export default function App() {
             </motion.div>
 
             {loc !== '/app/new-post' && <div 
-                className="bg-neutral-900 w-full fixed bottom-0
-                grid grid-cols-3 gap-2"
+                className="bg-neutral-900 w-full fixed 
+                grid grid-cols-3 gap-2 bottom-0"
             >
                 <AnimatePresence mode="wait">
                     {routes.map((i) => (
