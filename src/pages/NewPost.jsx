@@ -7,7 +7,7 @@ import { supabase } from "../data/supabase-client";
 import { useAuth } from "../AuthProvider";
 
 export default function NewPost() {
-    const { session } = useAuth()
+    const { session, setPosts } = useAuth()
     const user = session.user
 
     const navigate = useNavigate()
@@ -52,6 +52,18 @@ export default function NewPost() {
             navigate(-1)
             return
         }
+
+        const tempId = crypto.randomUUID()
+
+        setPosts(p => [
+            {
+                id: tempId,
+                title,
+                post: note,
+                optimistic: true
+            },
+            ...p,
+        ])
 
         await submitNote()
         navigate('/app', { replace: true })

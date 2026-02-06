@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
         const getPosts = async (userId) => {
             const { data, error } = await supabase
                 .from("posts")
-                .select("title, post, created_at")
+                .select("id, title, post, created_at")
                 .eq("user_id", userId)
                 .order("created_at", { ascending: false })
 
@@ -66,8 +66,39 @@ export function AuthProvider({ children }) {
         return () => subscription.unsubscribe()
     }, [])
 
+    useEffect(() => {
+        if (!session?.user) return
+
+        const channel = supabase
+            .channel("posts-realtime")
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "posts",
+                    filter: `user_id=eq.${session.user.id}`,
+                },
+                (payload) => {
+                    if (payload.eventType === "INSERT") {
+                        setPosts(p => {
+                            const withoutOptimistic = p.filter(p => !p.optimistic)
+                            return [payload.new, ...withoutOptimistic]
+                        })
+                    }
+                }
+            )
+            .subscribe()
+
+        return () => {
+            supabase.removeChannel(channel)
+        }
+    }, [session])
+
     return (
-        <AuthContext.Provider value={{ session, loading, profile, name, profileLoading, posts }}>
+        <AuthContext.Provider 
+        value={{ session, loading, profile, 
+        name, profileLoading, posts, setPosts }}>
             {children}
         </AuthContext.Provider>
     )
