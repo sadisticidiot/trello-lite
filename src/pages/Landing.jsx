@@ -36,7 +36,7 @@ export default function Landing() {
     useEffect(() => {
         if (!session) return
         navigate("/auth-intermission", { replace: true })
-    }, [session])
+    }, [session, navigate])
 
     return(
         <motion.div 

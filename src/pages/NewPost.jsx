@@ -1,31 +1,58 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { UserIcon } from "lucide-react";
+import { ChevronLeft, Ellipsis, Globe, UserIcon, UserLock } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { motion } from "motion/react"
 
 export default function NewPost() {
+    const navigate = useNavigate()
     const [avatar, setAvatar] = useState(null)
     const [charName, setCharName] = useState("")
+    const [isOpen, setIsOpen] = useState(false)
 
     return(
-        <div className="size-full flex flex-col gap-5 justify-center items-center p-5">
-            <div className="flex-1 size-full bg-neutral-900 border-1 border-white/20 rounded shadow-lg flex items-center justify-center p-4 gap-2">
-                <div className="w-50 h-full flex flex-col justify-center items-center p-2">
-                    <div className="w-full">
-                        <UserIcon className="size-full" />
-                   </div>
-                   
-                   <h1>{charName ? charName : <span className="text-white/20">Set Name</span>}</h1>
-                </div>
+        <motion.div 
+            className="w-screen h-screen overflow-y-auto 
+            overscroll-contain no-scroll p-4"
+        >
+            <div className="size-full relative flex flex-col">
+                <header className="fixed top-4 left-6 w-9/10 flex 
+                items-center gap-5">
+                    <div className="flex-1">
+                        <button className="p-0 border-0 w-auto" onClick={() => navigate(-1)}>
+                            <ChevronLeft />
+                        </button>
+                    </div>
 
-                <div className="flex-1 h-full flex flex-col">
+                    <div className="relative h-8"> 
+                        <motion.div
+                            initial={{ y: 2, height: 32 }}
+                            animate={{ y: isOpen ? 1 : 2, height: isOpen ? 75 : 32 }}
+                            exit={{ y: 2, height: 32 }} 
+                            onClick={() => setIsOpen(p => !p)}
+                            className="flex flex-col py-1 px-2 rounded
+                            bg-neutral-700/60 gap-4 max-h-300
+                            overflow-hidden absolute right-0 top-0"
+                        >
+                            <div className="flex gap-2  
+                                justify-center"
+                            >
+                                <span>Public</span>
+                                <Globe />
+                            </div>
 
-                </div>
+                            {isOpen && <div className="flex gap-2 absolute top-12 justify-center">
+                                <span>Private</span>    
+                                <UserLock />
+                            </div>}
+                        </motion.div>
+                    </div>
+
+                    <div className="flex justify-end">
+                    <Ellipsis />
+                    </div>
+                </header>
             </div>
-
-            <div className="flex-1 p-2 size-full bg-neutral-950 border-1 border-white/20 rounded shadow-lg">
-                <input placeholder="Name" onChange={(e) => setCharName(e.target.value)} />
-            </div>
-        </div>
+        </motion.div>
     )
 }

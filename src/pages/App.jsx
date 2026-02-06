@@ -8,39 +8,41 @@ import {
     Outlet, useLocation, 
     useNavigate 
 } from "react-router-dom";
-import Home from "./Home.jsx"
-import Profile from "./Profile.jsx"
-import Menu from "./Menu.jsx"
+import { usePreviousPathname } from "../data/PrevRoute";
+import { useEffect } from "react";
 
 export default function App() {
+    const prevPath = usePreviousPathname()
     const location = useLocation()
     const navigate = useNavigate()
-    const pageWidth = window.innerWidth
+    const loc = location.pathname
 
-    const navItems = [
+    const routes = [
         { name: "Home", path: '/app', icon: HomeIcon },
         { name: "Profile", path: '/app/profile', icon: User },
         { name: "Menu", path: '/app/menu', icon: MenuIcon },
     ]
 
-    const pages = [
-        { name: "Home", path: '/app', element: <Home /> },
-        { name: "Profile", path: '/app/profile', element: <Profile /> },
-        { name: "Menu", path: '/app/menu', element: <Menu /> },
-    ]
-
-    const activeIndex = pages.findIndex(p => 
-        location.pathname.startsWith(p.path)
-    )
-
-    const safeIndex = activeIndex === -1 ? 0 : activeIndex
-
-
-    const currentView = navItems
+    const resolveRoute = (pathname) => routes
         .slice()
         .sort((a, b) => b.path.length - a.path.length)
-        .find((i) => location.pathname.startsWith(i.path))
-        ?.name ?? "home"
+        .find(r => pathname.startsWith(r.path))
+    
+    const getIndex = (pathname) => {
+        const route = resolveRoute(pathname)
+        return route ? routes.findIndex(r => r.path === route.path) : 0
+    }
+    
+    const currentIndex = getIndex(location.pathname)
+    const prevIndex = prevPath ? getIndex(prevPath) : currentIndex
+
+    const direction = 
+        currentIndex > prevIndex ? 1 :
+        currentIndex < prevIndex ? -1 :
+        0
+
+    const currentView =
+        resolveRoute(location.pathname)?.name ?? "Home"
 
     const handleNav = (i) => {
         if (currentView !== i.name) {
@@ -54,34 +56,22 @@ export default function App() {
             flex flex-col no-scrollbar overscroll-contain"
         >
             <motion.div 
-                className="flex border-2 border-green-500 
-                h-screen w-[300vw] overflow-y-auto no-scrollbar
-                "
-                drag="x"
-                dragMomentum={false}
-                dragElastic={0}
-                dragConstraints={{ left: -pageWidth * (pages.length -1), right: 0 }}
-                animate={{ x: -safeIndex * pageWidth }}
-                onDragEnd={(e, info) => {
-                    const threshold = pageWidth
-                }}
+                key={location.pathname}
+                className="flex-1 h-full"
+                initial={{ x : direction * 250 }}
+                animate={{ x: 0 }}
+                exit={{ x: direction * -250 }}
+                transition={{ duration: 0.2, ease: "easeInOut"}}
             >
-                {pages.map((p) => (
-                    <div
-                        key={p.name}
-                        className="w-screen h-full flex-none"
-                    >
-                        {p.element}
-                    </div>
-                ))}
+                <Outlet />
             </motion.div>
 
-            {/*<div 
-                className="bg-neutral-900 w-full sticky bottom-0
+            {loc !== '/app/new-post' && <div 
+                className="bg-neutral-900 w-full fixed bottom-0
                 grid grid-cols-3 gap-2"
             >
                 <AnimatePresence mode="wait">
-                    {navItems.map((i) => (
+                    {routes.map((i) => (
                         <div 
                             key={i.name}
                             className="flex flex-col items-center 
@@ -114,7 +104,7 @@ export default function App() {
                         </div>
                     ))}
                 </AnimatePresence>
-            </div>*/}
+            </div>}
         </div>
     )
 } 

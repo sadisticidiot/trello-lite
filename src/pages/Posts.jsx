@@ -3,7 +3,6 @@ import { useAuth } from "../AuthProvider"
 import { useLocation, useNavigate } from "react-router-dom"
 
 export default function Posts() {
-    const location = useLocation()
     const { posts } = useAuth()
     const navigate = useNavigate()
 
@@ -24,12 +23,8 @@ export default function Posts() {
                 }
 
                 <button 
-                    className="absolute bottom-4 right-4 size-12 rounded-full bg-neutral-200 border-black/30 p-0 text-black"
-                    onClick={() => {
-                        const params = new URLSearchParams(location.search)
-                        params.set("sheet", "new-post")
-                        navigate(`?${params.toString()}`)
-                    }}
+                    className="absolute bottom-18 right-4 size-12 rounded-full bg-neutral-200 border-black/30 p-0 text-black"
+                    onClick={() => navigate('/app/new-post')}
                 >
                     +
                 </button>
