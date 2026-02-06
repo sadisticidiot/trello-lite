@@ -53,7 +53,7 @@ export default function App() {
     return(
         <div 
             className="relative h-screen overflow-y-auto
-            flex flex-col no-scrollbar overscroll-contain"
+            flex flex-col no-scrollbar"
         >
             <motion.div 
                 key={location.pathname}
