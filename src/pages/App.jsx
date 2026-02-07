@@ -84,7 +84,7 @@ export default function App() {
                             >
                                 <i.icon 
                                     className={clsx(
-                                        "size-4 mt-1",
+                                        "size-5 mt-2",
                                         currentView === i.name
                                         ? "text-blue-500"
                                         : "text-neutral-200/30"
