@@ -55,7 +55,7 @@ export default function Profile() {
                     size-12 border-2 border-white/20" />
                 </div>
                 {pages.map((p) => (
-                    <div key={p.name} className="flex flex-col">
+                    <div key={p.name} className="relative flex flex-col">
                         <button onClick={() => handleNav(p)}
                         className={clsx(
                         "w-auto border-0 p-0",   
@@ -69,7 +69,7 @@ export default function Profile() {
                         <AnimatePresence>
                             {currentView === p.name && (
                             <motion.div
-                                className="w-full h-0.5 bg-neutral-100"
+                                className="absolute top-6 w-full h-0.5 bg-neutral-100"
                                 initial={{ scaleX: 0, opacity: 0 }}
                                 animate={{ scaleX: 1, opacity: 1 }}
                                 exit={{ scaleX: 0, opacity: 0 }}
