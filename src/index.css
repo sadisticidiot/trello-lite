@@ -14,6 +14,16 @@ body{
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
 }
+@layer components {
+  .statistics-base {
+    @apply
+      ring-1 ring-white
+      shadow-[0_0_5px_2px_rgba(255,255,255,0.4)]
+      rounded
+      p-2
+      box-content
+  }
+}
 
 /* h1 */
 @layer base {

@@ -11,7 +11,6 @@ import App from './pages/App.jsx'
 import Home from './pages/Home.jsx'
 import Profile from './pages/Profile.jsx'
 import Bookmark from './pages/Bookmark.jsx'
-import Posts from './pages/Posts.jsx'
 import Menu from './pages/Menu.jsx'
 
 import CreateAccount from './pages/CreateAccount.jsx'
@@ -41,13 +40,7 @@ const router = createBrowserRouter([
           { index: true, element: <Home />},
           { path: 'menu', element: <Menu />},
           { path: 'new-post', element: <NewPost />},
-          { 
-            path: 'profile', 
-            element: <Profile />,
-            children: [ 
-              { index: true, element: <Posts />},
-            ]
-          },
+          { path: 'profile', element: <Profile />,},
         ]
       },
     ]

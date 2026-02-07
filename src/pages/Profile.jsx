@@ -4,73 +4,42 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import clsx from "clsx"
 
 export default function Profile() {
+    const { profile, name, profileLoading } = useAuth()  
     const location = useLocation()
     const navigate = useNavigate()
 
-    const { profile, name, profileLoading } = useAuth()  
-    const navItems = [
-        { name: "characters", path: '/app/profile', icon: UserRound, label: "Posts" },
-        { name: "liked", path: '/app/profile/liked-characters', icon: Heart, label: "Liked Videos" },
-        { name: "bookmarked", path: '/app/profile/bookmarked-characters', icon: BookmarkIcon, label: "Bookmarked Icon" },
-        { name: "archived", path: '/app/profile/archived', icon: Archive, label: "Archived" },
-    ]
-
-    const currentView = navItems
-        .slice()
-        .sort((a ,b) => b.path.length - a.path.length)
-        .find((item) => location.pathname.startsWith(item.path))
-        ?.name ?? "home"
-
-    const handleNav = (item) => {
-        if (currentView !== item.name) {
-            navigate(item.path)
-        }
-    }
 
     return(
-        <div className="size-full flex flex-col items-center justify-center pt-5">
-            <div className="w-full flex flex-col justify-center items-center mb-4 relative">
-                {profileLoading 
-                    ? (
-                        <div className="animate-pulse rounded-full size-25 bg-neutral-800 pb-5" />
-                    ) : !profile ? ( 
-                        <div className="rounded-full size-25 bg-neutral-900">
-                            <UserIcon className="size-full"/>
-                            <h1 className="text-[20px] p-0">{name}</h1>
-                        </div>
-                    ) : ( 
-                        <>
-                            <img src={profile} width={80} className="rounded-full" />
-                            <h1 className="text-[20px] p-0">{name}</h1>
-                        </>
-                    )
-                }
-
-                <PencilLine className="absolute right-4 top-1"/>
-            </div>
-
-            <div className="w-full flex items-center justify-between px-8 border-b-1 border-white/40 shadow-lg shadow-neutral-950">
-                {navItems.map((item) => (
-                    <div key={item.name}>
-                        <button
-                            onClick={handleNav}
-                            aria-label={item.label}
-                            className={clsx(
-                                "border-0",
-                                currentView === item.name
-                                ? "text-neutral-100"
-                                : "text-neutral-400 hover:bg-neutral-900"
-                            )}
-                        >
-                            <item.icon />
-                        </button>
+        <div className="h-full flex flex-col pb-30
+        border-2 border-pink-600 justify-center pt-10">
+            <div className="flex items-center justify-center">
+                {profileLoading ? (
+                    <div className="animate-pulse bg-neutral-600
+                    rounded-full" />
+                ) : (
+                    <div className="flex flex-col items-center
+                    justify-center gap-2">
+                        <img src={profile} className="rounded-full
+                        size-20"/>
+                        <span className="text-md">{name}</span>
                     </div>
-                ))}
+                )}
             </div>
 
-            <div className="flex-1 w-full">
-                <Outlet />
+            <div className="grid grid-row-3 p-4 flex-1 gap-4">
+                <div className="flex gap-4">
+                    <div className="flex-1 statistics-base"></div>
+                    <div className="flex-1 statistics-base"></div>
+                </div>
+                <div className="flex gap-4">
+                    <div className="flex-1 statistics-base"></div>
+                    <div className="flex-1 statistics-base"></div>
+                </div>
+                <div className="flex flex-col items-center">
+                    <div className="flex-1 statistics-base"></div>
+                </div>
             </div>
         </div>
+
     )
 }
