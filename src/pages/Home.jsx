@@ -1,5 +1,7 @@
+import { Plus } from "lucide-react"
 import { useAuth } from "../AuthProvider"
 import { motion } from "motion/react"
+import { useNavigate } from "react-router-dom"
 
 const container = {
   hidden: { opacity: 0 },
@@ -13,9 +15,10 @@ const item = {
 
 export default function Home() {
   const { posts } = useAuth()
+  const navigate = useNavigate()
   
   return(
-    <div className="h-auto w-full">
+    <div className="relative h-full w-full">
       <motion.ul variants={container}
       initial="hidden" animate="visible"
       className="flex flex-col px-4 pb-30 py-2 gap-2">
@@ -27,6 +30,12 @@ export default function Home() {
           </motion.li>
         ))}
       </motion.ul>
+      
+      <button className="rounded-full bg-white p-3 
+      absolute bottom-30 right-4 w-auto"
+      onClick={() => navigate('/app/new-post')}>
+        <Plus className="text-black"/>
+      </button>
     </div>
   )
 }

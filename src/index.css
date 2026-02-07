@@ -17,12 +17,13 @@ body{
 @layer components {
   .statistics-base {
     @apply
-      ring-1 ring-white
+      ring-1 ring-white/20
       shadow-[0_0_10px_2px_rgba(255,255,255,0.4)]
       rounded
       p-2
       box-content
       flex flex-col
+      items-center justify-center
   }
 }
 

@@ -1,13 +1,12 @@
 import { useAuth } from "../AuthProvider"
-import { Archive, UserRound, BookmarkIcon, Heart, PencilLine, UserIcon } from "lucide-react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import clsx from "clsx"
+import { useEffect } from "react"
 
 export default function Profile() {
-    const { profile, name, profileLoading } = useAuth()  
-    const location = useLocation()
-    const navigate = useNavigate()
+    const { insertsToday, profile, name, profileLoading } = useAuth()
 
+    if (insertsToday === null) return null
 
     return(
         <div className="h-full flex flex-col
@@ -30,6 +29,7 @@ export default function Profile() {
                 <div className="statistics-base
                 row-span-2">
                     <h1>Notes posted today:</h1>
+                    <span>{insertsToday}</span>
                 </div>
                 <div className="statistics-base">
                     <h1>Notes posted this month:</h1>
