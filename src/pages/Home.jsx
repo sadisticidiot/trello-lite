@@ -32,7 +32,8 @@ export default function Home() {
       </motion.ul>
       
       <button className="rounded-full bg-white p-3 
-      fixed bottom-30 right-4 w-auto"
+      fixed bottom-20 shadow-md shadow-neutral-900/30
+      backdrop-blue-[2px] right-4 w-auto"
       onClick={() => navigate('/app/new-post')}>
         <Plus className="text-black"/>
       </button>
