@@ -49,7 +49,7 @@ export default function Profile() {
         <div className="h-full flex flex-col no-scrollbar
         pb-30 justify-center py-5 px-2 overflow-y-auto">
             <header className="flex justify-between 
-            relative p-2 px-10 items-end gap-5">
+            relative p-2 px-18 items-end gap-5">
                 <div className="absolute left-2 top-1">
                     <img src={profile} className="rounded-full
                     size-10 border-2 border-white/20" />

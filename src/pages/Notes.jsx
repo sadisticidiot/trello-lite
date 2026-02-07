@@ -8,8 +8,8 @@ export default function Notes() {
             {posts.map((p) => (
                 <div className="flex rounded-xl flex-col 
                 p-2 text-start border-2 border-white/40">
-                    <h1 className="p-0">{p.title}</h1>
-                    <span>{p.post}</span>
+                    <h1 className="p-0 text-start text-[20px] pb-4">{p.title}</h1>
+                    <span className="text-neutral-200/95">{p.post}</span>
                 </div>
             ))}
         </div>
