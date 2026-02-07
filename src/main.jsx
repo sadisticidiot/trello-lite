@@ -8,9 +8,9 @@ import { AuthProvider } from './AuthProvider.jsx'
 import ProtectedRoute from './ProtectedRoute.jsx'
 
 import App from './pages/App.jsx'
+import NewPost from './pages/NewPost.jsx'
 import Home from './pages/Home.jsx'
 import Profile from './pages/Profile.jsx'
-import Bookmark from './pages/Bookmark.jsx'
 import Menu from './pages/Menu.jsx'
 
 import CreateAccount from './pages/CreateAccount.jsx'
@@ -20,7 +20,10 @@ import PageLoadguard from './ui/PageLoadGuard.jsx'
 import Landing from './pages/Landing.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
-import NewPost from './pages/NewPost.jsx'
+
+import Notes from './pages/Notes.jsx'
+import PinnedNotes from './pages/PinnedNotes.jsx'
+import ArchivedNotes from './pages/ArchivedNotes.jsx'
 
 const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
@@ -40,7 +43,15 @@ const router = createBrowserRouter([
           { index: true, element: <Home />},
           { path: 'menu', element: <Menu />},
           { path: 'new-post', element: <NewPost />},
-          { path: 'profile', element: <Profile />,},
+          { 
+            path: 'profile',
+            element: <Profile />,
+            children: [
+              { index: true, element: <Notes />},
+              { path: 'pinned-notes', element: <PinnedNotes />},
+              { path: 'archived-notes', element: <ArchivedNotes />},
+            ]
+          },
         ]
       },
     ]

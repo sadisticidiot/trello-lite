@@ -7,12 +7,10 @@ export function AuthProvider({ children }) {
     const [session, setSession] = useState(null)
     const [profile, setProfile] = useState(null)
     const [name, setName] = useState(null)
-    const [insertsToday, setInsertsToday] = useState(null)
     const [posts, setPosts] = useState([])
 
     const [profileLoading, setProfileLoading] = useState(true)
     const [loading, setLoading] = useState(true)
-    const [statsLoading, setStatsLoading] = useState(true)
 
     // fetch user's info from users table
     useEffect(() => {
@@ -71,26 +69,6 @@ export function AuthProvider({ children }) {
         return () => subscription.unsubscribe()
     }, [])
 
-    // fetch daily inserts
-    useEffect(() => {
-        const fetchInsertsToday = async () => {
-            const { data, error } = await supabase
-                .from("inserts_today")
-                .select("total")
-                .single()
-
-            if (error) {
-                console.error(error.message)
-            } else {
-                setInsertsToday(data.total)
-            }
-
-            setStatsLoading(false)
-        }
-
-        fetchInsertsToday()
-    }, [])
-
     // subscribe for real time updates
     useEffect(() => {
         if (!session?.user) return
@@ -111,14 +89,6 @@ export function AuthProvider({ children }) {
                             const withoutOptimistic = p.filter(p => !p.optimistic)
                             return [payload.new, ...withoutOptimistic]
                         })
-                        setTimeout(async () => {
-                            const { data, error } = await supabase
-                                .from("inserts_today")
-                                .select("total")
-                                .single()
-                            
-                            if (!error && data) setInsertsToday(data.total)
-                        }, 200)
                     }
                 }
             )
@@ -133,8 +103,7 @@ export function AuthProvider({ children }) {
     return (
         <AuthContext.Provider 
         value={{ session, loading, profile, 
-        name, profileLoading, posts, setPosts,
-        insertsToday, statsLoading }}>
+        name, profileLoading, posts, setPosts,}}>
             {children}
         </AuthContext.Provider>
     )

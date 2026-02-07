@@ -68,7 +68,7 @@ export default function App() {
 
             {loc !== '/app/new-post' && <div 
                 className="bg-neutral-900 w-full fixed 
-                grid grid-cols-3 gap-2 bottom-0"
+                grid grid-cols-3 gap-2 bottom-0 px-3"
             >
                 <AnimatePresence mode="wait">
                     {routes.map((i) => (
@@ -84,7 +84,7 @@ export default function App() {
                             >
                                 <i.icon 
                                     className={clsx(
-                                        "size-6 mt-3",
+                                        "size-4 mt-1",
                                         currentView === i.name
                                         ? "text-blue-500"
                                         : "text-neutral-200/30"
@@ -95,8 +95,8 @@ export default function App() {
                             <span
                              className={clsx(
                                 currentView === i.name
-                                ? "text-blue-500 text-[14px]"
-                                : "text-neutral-200/30 text-[12px]"
+                                ? "text-blue-500 text-[12px]"
+                                : "text-neutral-200/30 text-[11px]"
                              )}
                             >   
                                 {i.name}

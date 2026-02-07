@@ -2,47 +2,88 @@ import { useAuth } from "../AuthProvider"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import clsx from "clsx"
 import { useEffect } from "react"
+import { usePreviousPathname } from "../data/PrevRoute"
+import { motion, AnimatePresence } from "motion/react"
 
 export default function Profile() {
-    const { insertsToday, profile, name, profileLoading } = useAuth()
+    const prevPath = usePreviousPathname()
+    const { profile, name, profileLoading } = useAuth()
+    const navigate = useNavigate()
+    const location = useLocation()
+    const loc = location.pathname
 
-    if (insertsToday === null) return null
+    const pages = [
+        { name: "Notes", path: '/app/profile'},
+        { name: "Pinned", path: '/app/profile/pinned-notes'},
+        { name: "Archived", path: '/app/profile/archived-notes'},
+    ]
+
+    const resolveRoute = (pathname) => pages
+        .slice()
+        .sort((a, b) => b.path.length - a.path.length)
+        .find(p => pathname.startsWith(p.path))
+    
+    const getIndex = (pathname) => {
+        const route = resolveRoute(pathname)
+        return route ? pages.findIndex(p => p.path === route.path) : 0
+    }
+    
+    const currentIndex = getIndex(location.pathname)
+    const prevIndex = prevPath ? getIndex(prevPath) : currentIndex
+
+    const direction = 
+        currentIndex > prevIndex ? 1 :
+        currentIndex < prevIndex ? -1 :
+        0
+
+    const currentView =
+        resolveRoute(location.pathname)?.name ?? "Notes"
+
+    const handleNav = (i) => {
+        if (currentView !== i.name) {
+            navigate(i.path)
+        }
+    }
 
     return(
-        <div className="h-full flex flex-col
-        pb-30 justify-center pt-10">
-            <div className="flex items-center justify-center">
-                {profileLoading ? (
-                    <div className="animate-pulse bg-neutral-600
-                    rounded-full" />
-                ) : (
-                    <div className="flex flex-col items-center
-                    justify-center gap-2">
-                        <img src={profile} className="rounded-full
-                        size-20"/>
-                        <span className="text-md">{name}</span>
-                    </div>
-                )}
-            </div>
+        <div className="h-full flex flex-col no-scrollbar
+        pb-30 justify-center py-5 px-2 overflow-y-auto">
+            <header className="flex justify-center 
+            relative p-2 items-end gap-14">
+                <div className="absolute left-2 top-1">
+                    <img src={profile} className="rounded-full
+                    size-8 border-2 border-white/20" />
+                </div>
+                {pages.map((p) => (
+                    <div key={p.name} className="flex flex-col">
+                        <button onClick={() => handleNav(p)}
+                        className={clsx(
+                        "w-auto border-0 p-0",   
+                        currentView === p.name
+                        ? "text-[14px] text-white"
+                        : "text-[13px] text-white/40"
+                        )}>
+                            {p.name}
+                        </button>
 
-            <div className="grid grid-rows-3 grid-cols-2 p-4 flex-1 gap-4">
-                <div className="statistics-base
-                row-span-2">
-                    <h1>Notes posted today:</h1>
-                    <span>{insertsToday}</span>
-                </div>
-                <div className="statistics-base">
-                    <h1>Notes posted this month:</h1>
-                </div>
-                <div className="statistics-base">
-                    <h1>Total notes posted:</h1>
-                </div>
-                <div className="statistics-base
-                col-span-2">
-                    <h1>Likes:</h1>
-                </div>
+                        <AnimatePresence>
+                            {currentView === p.name && (
+                            <motion.div
+                                className="w-full h-0.5 bg-neutral-100"
+                                initial={{ scaleX: 0, opacity: 0 }}
+                                animate={{ scaleX: 1, opacity: 1 }}
+                                exit={{ scaleX: 0, opacity: 0 }}
+                                transition={{ duration: 0.2, ease: "easeOut" }}
+                            />
+                            )}
+                        </AnimatePresence>
+                    </div>
+                ))}
+            </header>
+
+            <div className="flex-1 h-full">
+                <Outlet />
             </div>
         </div>
-
     )
 }
