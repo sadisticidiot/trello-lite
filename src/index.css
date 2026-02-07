@@ -18,10 +18,11 @@ body{
   .statistics-base {
     @apply
       ring-1 ring-white
-      shadow-[0_0_5px_2px_rgba(255,255,255,0.4)]
+      shadow-[0_0_10px_2px_rgba(255,255,255,0.4)]
       rounded
       p-2
       box-content
+      flex flex-col
   }
 }
 

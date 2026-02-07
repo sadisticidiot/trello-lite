@@ -10,8 +10,8 @@ export default function Profile() {
 
 
     return(
-        <div className="h-full flex flex-col pb-30
-        border-2 border-pink-600 justify-center pt-10">
+        <div className="h-full flex flex-col
+        pb-30 justify-center pt-10">
             <div className="flex items-center justify-center">
                 {profileLoading ? (
                     <div className="animate-pulse bg-neutral-600
@@ -26,17 +26,20 @@ export default function Profile() {
                 )}
             </div>
 
-            <div className="grid grid-row-3 p-4 flex-1 gap-4">
-                <div className="flex gap-4">
-                    <div className="flex-1 statistics-base"></div>
-                    <div className="flex-1 statistics-base"></div>
+            <div className="grid grid-rows-3 grid-cols-2 p-4 flex-1 gap-4">
+                <div className="statistics-base
+                row-span-2">
+                    <h1>Notes posted today:</h1>
                 </div>
-                <div className="flex gap-4">
-                    <div className="flex-1 statistics-base"></div>
-                    <div className="flex-1 statistics-base"></div>
+                <div className="statistics-base">
+                    <h1>Notes posted this month:</h1>
                 </div>
-                <div className="flex flex-col items-center">
-                    <div className="flex-1 statistics-base"></div>
+                <div className="statistics-base">
+                    <h1>Total notes posted:</h1>
+                </div>
+                <div className="statistics-base
+                col-span-2">
+                    <h1>Likes:</h1>
                 </div>
             </div>
         </div>
