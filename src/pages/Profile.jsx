@@ -92,7 +92,7 @@ export default function Profile() {
             ) : (
                 <header className="flex justify-between 
                 relative p-2 px-20 items-end gap-5">
-                    <div className="absolute left-2 top-1">
+                    <div className="absolute left-2 top-0">
                         <img src={profile} className="rounded-full
                         size-12 border-2 border-white/20" />
 
@@ -124,12 +124,12 @@ export default function Profile() {
                     ))}
                     <button className="absolute right-2 top-1
                     w-auto border-0 p-0" onClick={() => setIsOpen(true)}>
-                        <Search />
+                        <Search className="size-6"/>
                     </button>
                 </header>
             )}
 
-            <div className="flex-1 h-full p-5">
+            <div className="flex-1 h-full p-5 mt-4">
                 <Outlet />
             </div>
         </div>
