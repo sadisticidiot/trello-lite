@@ -44,15 +44,50 @@ export default function Profile() {
         }
     }
 
+    const searchedTitles = searchInput ? posts.filter(p => 
+        p.title?.toLowerCase().includes(searchInput.toLowerCase())
+    ) : []
+
     return(
         <div className="h-full flex flex-col no-scrollbar
-        pb-30 justify-center p-2 overflow-y-auto">
+        pb-30 p-2 justify-center overflow-y-auto">
             {isOpen ? (
-                <div className="bg-neutral-900 p-2 flex justify-end">
-                    <button onClick={() => setIsOpen(false)}
-                    className="rounded-0 w-auto">
-                        ESC
-                    </button>
+                <div className="relative flex">
+                    <div className="fixed inset-0 backdrop-blur-sm
+                    bg-black/70" onClick={() => setIsOpen(false)}/>
+
+                    <div className="absolute top-1 bg-neutral-900 
+                    flex flex-col w-full rounded">
+                        <div className="flex items-center justify-between
+                        border-b-1 border-white/30 px-4 p-2">
+                            <Search className="size-4"/>
+
+                            <input placeholder="Search for a specific note..."
+                            className="inset-shadow-none w-auto flex-1 py-1
+                            focus:ring-0" value={searchInput} 
+                            onChange={(e) => setSearchInput(e.target.value)}/>
+
+                            <button onClick={() => setIsOpen(false)}
+                            className="rounded-0 w-auto py-1 text-sm">
+                                close
+                            </button>
+                        </div>
+
+                        <div className=" py-2 px-4 flex flex-col gap-4">
+                            {searchedTitles.map((p) => (
+                                <div key={p.id} className="bg-neutral-800 
+                                rounded p-2">
+                                    <h1>{p.title}</h1>
+                                </div>
+                            ))}
+
+                            {searchedTitles.length === 0 && 
+                                <div className="h-40 flex items-center justify-center">
+                                    <span className="text-white/40">No results</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
                 </div>
             ) : (
                 <header className="flex justify-between 
