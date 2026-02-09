@@ -1,18 +1,23 @@
 import { useAuth } from "../AuthProvider"
-import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import { 
+    Outlet, useLocation, 
+    useNavigate, useSearchParams 
+} from "react-router-dom"
 import clsx from "clsx"
 import { useEffect, useState } from "react"
 import { usePreviousPathname } from "../data/PrevRoute"
 import { motion, AnimatePresence } from "motion/react"
-import { Search } from "lucide-react"
+import { ChevronRight, Search } from "lucide-react"
 
 export default function Profile() {
     const prevPath = usePreviousPathname()
     const { posts, profile, name, profileLoading } = useAuth()
+
     const navigate = useNavigate()
     const location = useLocation()
-    const loc = location.pathname
+    const [searchParams] = useSearchParams()
 
+    const view = searchParams.get("view-profile")
     const [searchInput, setSearchInput] = useState("")
     const [isOpen, setIsOpen] = useState(false)
 
@@ -50,7 +55,7 @@ export default function Profile() {
 
     return(
         <div className="h-full flex flex-col no-scrollbar
-        pb-30 p-2 justify-center overflow-y-auto">
+        pb-30 p-2 justify-center overflow-y-auto relative">
             {isOpen ? (
                 <div className="relative flex">
                     <div className="fixed inset-0 backdrop-blur-sm
@@ -92,7 +97,8 @@ export default function Profile() {
             ) : (
                 <header className="flex justify-between 
                 relative p-2 px-20 items-end gap-5">
-                    <div className="absolute left-2 top-0">
+                    <div className="absolute left-2 top-0 cursor-pointer"
+                    onClick={() => navigate(`${location.pathname}?view-profile=true`)}>
                         <img src={profile} className="rounded-full
                         size-12 border-2 border-white/20" />
 
@@ -124,7 +130,7 @@ export default function Profile() {
                     ))}
                     <button className="absolute right-2 top-1
                     w-auto border-0 p-0" onClick={() => setIsOpen(true)}>
-                        <Search className="size-6"/>
+                        <Search className="size-5"/>
                     </button>
                 </header>
             )}
@@ -132,6 +138,19 @@ export default function Profile() {
             <div className="flex-1 h-full p-5 mt-4">
                 <Outlet />
             </div>
+
+            {view && <div className="fixed inset-0 flex items-center justify-center">
+                <div className="overlay" onClick={() => navigate(location.pathname)}/>
+                <div className="rounded items-center z-20
+                p-2 bg-neutral-900 shadow-xl/30 flex flex-col gap-2">
+                    <img src={profile} className="size-25 rounded-full" />
+                    <span>{name}</span>
+                    <button className="py-1 rounded-full text-[14px] 
+                    flex items-center">
+                        View full profile <ChevronRight className="size-4"/>
+                    </button>
+                </div>
+            </div>}
         </div>
     )
 }
