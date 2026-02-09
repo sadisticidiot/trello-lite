@@ -8,7 +8,7 @@ import { AuthProvider } from './AuthProvider.jsx'
 import ProtectedRoute from './ProtectedRoute.jsx'
 
 import App from './pages/App.jsx'
-import NewPost from './pages/NewPost.jsx'
+import Notepad from './pages/Notepad.jsx'
 import Home from './pages/Home.jsx'
 import Profile from './pages/Profile.jsx'
 import Menu from './pages/Menu.jsx'
@@ -42,7 +42,8 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <Home />},
           { path: 'menu', element: <Menu />},
-          { path: 'new-post', element: <NewPost />},
+          { path: 'notepad/new', element: <Notepad />},
+          { path: 'notepad/:id', element: <Notepad />},
           { 
             path: 'profile',
             element: <Profile />,

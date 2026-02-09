@@ -34,7 +34,7 @@ export default function Home() {
       <button className="rounded-full bg-white p-3 
       fixed bottom-20 shadow-md shadow-neutral-900/30
       backdrop-blue-[2px] right-4 w-auto"
-      onClick={() => navigate('/app/new-post')}>
+      onClick={() => navigate('/app/notepad/new')}>
         <Plus className="text-black"/>
       </button>
     </div>

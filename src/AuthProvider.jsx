@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
     const [session, setSession] = useState(null)
     const [profile, setProfile] = useState(null)
     const [name, setName] = useState(null)
+    const [activeNote, setActiveNote] = useState(null)
     const [posts, setPosts] = useState([])
 
     const [profileLoading, setProfileLoading] = useState(true)
@@ -103,7 +104,8 @@ export function AuthProvider({ children }) {
     return (
         <AuthContext.Provider 
         value={{ session, loading, profile, 
-        name, profileLoading, posts, setPosts,}}>
+        name, profileLoading, posts, setPosts,
+        activeNote, setActiveNote}}>
             {children}
         </AuthContext.Provider>
     )
