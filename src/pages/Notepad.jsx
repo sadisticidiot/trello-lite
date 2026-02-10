@@ -7,16 +7,21 @@ import { supabase } from "../data/supabase-client";
 import { useAuth } from "../AuthProvider";
 
 export default function Notepad() {
-    const { activeNote, session, setPosts } = useAuth()
+    const { session, setPosts } = useAuth()
     const user = session.user
 
     const { id } = useParams()
     const isNew = id === "new"
     const navigate = useNavigate()
+
     const textareaRef = useRef(null)
+    const origNoteRef = useRef(null)
 
     const [note, setNote] = useState({ title: "", post: "" })
-
+    const [loading, setLoading] = useState(true)
+    const [isOpen, setIsOpen] = useState(false)
+        
+    //check if a note exists and fetch it
     useEffect(() => {
         if (isNew) return
 
@@ -27,11 +32,19 @@ export default function Notepad() {
                 .eq("id", id)
                 .single()
             
-                if (!error) setNote(data)
+            if (!error) {
+                setNote(data)
+                origNoteRef.current = {
+                    title: data.title,
+                    post: data.post
+                }
+            }
+            setLoading(false)
         }
         fetchNote()
     }, [id, isNew])
 
+    //resize the textarea on render
     useEffect(() => {
         autoResize()
     }, [note.post])
@@ -46,6 +59,15 @@ export default function Notepad() {
     const handleNote = (e) => {
         setNote(n => ({...n, post: e.target.value}))
         autoResize()
+    }
+
+    //checks if a note has been edited
+    const isChanged = () => {
+        if (!origNoteRef.current) return true
+        return(
+            note.title !== origNoteRef.current.title ||
+            note.post !== origNoteRef.current.post
+        )
     }
 
     const submitNote = async () => {
@@ -66,7 +88,7 @@ export default function Notepad() {
     const handleBack =  async (e) => {        
         e.preventDefault()
 
-        if (!note.post) {
+        if (!note.post || !isChanged()) {
             navigate(-1)
             return
         }
@@ -87,11 +109,19 @@ export default function Notepad() {
         navigate('/app/profile', { replace: true })
     }
 
+    if (loading) {
+        return(
+            <div className="fixed inset-0 flex items-center justify-center">
+                <span className="text-white/40">Fetching notes...</span>
+            </div>
+        )
+    }
+
     return(
         <motion.div 
             className="w-screen h-screen p-4"
         >
-            <div className="size-full relative flex flex-col">
+            <div className="size-full flex flex-col">
                 <header className="flex">
                     <div className="flex-1">
                         <button className="w-auto p-0 border-0"
@@ -100,8 +130,16 @@ export default function Notepad() {
                         </button>
                     </div>
 
-                    <div>
-                        <Ellipsis />
+                    <div className="relative">
+                        <button className="w-auto p-0 border-0"
+                        onClick={() => setIsOpen(p => !p)}>
+                            <Ellipsis />
+                        </button>
+                        {isOpen && <div className="absolute right-0 bg-neutral-900
+                        flex flex-col w-max rounded-md shadow-xl/30">
+                            <button className="border-0 rounded-none text-[14px]">Delete Note</button>
+                            <button className="border-0 rounded-none text-[14px]">Change Theme</button>
+                        </div>}
                     </div>
                 </header>
 

@@ -66,7 +66,7 @@ export default function App() {
                 <Outlet />
             </motion.div>
 
-            {loc !== '/app/new-post' && <div 
+            {!loc.startsWith('/app/notepad') && <div 
                 className="bg-neutral-900 w-full fixed 
                 grid grid-cols-3 gap-2 bottom-0 px-3"
             >
