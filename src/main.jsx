@@ -42,7 +42,6 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <Home />},
           { path: 'menu', element: <Menu />},
-          { path: 'notepad/new', element: <Notepad />},
           { path: 'notepad/:id', element: <Notepad />},
           { 
             path: 'profile',

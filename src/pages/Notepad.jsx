@@ -23,7 +23,10 @@ export default function Notepad() {
         
     //check if a note exists and fetch it
     useEffect(() => {
-        if (isNew) return
+        if (isNew) { 
+            setLoading(false)
+            return
+        }
 
         const fetchNote = async () => {
             const { data, error } =  await supabase
@@ -83,6 +86,8 @@ export default function Notepad() {
             title: note.title,
             post: note.post
         }).eq("id", id)
+        .select()
+        .single()
     }
 
     const handleBack =  async (e) => {        
@@ -93,19 +98,47 @@ export default function Notepad() {
             return
         }
 
-        const tempId = crypto.randomUUID()
+        if (isNew) {
+            const tempId = crypto.randomUUID()
 
-        setPosts(p => [
-            {
-                id: tempId,
-                title: note.title,
-                post: note.post,
-                optimistic: true
-            },
-            ...p,
-        ])
-
+            setPosts(p => [
+                {
+                    id: tempId,
+                    title: note.title,
+                    post: note.post,
+                    optimistic: true
+                },
+                ...p,
+            ])
+        } else {
+            setPosts(p => p.map(post => 
+                post.id === id ?
+                    {...post, title: note.title, post: note.post}
+                    : post
+                )
+            )
+        }
         await submitNote()
+        navigate('/app/profile', { replace: true })
+    }
+
+    const delNote = async () => {
+        if (isNew) return
+
+        setPosts(p => p.filter(post => post.id !== id))
+        setIsOpen(false)
+
+        const { error } = await supabase
+            .from("posts")
+            .delete()
+            .eq("id", id)
+            .eq("user_id", user.id)
+            .select()
+        
+        if (error) {
+            console.error(error)
+            return
+        } 
         navigate('/app/profile', { replace: true })
     }
 
@@ -137,8 +170,9 @@ export default function Notepad() {
                         </button>
                         {isOpen && <div className="absolute right-0 bg-neutral-900
                         flex flex-col w-max rounded-md shadow-xl/30">
-                            <button className="border-0 rounded-none text-[14px]">Delete Note</button>
-                            <button className="border-0 rounded-none text-[14px]">Change Theme</button>
+                            {!isNew && <button className="border-0 rounded-none"
+                            onClick={delNote}>Delete Note</button>}
+                            <button className="border-0 rounded-none">Change Theme</button>
                         </div>}
                     </div>
                 </header>

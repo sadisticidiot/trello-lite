@@ -86,10 +86,20 @@ export function AuthProvider({ children }) {
                 },
                 (payload) => {
                     if (payload.eventType === "INSERT") {
-                        setPosts(p => {
-                            const withoutOptimistic = p.filter(p => !p.optimistic)
+                        setPosts(prev => {
+                            const withoutOptimistic = prev.filter(p => !p.optimistic)
                             return [payload.new, ...withoutOptimistic]
                         })
+                    }
+                    if (payload.eventType === "UPDATE") {
+                        setPosts(prev => prev.map(p =>
+                            p.id === payload.new.id ? payload.new : p
+                        ))
+                    }
+                    if (payload.eventType === "DELETE") {
+                        setPosts(prev => prev.filter(p =>
+                            p.id !== payload.old.id
+                        ))
                     }
                 }
             )
@@ -99,7 +109,6 @@ export function AuthProvider({ children }) {
             supabase.removeChannel(channel)
         }
     }, [session])
-
 
     return (
         <AuthContext.Provider 
