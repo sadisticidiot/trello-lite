@@ -15,12 +15,20 @@ import {
 
 const container = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  visible: { 
+    opacity: 1, 
+    transition: { staggerChildren: 0.1, staggerDirection: -1 }
+  },
+  exit: { 
+    opacity: 0, 
+    transition: { staggerChildren: 0.1 }
+  }
 }
 
 const item = {
   hidden: { opacity: 0, x: 150 },
-  visible: { opacity: 1, x: 0 }
+  visible: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: 150 }
 }
 
 export default function Profile() {
@@ -118,7 +126,7 @@ export default function Profile() {
                 </div>
             ) : (
                 <header className="flex justify-center
-                relative gap-20">
+                relative gap-15">
                     <div className="absolute left-2 -top-2 cursor-pointer"
                     onClick={() => navigate(`${location.pathname}?view-profile=true`)}>
                         <img src={profile} className="rounded-full
@@ -151,7 +159,7 @@ export default function Profile() {
                         </div>
                     ))}
                     <button className="absolute right-2 bottom-0
-                    w-auto border-0 p-0" onClick={() => setIsOpen(true)}>
+                    w-auto border-0 p-0" onClick={() => setIsSearch(true)}>
                         <Search className="size-6"/>
                     </button>
                 </header>
@@ -176,19 +184,22 @@ export default function Profile() {
                   
             <div className="flex flex-col fixed bottom-15 right-4
             gap-2 items-end">
-                {isOpen && <motion.ul className="flex-1 flex flex-col gap-2"
+                <AnimatePresence>
+                {isOpen && <motion.ul className="flex-1 flex flex-col gap-2
+                w-full items-end" exit="exit"
                 variants={container} initial="hidden" animate="visible">
                     {actions.map((m) => (
                         <motion.li key={m.name} variants={item}
                         onClick={() => navigate(m.path)}
                         className="rounded-full p-2 px-3 border-1 gap-1
-                        border-white/40 flex items-center justify-center
-                        bg-neutral-900/80 cursor-pointer backdrop-blur-[1px]">
+                        border-white/40 flex bg-neutral-900/80
+                         cursor-pointer backdrop-blur-[1px] w-max">
                             <m.icon />
                             <span>{m.name}</span>
                         </motion.li>
                     ))}
                 </motion.ul>}
+                </AnimatePresence>
                 <button className="border-0 p-3 rounded-[12px]
                 bottom-15 shadow-xl/30 w-auto bg-pink-700"
                 onClick={() => setIsOpen(p => !p)}>
