@@ -22,7 +22,7 @@ import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 
 import Notes from './pages/Notes.jsx'
-import PinnedNotes from './pages/PinnedNotes.jsx'
+import PinnedNotes from './pages/Tasks.jsx'
 import ArchivedNotes from './pages/ArchivedNotes.jsx'
 
 const router = createBrowserRouter([
@@ -48,7 +48,7 @@ const router = createBrowserRouter([
             element: <Profile />,
             children: [
               { index: true, element: <Notes />},
-              { path: 'pinned-notes', element: <PinnedNotes />},
+              { path: 'tasks', element: <PinnedNotes />},
               { path: 'archived-notes', element: <ArchivedNotes />},
             ]
           },

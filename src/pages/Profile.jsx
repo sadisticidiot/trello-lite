@@ -4,10 +4,24 @@ import {
     useNavigate, useSearchParams 
 } from "react-router-dom"
 import clsx from "clsx"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { usePreviousPathname } from "../data/PrevRoute"
 import { motion, AnimatePresence } from "motion/react"
-import { ChevronRight, Search } from "lucide-react"
+import { 
+    ChevronRight, ClipboardCheck, 
+    LayoutList, Pen, Plus, Search, 
+    X 
+} from "lucide-react"
+
+const container = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+}
+
+const item = {
+  hidden: { opacity: 0, x: 150 },
+  visible: { opacity: 1, x: 0 }
+}
 
 export default function Profile() {
     const prevPath = usePreviousPathname()
@@ -20,11 +34,18 @@ export default function Profile() {
     const view = searchParams.get("view-profile")
     const [searchInput, setSearchInput] = useState("")
     const [isOpen, setIsOpen] = useState(false)
+    const [isSearch, setIsSearch] = useState(false)
 
     const pages = [
         { name: "Notes", path: '/app/profile'},
-        { name: "Pinned", path: '/app/profile/pinned-notes'},
+        { name: "Tasks", path: '/app/profile/tasks'},
         { name: "Archived", path: '/app/profile/archived-notes'},
+    ]
+
+    const actions = [
+        { name: "Add Note", icon: Pen, path: '/app/notepad/new' },
+        { name: "To-do", icon: LayoutList },
+        { name: "Quest", icon: ClipboardCheck },
     ]
 
     const resolveRoute = (pathname) => pages
@@ -55,11 +76,11 @@ export default function Profile() {
 
     return(
         <div className="h-full flex flex-col no-scrollbar
-        pb-30 p-2 justify-center overflow-y-auto relative">
-            {isOpen ? (
+        p-2 py-7 pb-30 justify-center overflow-y-auto relative">
+            {isSearch ? (
                 <div className="relative flex">
                     <div className="fixed inset-0 backdrop-blur-sm
-                    bg-black/70" onClick={() => setIsOpen(false)}/>
+                    bg-black/70" onClick={() => setIsSearch(false)}/>
 
                     <div className="absolute top-1 bg-neutral-900 
                     flex flex-col w-full rounded">
@@ -72,7 +93,7 @@ export default function Profile() {
                             focus:ring-0" value={searchInput} 
                             onChange={(e) => setSearchInput(e.target.value)}/>
 
-                            <button onClick={() => setIsOpen(false)}
+                            <button onClick={() => setIsSearch(false)}
                             className="rounded-0 w-auto py-1 text-sm">
                                 close
                             </button>
@@ -81,7 +102,8 @@ export default function Profile() {
                         <div className=" py-2 px-4 flex flex-col gap-4">
                             {searchedTitles.map((p) => (
                                 <div key={p.id} className="bg-neutral-800 
-                                rounded p-2">
+                                rounded p-2 cursor-pointer"
+                                onClick={() => navigate(`/app/notepad/${p.id}`)}>
                                     <h1>{p.title}</h1>
                                 </div>
                             ))}
@@ -95,9 +117,9 @@ export default function Profile() {
                     </div>
                 </div>
             ) : (
-                <header className="flex justify-between 
-                relative p-2 px-20 items-end gap-5">
-                    <div className="absolute left-2 top-0 cursor-pointer"
+                <header className="flex justify-center
+                relative gap-20">
+                    <div className="absolute left-2 -top-2 cursor-pointer"
                     onClick={() => navigate(`${location.pathname}?view-profile=true`)}>
                         <img src={profile} className="rounded-full
                         size-12 border-2 border-white/20" />
@@ -128,14 +150,14 @@ export default function Profile() {
                             </AnimatePresence>
                         </div>
                     ))}
-                    <button className="absolute right-2 top-1
+                    <button className="absolute right-2 bottom-0
                     w-auto border-0 p-0" onClick={() => setIsOpen(true)}>
-                        <Search className="size-5"/>
+                        <Search className="size-6"/>
                     </button>
                 </header>
             )}
 
-            <div className="flex-1 h-full p-5 mt-4">
+            <div className="h-full p-5 pt-10">
                 <Outlet />
             </div>
 
@@ -151,6 +173,44 @@ export default function Profile() {
                     </button>
                 </div>
             </div>}
+                  
+            <div className="flex flex-col fixed bottom-15 right-4
+            gap-2 items-end">
+                {isOpen && <motion.ul className="flex-1 flex flex-col gap-2"
+                variants={container} initial="hidden" animate="visible">
+                    {actions.map((m) => (
+                        <motion.li key={m.name} variants={item}
+                        onClick={() => navigate(m.path)}
+                        className="rounded-full p-2 px-3 border-1 gap-1
+                        border-white/40 flex items-center justify-center
+                        bg-neutral-900/80 cursor-pointer backdrop-blur-[1px]">
+                            <m.icon />
+                            <span>{m.name}</span>
+                        </motion.li>
+                    ))}
+                </motion.ul>}
+                <button className="border-0 p-3 rounded-[12px]
+                bottom-15 shadow-xl/30 w-auto bg-pink-700"
+                onClick={() => setIsOpen(p => !p)}>
+                    {isOpen ? (
+                        <motion.div key="close"
+                        initial={{ rotate: -90, scale: 0.9 }}
+                        animate={{ rotate: 0, scale: 1 }}
+                        exit={{ rotate: 90, scale: 0.9 }}
+                        >
+                            <X className="text-black" />
+                        </motion.div>
+                    ) : (
+                        <motion.div key="add"
+                        initial={{ rotate: 90 }}
+                        animate={{ rotate: 0 }}
+                        exit={{ rotate: 90 }}
+                    >
+                        <Plus className="text-black"/>
+                    </motion.div>
+                    )}
+                </button>
+            </div>
         </div>
     )
 }
