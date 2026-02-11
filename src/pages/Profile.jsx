@@ -52,8 +52,8 @@ export default function Profile() {
 
     const actions = [
         { name: "Add Note", icon: Pen, path: '/app/notepad/new' },
+        { name: "Quest", icon: ClipboardCheck, path: '/app/taskpad/new' },
         { name: "To-do", icon: LayoutList },
-        { name: "Quest", icon: ClipboardCheck },
     ]
 
     const resolveRoute = (pathname) => pages
@@ -83,7 +83,7 @@ export default function Profile() {
     ) : []
 
     return(
-        <div className="h-full flex flex-col no-scrollbar
+        <div className="h-full flex flex-col no-scrollbar bg-neutral-900
         p-2 py-7 pb-30 justify-center overflow-y-auto relative">
             {isSearch ? (
                 <div className="relative flex">
@@ -126,7 +126,7 @@ export default function Profile() {
                 </div>
             ) : (
                 <header className="flex justify-center
-                relative gap-15">
+                relative gap-10">
                     <div className="absolute left-2 -top-2 cursor-pointer"
                     onClick={() => navigate(`${location.pathname}?view-profile=true`)}>
                         <img src={profile} className="rounded-full
@@ -182,8 +182,8 @@ export default function Profile() {
                 </div>
             </div>}
                   
-            <div className="flex flex-col fixed bottom-15 right-4
-            gap-2 items-end">
+            <div className="flex flex-col fixed bottom-13 right-4
+            gap-2 items-end shadow-xl/30">
                 <AnimatePresence>
                 {isOpen && <motion.ul className="flex-1 flex flex-col gap-2
                 w-full items-end" exit="exit"

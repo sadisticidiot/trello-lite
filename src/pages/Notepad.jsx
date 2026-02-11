@@ -1,6 +1,6 @@
 import { ChevronLeft, Ellipsis } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "motion/react"
 import { supabase } from "../data/supabase-client";
 import { useAuth } from "../AuthProvider";
@@ -150,11 +150,7 @@ export default function Notepad() {
     }
 
     return(
-        <motion.div 
-            className="w-screen h-screen p-4"
-            initial={{ scale: 0.2, opacity: 0.5 }}
-            animate={{ scale: 1, opacity: 1 }}
-        >
+        <div className="w-screen h-screen p-4">
             <div className="size-full flex flex-col">
                 <header className="flex">
                     <div className="flex-1">
@@ -196,6 +192,6 @@ export default function Notepad() {
                     </div>
                 </div>
             </div>
-        </motion.div>
+        </div>
     )
 }

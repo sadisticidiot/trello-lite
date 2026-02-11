@@ -1,8 +1,7 @@
 import { 
-    AnimatePresence,
-    motion, useMotionValueEvent, 
+    AnimatePresence, motion,
+    useMotionValueEvent,
     useScroll, useSpring, useTransform, 
-    useVelocity
 } from "motion/react"
 import { useEffect, useRef, useState } from "react"
 import logo from "/ewan.jfif"
@@ -10,28 +9,21 @@ import pint from "/pinterest-logo.png"
 import discord from "/dc-logo.png"
 import { Link, useNavigate } from "react-router-dom"
 import { X, Menu } from "lucide-react"
-import clsx from "clsx"
 import { useAuth } from "../AuthProvider"
+import MotionLink from "../ui/MotionLink"
 
 export default function Landing() {
     const { session } = useAuth()
     const navigate = useNavigate()
     const scrollRef = useRef(null)
+    const nextSectionRef = useRef(null)
+
     const [isOpen, setIsOpen] = useState(false)
 
-    const { scrollY } = useScroll({ container: scrollRef })
-    const velocity = useVelocity(scrollY)
+    const { scrollYProgress } = useScroll({ container: scrollRef })
 
-    const smoothScrollY = useSpring(scrollY, {
-        stiffness: 120,
-        damping: 30,
-        mass: 0.8
-    })
-
-    const scale = useTransform(smoothScrollY, [100, 160], [1, 0.6])
-    const headerOpacity = useTransform(smoothScrollY, [0, 150], [1, 0.95])
-    const mainDivOpacity = useTransform(smoothScrollY, [100, 160], [1, 0])
-    const firstChildOpacity = useTransform(smoothScrollY, [365, 720, 1060], [0, 1, 0])
+    const mainDivOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+    const firstChildOpacity = useTransform(scrollYProgress, [0.5, 1], [0, 1])
 
     useEffect(() => {
         if (!session) return
@@ -39,163 +31,209 @@ export default function Landing() {
     }, [session, navigate])
 
     return(
-        <motion.div 
-            initial={{ opacity: 0.5 }}
-            animate={{ opacity: 1 }}
+        <div
+            className="w-screen h-screen relative
+            bg-black flex overflow-y-auto p-4"
             ref={scrollRef}
-            className="relative h-screen overflow-y-auto
-            overscroll-contain no-scrollbar
-            bg-[url(/landing-bg.png)] bg-cover"
         >
-            <div className="absolute w-full h-[600vh] bg-gradient-to-b 
-                from-pink-500/60 from-0.1% via-black/90 via-20% to-black/95
-                to-90% pointer-events-none"
-            />
+            <div className="flex flex-col size-full">
+                <div className="pointer-events-none absolute bg-gradient-to-b 
+                from-pink-600/30 via-pink-600/10 to-transparent inset-0" />
 
-            <div className="flex flex-col gap-5 px-4">
-                <AnimatePresence mode="wait">
-                    <motion.div 
-                        className="rounded shadow-xl/30 p-5 fixed
-                        top-4 w-9/10 flex flex-col justify-center max-h-900
-                        bg-neutral-950 z-20 backdrop-blur-[1px] overflow-hidden"
-                        style={{ opacity: headerOpacity }}
-                        initial={{ 
-                            y: -150, 
-                            borderRadius: "50px",
-                            opacity: 1
-                        }}
-                        animate={{ 
-                            y: 0, 
-                            borderRadius: isOpen ? "20px" : "50px",
-                            opacity: isOpen ? 0.95 : 1
-                        }}
-                        exit={{
-                            y: -150,
-                            borderRadius: "50px",
-                            opacity: 1
-                        }}
-                    >
-                        <div className="flex justify-between items-center">
-                            <div className="flex items-center justify-center gap-3">
-                                <Link to='/'>
-                                    <img 
-                                        src={logo} 
-                                        className="border-r-0 border-white/80 
-                                        border-2 size-10 rounded-full"
-                                    />
-                                </Link>
-                                <h1 className="flex items-center justify-center font-normal p-0"><span className="font-bold text-pink-500 text-[32px]">T</span>alaan</h1>
-                            </div>
-                            <button 
-                                className="flex items-center justify-center w-auto border-0"
-                                onClick={() => setIsOpen(p => !p)}
-                            >
-                                <AnimatePresence mode="wait">
-                                    {isOpen ? (
-                                        <motion.div
-                                            key="close"
-                                            initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
-                                            animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                                            exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
-                                        >
-                                            <X className="size-7 text-pink-500" />
-                                        </motion.div>
-                                    ) : (
-                                        <motion.div
-                                            key="menu"
-                                            initial={{ rotate: 90, opacity: 0, scale: 0.5 }}
-                                            animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                                            exit={{ rotate: -90, opacity: 0, scale: 0.5 }}
-                                        >
-                                            <Menu className="size-7 text-pink-500"/>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </button>
+                {/* Header */}
+                <motion.div 
+                    className="fixed bg-neutral-950/95 top-4 right-6 p-4 rounded-full z-50
+                    flex flex-col max-h-screen w-9/10 md:left-15 shadow-[0_0_20px_rgba(0,0,0,0.5)]
+                    backdrop-blur-sm"
+                    initial={{ 
+                        y: -150, 
+                        borderRadius: "50px",
+                        opacity: 1
+                    }}
+                    animate={{ 
+                        y: 0, 
+                        borderRadius: isOpen ? "20px" : "50px",
+                        opacity: isOpen ? 0.95 : 1
+                    }}
+                    exit={{
+                        y: -150,
+                        borderRadius: "50px",
+                        opacity: 1
+                    }}
+                >
+                    <div className="flex justify-between items-center">
+                        {/* Header's left side */}
+                        <div className="flex gap-5 items-center">
+                            <Link to="/">
+                                <img src={logo} className="rounded-full size-12" />
+                            </Link>
 
+                            <Link to="/">
+                                <h2 className="font-bold text-[20px]">
+                                    <span className="text-pink-600 text-[30px]">
+                                        T
+                                    </span>
+                                    alaan
+                                </h2>
+                            </Link>
                         </div>
 
-                        <AnimatePresence>
-                            {isOpen && 
-                                <motion.div 
-                                    initial={{ height: 0}} 
-                                    animate={{ height: "150px"}} 
-                                    exit={{ height: 0}}
-                                    className="flex flex-col gap-2"
-                                >
-                                    <div className="p-2" />
-
-                                    <motion.span 
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        className="text-white/80"
+                        {/* Header's right side */}
+                        <button 
+                            className="block md:hidden p-0 border-0 w-auto"
+                            onClick={() => setIsOpen(p => !p)}
+                        >
+                            <AnimatePresence mode="wait">
+                                {isOpen ? (
+                                    <motion.div
+                                        key="close"
+                                        initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                                        animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                                        exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                                        transition={{ duration: 0.2 }}
                                     >
-                                        Contact me:
-                                    </motion.span>
-
-                                    <motion.a 
-                                        initial={{ width: 0 }}
-                                        animate={{ width: "290px"}}
-                                        exit={{ width: 0 }}
-                                        href="https://discord.com/channels/@me"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="p-2 pl-5 border-1 rounded-full flex gap-2 items-center justify-start"
+                                        <X className="size-7 text-pink-500" />
+                                    </motion.div>
+                                ) : (
+                                    <motion.div
+                                        key="menu"
+                                        initial={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                                        animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                                        exit={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                                        transition={{ duration: 0.2 }}
                                     >
-                                        <img src={discord} className="h-4 w-6"/>
-                                        <span>@fzxzzz</span>
-                                    </motion.a>
+                                        <Menu className="size-7 text-pink-500"/>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </button>
 
-                                    <motion.a 
-                                        initial={{ width: 0 }}
-                                        animate={{ width: "290px"}}
-                                        exit={{ width: 0 }}
-                                        href="https://www.pinterest.com/sond1aaaaa/"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="p-2 pl-5 border-1 rounded-full flex gap-2 items-center justify-start"
-                                    >
-                                        <img src={pint} className="size-5"/>
-                                        <span>sond1aaaaa</span>
-                                    </motion.a>
-                                </motion.div>
-                            }
-                        </AnimatePresence>
-                    </motion.div>
-                </AnimatePresence>
+                        {/* Header's right side for desktop */}
+                        <div className="gap-6 items-center hidden md:flex">
+                            <a href="https://www.pinterest.com/sond1aaaaa/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <img src={pint} className="size-8"/>
+                            </a>
+
+                            <a href="https://www.discord.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <img src={discord} className="h-6 w-8"/>
+                            </a>
+
+                            <motion.div 
+                                className="bg-pink-800/50 border-2 border-pink-500 
+                                    rounded-full p-2"
+                                whileHover={{ 
+                                    boxShadow: "0px 0px 20px rgba(230, 0, 119, 0.58)" 
+                                }}
+                            >
+                                <Link to='/signin' className="px-10 p-2 font-semibold">
+                                    Sign in
+                                </Link>
+                            </motion.div>
+                        </div>
+                    </div>
+
+                    {/* Header's extra content */}
+                    {isOpen && 
+                        <div
+                            className="flex flex-col gap-2"
+                        >
+                            <div className="p-2" />
+
+                            <motion.span 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="text-white/80"
+                            >
+                                Contact me:
+                            </motion.span>
+
+                            <motion.a 
+                                initial={{ width: 0 }}
+                                animate={{ width: "290px"}}
+                                exit={{ width: 0 }}
+                                href="https://discord.com/channels/@me"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-2 pl-5 border-1 rounded-full flex gap-2 
+                                items-center justify-start"
+                            >
+                                <img src={discord} className="w-6 h-5"/>
+                                <span>@fzxzzz</span>
+                            </motion.a>
+
+                            <motion.a 
+                                initial={{ width: 0 }}
+                                animate={{ width: "290px"}}
+                                exit={{ width: 0 }}
+                                href="https://www.pinterest.com/sond1aaaaa/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-2 pl-5 border-1 rounded-full flex 
+                                gap-2 items-center justify-start"
+                            >
+                                <img src={pint} className="size-5"/>
+                                <span>sond1aaaaa</span>
+                            </motion.a>
+                        </div>
+                    }
+
+                </motion.div>
 
                 <motion.div 
-                    className="flex-none flex flex-col h-[100vh]
-                    items-center justify-center rounded p-2 z-10"
-                    style={{ opacity: mainDivOpacity, scale }}
-                >
-                    <h1 className="py-0 text-[3rem]/13">insert maangas na one liner here</h1>
-                    <span className="text-center text-[14px]">  
-                        basta description 'yan tapos kelangan mahaba
-                        para malaki yung space na inoocuppy para may
-                        laman naman  yung opening div kahit papano
-                        like siguro ganito yung minimum height
+                    style={{ opacity: mainDivOpacity }}
+                    className="h-[100vh] items-center
+                    flex justify-center flex-col gap-4 flex-none">
+                    <h1 className="text-shadow-lg/30 text-[3rem] md:text-[4rem]">
+                        A calmer way<br />
+                        to organize your life
+                    </h1>
+                    <span className="font-semibold text-center text-shadow-lg/30">
+                        Turn chaos into clarity with notes, quests,
+                        and reminders. Stay on track, beat procrastination,
+                        and shape a workspace that fits you.
                     </span>
+                    <div className="flex gap-4">
+                        <Link 
+                            to="/signup"
+                            className="bg-pink-700/30 ring-2 ring-pink-400/60
+                            p-2 px-6 rounded-xl shadow-xl/10 shadow-pink-300"
+                        >
+                            Sign up now
+                        </Link>
 
-                    <div className="flex w-full gap-2 mt-4"> 
-                        <Link className="link-base w-6/10" to='/signin'>Sign in</Link>
-                        <Link className="ring-2 ring-white/40 rounded-xl shadow-xl/30 shadow-white/40 flex-1 text-center bg-neutral-500/20 p-2" to='/signup'>Sign up</Link>
+                        <button 
+                            className="bg-neutral-700/30 ring-2 ring-neutral-400/60
+                            p-2 px-4 rounded-xl shadow-xl/10 shadow-white"
+                            onClick={() => nextSectionRef.current?.scrollIntoView({
+                                behavior: "smooth",
+                                block: "start"
+                            })}
+                        >
+                                Learn more
+                        </button>
                     </div>
                 </motion.div>
 
-                <div className="flex-none h-[30vh]" />
-
                 <motion.div 
                     style={{ opacity: firstChildOpacity }}
-                    className="flex-none flex items-center justify-center 
-                    bg-neutral-900 p-4 rounded h-[20rem] border-2 z-10"
+                    className="h-[100vh] flex-none flex p-4 pb-6 pt-30"
+                    ref={nextSectionRef}
                 >
-                    Hi
+                    <div className="ring-2 ring-pink-400/60 size-full
+                    shadow-[0_0_20px_rgba(253,165,213,0.3)] rounded-lg
+                    flex flex-col gap-4 justify-center items-center">
+                        <span className="text-white/40">Work in progress</span>
+                        <span className="spinner border-white/40 border-l-transparent" />
+                    </div>
                 </motion.div>
-
-                <div className="flex-none h-[150vh] border-2 border-pink-600 z-10" />
             </div>
-         </motion.div>
+        </div>
     )
 }

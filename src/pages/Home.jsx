@@ -1,7 +1,8 @@
 import { Plus } from "lucide-react"
 import { useAuth } from "../AuthProvider"
-import { motion } from "motion/react"
+import { motion, useMotionValueEvent, useScroll } from "motion/react"
 import { useNavigate } from "react-router-dom"
+import { useRef } from "react"
 
 const container = {
   hidden: { opacity: 0 },
@@ -18,7 +19,8 @@ export default function Home() {
   const navigate = useNavigate()
   
   return(
-    <div className="relative h-full w-full">
+    <motion.div className="relative h-full w-full"
+    drag="x" dragConstraints={{right: 0, left: -500}}>
       <motion.ul variants={container}
       initial="hidden" animate="visible"
       className="flex flex-col px-4 pb-30 py-2 gap-2">
@@ -30,13 +32,6 @@ export default function Home() {
           </motion.li>
         ))}
       </motion.ul>
-      
-      <button className="rounded-full bg-white p-3 
-      fixed bottom-20 shadow-md shadow-neutral-900/30
-      backdrop-blue-[2px] right-4 w-auto"
-      onClick={() => navigate('/app/notepad/new')}>
-        <Plus className="text-black"/>
-      </button>
-    </div>
+    </motion.div>
   )
 }

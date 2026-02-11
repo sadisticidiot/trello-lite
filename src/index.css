@@ -3,9 +3,28 @@
 body{
   background-color: black;
   color: white;
+}
+
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fb64b725;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #a3054f;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #e41a86; 
+}
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -13,18 +32,6 @@ body{
   -ms-overflow-style: none;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-}
-@layer components {
-  .statistics-base {
-    @apply
-      ring-1 ring-white/20
-      shadow-[0_0_10px_2px_rgba(255,255,255,0.4)]
-      rounded
-      p-2
-      box-content
-      flex flex-col
-      items-center justify-center
-  }
 }
 
 /* h1 */
@@ -42,15 +49,13 @@ body{
 @layer components {
   .link-base {
     @apply
-      rounded-xl
-      w-full
+      rounded-full
       text-center
-      p-2
+      p-1 px-10
       cursor-pointer
       bg-pink-950
       ring-2
       ring-pink-600
-      shadow-xl/30 shadow-pink-800
   }
 }
 
@@ -99,14 +104,7 @@ body{
 @layer base {
   button {
     @apply
-      border-neutral-500/50
-      border-1
-      md:border-2
-      rounded-lg
-      text-white/70
-      w-full
       text-center
-      p-2
       cursor-pointer
   }
 }
