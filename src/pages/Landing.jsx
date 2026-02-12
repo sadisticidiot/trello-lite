@@ -1,20 +1,24 @@
 import { 
     AnimatePresence, motion,
-    useMotionValueEvent,
-    useScroll, useSpring, useTransform, 
+    useScroll, useTransform, 
 } from "motion/react"
 import { useEffect, useRef, useState } from "react"
 import logo from "/ewan.jfif"
 import pint from "/pinterest-logo.png"
 import discord from "/dc-logo.png"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom"
 import { X, Menu } from "lucide-react"
 import { useAuth } from "../AuthProvider"
-import MotionLink from "../ui/MotionLink"
+import LoginForm from "../ui/LoginForm"
+import DesktopAuth from "../ui/DesktopAuth"
+import SignupForm from "../ui/SignupForm"
 
 export default function Landing() {
     const { session } = useAuth()
     const navigate = useNavigate()
+    const location = useLocation()
+    const [searchParams, setSearchParams] = useSearchParams()
+    const auth = searchParams.get("auth")
     const scrollRef = useRef(null)
     const nextSectionRef = useRef(null)
 
@@ -24,6 +28,11 @@ export default function Landing() {
 
     const mainDivOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
     const firstChildOpacity = useTransform(scrollYProgress, [0.5, 1], [0, 1])
+
+    const handleExitAuth = () => {
+        searchParams.delete("auth")
+        setSearchParams(searchParams)
+    }
 
     useEffect(() => {
         if (!session) return
@@ -39,6 +48,29 @@ export default function Landing() {
             <div className="pointer-events-none absolute bg-gradient-to-b 
             from-pink-600/30 via-pink-600/10 to-transparent inset-0" />
             
+            <AnimatePresence>
+            {auth &&
+                <>
+                    <motion.div
+                        key="auth-modal" 
+                        className="absolute inset-0 z-90" 
+                        initial={{ opacity: 0 }}  
+                        animate={{ opacity: 1 }}  
+                        exit={{ opacity: 0 }}  
+                    >
+                        <div 
+                            onClick={handleExitAuth}  
+                            className="absolute inset-0 bg-black/70 blackdrop-blur-sm"
+                        />
+
+                        <DesktopAuth>
+                            {auth === "signin" ? <LoginForm /> : <SignupForm />}
+                        </DesktopAuth>
+                    </motion.div>
+                </>
+            }
+            </AnimatePresence>
+
             {/* Header */}
             <motion.div 
                 className="fixed bg-neutral-950/90 top-4 right-6 p-4 rounded-full z-50
@@ -130,9 +162,9 @@ export default function Landing() {
                                 boxShadow: "0px 0px 20px rgba(230, 0, 119, 0.58)" 
                             }}
                         >
-                            <Link to='/signin' className="px-10 p-2 font-semibold">
+                            <button onClick={() => navigate(`${location.pathname}?auth=signin`)} className="px-10 p-2 font-semibold">
                                 Sign in
-                            </Link>
+                            </button>
                         </motion.div>
                     </div>
                 </div>
@@ -196,9 +228,15 @@ export default function Landing() {
                         and shape a workspace that fits you.
                     </span>
                     <div className="flex gap-4">
-                        <Link 
-                            to="/signup"
-                            className="bg-pink-700/30 ring-2 ring-pink-400/60
+                        <button 
+                            onClick={() => navigate(`${location.pathname}?auth=signup`)}
+                            className="bg-pink-700/30 ring-2 ring-pink-400/60 hidden md:block
+                            p-2 px-6 rounded-xl shadow-xl/10 shadow-pink-300"
+                        >
+                            Sign up now
+                        </button>
+                        <Link to="/signup" 
+                            className="bg-pink-700/30 ring-2 ring-pink-400/60 block md:hidden
                             p-2 px-6 rounded-xl shadow-xl/10 shadow-pink-300"
                         >
                             Sign up now

@@ -6,8 +6,6 @@ import { Link } from "react-router-dom";
 export default function MotionLink({ variant = "" }) {
     const Motionlink = motion(Link)
 
-    const [holding, setHolding] = useState()
-
     const labels = {
         login: {
             text: "Don't have an account?",
@@ -32,14 +30,8 @@ export default function MotionLink({ variant = "" }) {
     return(
         <Motionlink
             to={location}
-            onTapStart={() => setHolding(true)}
-            onTapCancel={() => setHolding(false)} 
-            onTap={() => setHolding(false)} 
-            animate={{ 
-                scale: holding ? 0.96 : 1,
-                color: holding ? "#e7e7e7b2" : "#ffffff"
-            }} 
-            className="text-sm text-center"
+            whileTap={{ scale: 0.96, color: "#e7e7b2"}}
+            className="text-sm text-center block md:hidden"
         >
             {label}
         </Motionlink>

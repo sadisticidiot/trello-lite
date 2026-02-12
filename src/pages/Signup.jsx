@@ -7,6 +7,7 @@ import { useAuth } from "../AuthProvider"
 import basta from "/ewan.jfif"
 import MotionLink from "../ui/MotionLink"
 import Interface from '../ui/Interface.jsx'
+import DesktopAuth from "../ui/DesktopAuth.jsx"
 
 export default function Signup() {
     const { session } = useAuth()
@@ -18,7 +19,6 @@ export default function Signup() {
     const [errors, setErrors] = useState({})
 
     const [loading, setLoading] = useState(false)
-    const [btnHolding, setBtnHolding] = useState(false)
 
     const handleSignup = async (e) => {
         e.preventDefault()
@@ -72,125 +72,249 @@ export default function Signup() {
 
     return(
         <>
-        <Interface closable={true}>
-            <div className="block md:hidden size-full p-3 border-1 border-white/12 rounded bg-neutral-950">
-                <motion.form
-                    initial={{ opacity: 0.7, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }} 
-                    className="size-full flex flex-col justify-center items-center gap-3" 
-                    onSubmit={handleSignup}
-                >
-                    <img src={basta} className="rounded-full size-25" />
+            <div className="block md:hidden">
+                <Interface closable={true}>
+                    <div className="block md:hidden size-full p-3 border-1 border-white/12 rounded bg-neutral-950">
+                        <motion.form
+                            initial={{ opacity: 0.7, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }} 
+                            className="size-full flex flex-col justify-center items-center gap-3" 
+                            onSubmit={handleSignup}
+                        >
+                            <img src={basta} className="rounded-full size-25" />
 
-                    <div className="flex flex-col w-full">
-                            <motion.input
-                                type="email"
-                                placeholder="Email"
-                                autoComplete="username"
-                                value={email}
-                                onChange={(e) => {
-                                    setErrors({})
-                                    setEmail(e.target.value)
-                                }}
-                                animate={{
-                                    borderColor: errors.email
-                                        ? "rgba(251, 44, 54, 1)"
-                                        : "rgba(251, 44, 54, 0)",
-                                }}
-                                transition={{ duration: 0.12, ease: "easeIn" }}
-                                className={clsx(errors.email && "border-2")}
-                            />
+                            <div className="flex flex-col w-full">
+                                    <motion.input
+                                        type="email"
+                                        placeholder="Email"
+                                        autoComplete="username"
+                                        value={email}
+                                        onChange={(e) => {
+                                            setErrors({})
+                                            setEmail(e.target.value)
+                                        }}
+                                        animate={{
+                                            borderColor: errors.email
+                                                ? "rgba(251, 44, 54, 1)"
+                                                : "rgba(251, 44, 54, 0)",
+                                        }}
+                                        transition={{ duration: 0.12, ease: "easeIn" }}
+                                        className={clsx(errors.email && "border-2")}
+                                    />
 
-                            <AnimatePresence mode="wait">
-                                {errors.email &&
-                                    <motion.p
-                                        className="text-red-400"
-                                        initial={{ opacity: 0, y: -5}}
-                                        animate={{ opacity: 1, y: 0}}
-                                        exit={{ opacity: 0, y: -5}}
-                                        transition={{ duration: 0.2, ease: "easeIn" }}
-                                    >
-                                        {errors.email}
-                                    </motion.p>
-                                }
-                            </AnimatePresence>
+                                    <AnimatePresence mode="wait">
+                                        {errors.email &&
+                                            <motion.p
+                                                className="text-red-400"
+                                                initial={{ opacity: 0, y: -5}}
+                                                animate={{ opacity: 1, y: 0}}
+                                                exit={{ opacity: 0, y: -5}}
+                                                transition={{ duration: 0.2, ease: "easeIn" }}
+                                            >
+                                                {errors.email}
+                                            </motion.p>
+                                        }
+                                    </AnimatePresence>
+                            </div>
+
+                            <div className="flex flex-col w-full">
+                                    <motion.input
+                                        type="password"
+                                        placeholder="Create Password"
+                                        autoComplete="new-password"
+                                        value={password}
+                                        onChange={(e) => {
+                                            setErrors({})
+                                            setPassword(e.target.value)
+                                        }}
+                                        animate={{
+                                            borderColor: errors.password
+                                                ? "rgba(251, 44, 54, 1)"
+                                                : "rgba(251, 44, 54, 0)",
+                                        }}
+                                        transition={{ duration: 0.12, ease: "easeIn" }}
+                                        className={clsx(errors.password && "border-2")}
+                                    />
+
+                                    <AnimatePresence mode="wait">
+                                        {errors.password &&
+                                            <motion.p
+                                                className="text-red-400"
+                                                initial={{ opacity: 0, y: -5}}
+                                                animate={{ opacity: 1, y: 0}}
+                                                exit={{ opacity: 0, y: -5}}
+                                                transition={{ duration: 0.2, ease: "easeIn" }}
+                                            >
+                                                {errors.password}
+                                            </motion.p>
+                                        }
+                                    </AnimatePresence>
+                            </div>
+
+                            <div className="flex flex-col w-full">
+                                    <motion.input
+                                        type="password"
+                                        placeholder="Confirm Password"
+                                        autoComplete="new-password"
+                                        value={confirmPass}
+                                        onChange={(e) => {
+                                            setErrors({})
+                                            setConfirmPass(e.target.value)
+                                        }}
+                                        animate={{
+                                            borderColor: errors.confirmPass
+                                                ? "rgba(251, 44, 54, 1)"
+                                                : "rgba(251, 44, 54, 0)",
+                                        }}
+                                        transition={{ duration: 0.12, ease: "easeIn" }}
+                                        className={clsx(errors.confirmPass && "border-2")}
+                                    />
+
+                                    <AnimatePresence mode="wait">
+                                        {errors.confirmPass &&
+                                            <motion.p
+                                                className="text-red-400"
+                                                initial={{ opacity: 0, y: -5}}
+                                                animate={{ opacity: 1, y: 0}}
+                                                exit={{ opacity: 0, y: -5}}
+                                                transition={{ duration: 0.2, ease: "easeIn" }}
+                                            >
+                                                {errors.confirmPass}
+                                            </motion.p>
+                                        }
+                                    </AnimatePresence>
+                            </div>
+
+                            <motion.button
+                                whileTap={{ scale: 0.98, backgroundColor: "#111111" }}
+                                animate={{ 
+                                    scale: loading ? 0.98 : 1, 
+                                    backgroundColor: loading ? "#0e0e0e" : "#171717"
+                                }}
+                                className={clsx(
+                                    "flex items-center justify-center",
+                                    loading && "border-black"
+                                )}
+                            >
+                                {loading ? <span className="spinner" /> : "Sign up"}
+                            </motion.button>
+
+                            <MotionLink variant="signup"/>
+                        </motion.form>
+                    </div>
+                </Interface>
+            </div>
+
+            <div className="hidden md:block">
+                <DesktopAuth>
+                    <form onSubmit={handleSignup} className="w-full flex flex-col gap-2">
+                    <div className="flex flex-col">
+                        <motion.input
+                            type="email"
+                            placeholder="Email"
+                            autoComplete="username"
+                            value={email}
+                            onChange={(e) => {
+                                setErrors({})
+                                setEmail(e.target.value)
+                            }}
+                            animate={{
+                                borderColor: errors.email
+                                    ? "rgba(251, 44, 54, 1)"
+                                    : "rgba(251, 44, 54, 0)",
+                            }}
+                            transition={{ duration: 0.12, ease: "easeIn" }}
+                            className={clsx(errors.email && "border-2")}
+                        />
+
+                        <AnimatePresence mode="wait">
+                            {errors.email &&
+                                <motion.p
+                                    className="text-red-400"
+                                    initial={{ opacity: 0, y: -5}}
+                                    animate={{ opacity: 1, y: 0}}
+                                    exit={{ opacity: 0, y: -5}}
+                                    transition={{ duration: 0.2, ease: "easeIn" }}
+                                >
+                                    {errors.email}
+                                </motion.p>
+                            }
+                        </AnimatePresence>
                     </div>
 
-                    <div className="flex flex-col w-full">
-                            <motion.input
-                                type="password"
-                                placeholder="Create Password"
-                                autoComplete="new-password"
-                                value={password}
-                                onChange={(e) => {
-                                    setErrors({})
-                                    setPassword(e.target.value)
-                                }}
-                                animate={{
-                                    borderColor: errors.password
-                                        ? "rgba(251, 44, 54, 1)"
-                                        : "rgba(251, 44, 54, 0)",
-                                }}
-                                transition={{ duration: 0.12, ease: "easeIn" }}
-                                className={clsx(errors.password && "border-2")}
-                            />
+                    <div className="flex flex-col">
+                        <motion.input
+                            type="Password"
+                            placeholder="Create password"
+                            autoComplete="new-password"
+                            value={password}
+                            onChange={(e) => {
+                                setErrors({})
+                                setPassword(e.target.value)
+                            }}
+                            animate={{
+                                borderColor: errors.password
+                                    ? "rgba(251, 44, 54, 1)"
+                                    : "rgba(251, 44, 54, 0)",
+                            }}
+                            transition={{ duration: 0.12, ease: "easeIn" }}
+                            className={clsx(errors.password && "border-2")}
+                        />
 
-                            <AnimatePresence mode="wait">
-                                {errors.password &&
-                                    <motion.p
-                                        className="text-red-400"
-                                        initial={{ opacity: 0, y: -5}}
-                                        animate={{ opacity: 1, y: 0}}
-                                        exit={{ opacity: 0, y: -5}}
-                                        transition={{ duration: 0.2, ease: "easeIn" }}
-                                    >
-                                        {errors.password}
-                                    </motion.p>
-                                }
-                            </AnimatePresence>
+                        <AnimatePresence mode="wait">
+                            {errors.password &&
+                                <motion.p
+                                    className="text-red-400"
+                                    initial={{ opacity: 0, y: -5}}
+                                    animate={{ opacity: 1, y: 0}}
+                                    exit={{ opacity: 0, y: -5}}
+                                    transition={{ duration: 0.2, ease: "easeIn" }}
+                                >
+                                    {errors.password}
+                                </motion.p>
+                            }
+                        </AnimatePresence>
                     </div>
 
-                    <div className="flex flex-col w-full">
-                            <motion.input
-                                type="password"
-                                placeholder="Confirm Password"
-                                autoComplete="new-password"
-                                value={confirmPass}
-                                onChange={(e) => {
-                                    setErrors({})
-                                    setConfirmPass(e.target.value)
-                                }}
-                                animate={{
-                                    borderColor: errors.confirmPass
-                                        ? "rgba(251, 44, 54, 1)"
-                                        : "rgba(251, 44, 54, 0)",
-                                }}
-                                transition={{ duration: 0.12, ease: "easeIn" }}
-                                className={clsx(errors.confirmPass && "border-2")}
-                            />
+                    <div className="flex flex-col">
+                        <motion.input
+                            type="password"
+                            placeholder="Confirm Password"
+                            autoComplete="new-password"
+                            value={confirmPass}
+                            onChange={(e) => {
+                                setErrors({})
+                                setConfirmPass(e.target.value)
+                            }}
+                            animate={{
+                                borderColor: errors.confirmPass
+                                    ? "rgba(251, 44, 54, 1)"
+                                    : "rgba(251, 44, 54, 0)",
+                            }}
+                            transition={{ duration: 0.12, ease: "easeIn" }}
+                            className={clsx(errors.confirmPass && "border-2")}
+                        />
 
-                            <AnimatePresence mode="wait">
-                                {errors.confirmPass &&
-                                    <motion.p
-                                        className="text-red-400"
-                                        initial={{ opacity: 0, y: -5}}
-                                        animate={{ opacity: 1, y: 0}}
-                                        exit={{ opacity: 0, y: -5}}
-                                        transition={{ duration: 0.2, ease: "easeIn" }}
-                                    >
-                                        {errors.confirmPass}
-                                    </motion.p>
-                                }
-                            </AnimatePresence>
+                        <AnimatePresence mode="wait">
+                            {errors.confirmPass &&
+                                <motion.p
+                                    className="text-red-400"
+                                    initial={{ opacity: 0, y: -5}}
+                                    animate={{ opacity: 1, y: 0}}
+                                    exit={{ opacity: 0, y: -5}}
+                                    transition={{ duration: 0.2, ease: "easeIn" }}
+                                >
+                                    {errors.confirmPass}
+                                </motion.p>
+                            }
+                        </AnimatePresence>
                     </div>
 
                     <motion.button
-                        onTapStart={() => setBtnHolding(true)}
-                        onTapCancel={() => setBtnHolding(false)}
-                        onTap={() => setBtnHolding(false)}
+                        whileTap={{ scale: 0.98, backgroudColor: "#111111" }}
                         animate={{ 
-                            scale: btnHolding || loading ? 0.98 : 1, 
-                            backgroundColor: btnHolding ? "#111111" : loading ? "#0e0e0e" : "#171717"
+                            scale: loading ? 0.98 : 1, 
+                            backgroundColor: loading ? "#0e0e0e" : "#171717"
                         }}
                         className={clsx(
                             "flex items-center justify-center",
@@ -200,10 +324,10 @@ export default function Signup() {
                         {loading ? <span className="spinner" /> : "Sign up"}
                     </motion.button>
 
-                    <MotionLink variant="signup"/>
-                </motion.form>
+                    <MotionLink variant="signup" />
+                    </form>
+                </DesktopAuth>
             </div>
-        </Interface>
         </>
     )
 }
