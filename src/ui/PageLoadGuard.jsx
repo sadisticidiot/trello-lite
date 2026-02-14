@@ -5,7 +5,7 @@ import { supabase } from "../data/supabase-client"
 import ewan from "/ewan.jfif"
 
 export default function PageLoadguard() {
-  const { session, loading } = useAuth() // 👈 make sure your AuthProvider exposes a loading state
+  const { session, loading } = useAuth()
   const navigate = useNavigate()
   const [checking, setChecking] = useState(true)
 

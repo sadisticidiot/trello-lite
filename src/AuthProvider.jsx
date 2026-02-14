@@ -59,12 +59,13 @@ export function AuthProvider({ children }) {
     // get user's session
     useEffect(() => {
         supabase.auth.getSession().then(({ data: {session} }) => {
-        setSession(session)
-        setLoading(false)
+            setSession(session)
+            setLoading(false)
         })
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-        setSession(session)
+            setSession(session)
+            setLoading(false)
         })
         
         return () => subscription.unsubscribe()
@@ -110,11 +111,20 @@ export function AuthProvider({ children }) {
         }
     }, [session])
 
+    const logout = async () => {
+        await supabase.auth.signOut()
+        setSession(null)
+        setProfile(null)
+        setName(null)
+        setPosts([])
+        setActiveNote(null)
+    }
+
     return (
         <AuthContext.Provider 
         value={{ session, loading, profile, 
         name, profileLoading, posts, setPosts,
-        activeNote, setActiveNote}}>
+        activeNote, setActiveNote, logout}}>
             {children}
         </AuthContext.Provider>
     )

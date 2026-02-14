@@ -1,14 +1,11 @@
-import { supabase } from "../data/supabase-client"
+import { useAuth } from "../AuthProvider"
 
 export default function Menu() {
-
-    const handleOut = async () => {
-        await supabase.auth.signOut()
-    }
+    const { logout } = useAuth()
 
     return(
         <div className="size-full flex items-center justify-center p-5">
-            <button onClick={handleOut}>Log out</button>
+            <button onClick={logout}>Log out</button>
         </div>
     )
 }
