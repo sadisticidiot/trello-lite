@@ -10,7 +10,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
-        navigateFallbackDenylist: [/^\/auth\/callback/], // VERY important for Supabase OAuth
+        navigateFallbackDenylist: [/^\/auth-intermission/], // VERY important for Supabase OAuth
       },
       manifest: {
         name: 'Trello Lite',
