@@ -130,4 +130,20 @@ body{
       backdrop-blur-[4px]
       bg-black/60
   }
+
+  .secondary-button {
+    @apply
+     w-full p-2 
+     bg-neutral-950 rounded-lg
+     shadow-[0_3px_0_rgba(0,0,0,0.95)]
+  }
+
+  .button-base { 
+    @apply
+      w-full 
+      p-2 
+      bg-pink-700
+      rounded-lg
+      shadow-[0_3px_0_rgba(134,16,67,0.95)]
+  }
 }

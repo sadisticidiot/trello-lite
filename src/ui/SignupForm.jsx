@@ -81,7 +81,7 @@ export default function SignupForm() {
                         : "rgba(251, 44, 54, 0)",
                     }}
                     transition={{ duration: 0.12, ease: "easeIn" }}
-                    className={clsx(errors.email && "border-2")}
+                    className={clsx(errors.email && "border-2", "bg-neutral-950 inset-shadow-xl/30")}
                 />
                             
                     <AnimatePresence mode="wait">
@@ -102,7 +102,7 @@ export default function SignupForm() {
             <div className="flex flex-col">
                 <motion.input
                     type="Password"
-                    placeholder="Password"
+                    placeholder="Create Password"
                     autoComplete="new-password"
                     value={password}
                     onChange={(e) => {
@@ -115,7 +115,7 @@ export default function SignupForm() {
                         : "rgba(251, 44, 54, 0)",
                     }}
                     transition={{ duration: 0.12, ease: "easeIn" }}
-                    className={clsx(errors.password && "border-2")}
+                    className={clsx(errors.email && "border-2", "bg-neutral-950 inset-shadow-xl/30")}
                 />
                 
                 <AnimatePresence mode="wait">
@@ -149,7 +149,7 @@ export default function SignupForm() {
                         : "rgba(251, 44, 54, 0)",
                     }}
                     transition={{ duration: 0.12, ease: "easeIn" }}
-                    className={clsx(errors.confirmPass && "border-2")}
+                    className={clsx(errors.email && "border-2", "bg-neutral-950 inset-shadow-xl/30")}
                 />
                 
                 <AnimatePresence mode="wait">
@@ -172,10 +172,10 @@ export default function SignupForm() {
                 whileTap={{ scale: 0.98, backgroudColor: "#111111" }}
                 animate={{ 
                     scale: loading ? 0.98 : 1, 
-                    backgroundColor: loading ? "#0e0e0e" : "#171717"
+                    backgroundColor: loading ? "#0e0e0e" : "#c6005c"
                 }}
                 className={clsx(
-                    "flex items-center justify-center",
+                    "flex items-center justify-center button-base",
                     loading && "border-black"
                 )}
             >

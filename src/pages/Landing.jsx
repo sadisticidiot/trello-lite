@@ -60,7 +60,7 @@ export default function Landing() {
                     >
                         <div 
                             onClick={handleExitAuth}  
-                            className="absolute inset-0 bg-black/70 blackdrop-blur-sm"
+                            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
                         />
 
                         <DesktopAuth>
@@ -162,7 +162,7 @@ export default function Landing() {
                                 boxShadow: "0px 0px 20px rgba(230, 0, 119, 0.58)" 
                             }}
                         >
-                            <button onClick={() => navigate(`${location.pathname}?auth=signin`)} className="px-10 p-2 font-semibold">
+                            <button onClick={() => navigate(`${location.pathname}?auth=signin`)} className="px-10 p-1 font-semibold">
                                 Sign in
                             </button>
                         </motion.div>

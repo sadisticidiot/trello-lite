@@ -96,7 +96,7 @@ export default function LoginForm() {
                         : "rgba(251, 44, 54, 0)",
                     }}
                     transition={{ duration: 0.12, ease: "easeIn" }}
-                    className={clsx(errors.email && "border-2")}
+                    className={clsx(errors.email && "border-2", "bg-neutral-950 inset-shadow-xl/30")}
                 />
                             
                     <AnimatePresence mode="wait">
@@ -130,7 +130,7 @@ export default function LoginForm() {
                         : "rgba(251, 44, 54, 0)",
                     }}
                     transition={{ duration: 0.12, ease: "easeIn" }}
-                    className={clsx(errors.password && "border-2")}
+                    className={clsx(errors.email && "border-2", "bg-neutral-950 inset-shadow-xl/30")}
                 />
                 
                 <AnimatePresence mode="wait">
@@ -153,14 +153,14 @@ export default function LoginForm() {
                 whileTap={{ scale: 0.98, backgroudColor: "#111111" }}
                 animate={{ 
                     scale: btnLoad ? 0.98 : 1, 
-                    backgroundColor: btnLoad ? "#0e0e0e" : "#171717"
+                    backgroundColor: btnLoad ? "#0e0e0e" : "#c6005c"
                 }}
                 className={clsx(
-                    "flex items-center justify-center",
+                    "flex items-center justify-center button-base mb-1",
                     btnLoad && "border-black"
                 )}
             >
-                {btnLoad ? <span className="spinner" /> : "Sign up"}
+                {btnLoad ? <span className="spinner" /> : "Sign in"}
             </motion.button>
             
             <MotionLink variant="login" />

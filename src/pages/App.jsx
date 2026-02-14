@@ -55,16 +55,9 @@ export default function App() {
             className="relative h-screen overflow-y-auto
             flex flex-col no-scrollbar"
         >
-            <motion.div 
-                key={location.pathname}
-                className="flex-1 h-full"
-                initial={{ x : direction * 250 }}
-                animate={{ x: 0 }}
-                exit={{ x: direction * -250 }}
-                transition={{ duration: 0.2, ease: "easeInOut"}}
-            >
+            <div className="flex-1 h-full">
                 <Outlet />
-            </motion.div>
+            </div>
 
             <div 
                 className="bg-black w-full fixed 

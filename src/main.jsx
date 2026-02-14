@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { registerSW } from 'virtual:pwa-register'
 
 import './index.css'
 
@@ -67,6 +68,15 @@ const router = createBrowserRouter([
   },
 
 ])
+
+registerSW({
+  onNeedRefresh() {
+    console.log(`New version available`)
+  },
+  onOfflineReady() {
+    console.log('App ready to work online')
+  },
+})
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
