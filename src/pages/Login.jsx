@@ -9,6 +9,7 @@ import basta from "/ewan.jfif"
 import MotionLink from "../ui/MotionLink";
 import Interface from "../ui/Interface";
 import DesktopAuth from "../ui/DesktopAuth";
+import LoginForm from "../ui/LoginForm";
 
 export default function Login() {
     const { session } = useAuth()
@@ -98,90 +99,13 @@ export default function Login() {
                         >
                             <img src={basta} className="rounded-full size-25" />
 
-                            <div className="flex flex-col w-full">
-                                    <motion.input
-                                        type="email"
-                                        placeholder="Email"
-                                        autoComplete="username"
-                                        value={email}
-                                        onChange={(e) => {
-                                            setErrors({})
-                                            setEmail(e.target.value)
-                                        }}
-                                        animate={{
-                                            borderColor: errors.email
-                                                ? "rgba(251, 44, 54, 1)"
-                                                : "rgba(251, 44, 54, 0)",
-                                        }}
-                                        transition={{ duration: 0.12, ease: "easeIn" }}
-                                        className={clsx(errors.email && "border-2")}
-                                    />
-
-                                    <AnimatePresence mode="wait">
-                                        {errors.email &&
-                                            <motion.p
-                                                className="text-red-400"
-                                                initial={{ opacity: 0, y: -5}}
-                                                animate={{ opacity: 1, y: 0}}
-                                                exit={{ opacity: 0, y: -5}}
-                                                transition={{ duration: 0.2, ease: "easeIn" }}
-                                            >
-                                                {errors.email}
-                                            </motion.p>
-                                        }
-                                    </AnimatePresence>
-                            </div>
-
-                            <div className="flex flex-col w-full">
-                                    <motion.input
-                                        type="password"
-                                        placeholder="Password"
-                                        autoComplete="new-password"
-                                        value={password}
-                                        onChange={(e) => {
-                                            setErrors({})
-                                            setPassword(e.target.value)
-                                        }}
-                                        animate={{
-                                            borderColor: errors.password
-                                                ? "rgba(251, 44, 54, 1)"
-                                                : "rgba(251, 44, 54, 0)",
-                                        }}
-                                        transition={{ duration: 0.12, ease: "easeIn" }}
-                                        className={clsx(errors.password && "border-2")}
-                                    />
-
-                                    <AnimatePresence mode="wait">
-                                        {errors.password &&
-                                            <motion.p
-                                                className="text-red-400"
-                                                initial={{ opacity: 0, y: -5}}
-                                                animate={{ opacity: 1, y: 0}}
-                                                exit={{ opacity: 0, y: -5}}
-                                                transition={{ duration: 0.2, ease: "easeIn" }}
-                                            >
-                                                {errors.password}
-                                            </motion.p>
-                                        }
-                                    </AnimatePresence>
-                            </div>
-
-                            <motion.button
-                                disabled={btnLoad || gglLoad}
-                                whileTap={{ scale: 0.98, backgroundColor: "#111111" }}
-                                animate={{ 
-                                    scale: btnLoad ? 0.98 : 1, 
-                                    backgroundColor: btnLoad ? "#0e0e0e" : "#171717"
-                                }}
-                                className={clsx(
-                                    "flex items-center justify-center",
-                                    btnLoad && "border-black"
-                                )}
+                            <LoginForm />
+                            <button 
+                                className="secondary-button bg-neutral-900 flex items-center justify-center"
+                                onClick={handleGoogle}
                             >
-                                {btnLoad ? <span className="spinner" /> : "Sign up"}
-                            </motion.button>
-
-                            <MotionLink variant="login"/>
+                                {gglLoad ? <span className="spinner"/> : "Continue with Google" }
+                            </button>
                         </motion.form>
                     </div>
                 </Interface>

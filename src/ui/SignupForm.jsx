@@ -182,7 +182,7 @@ export default function SignupForm() {
                 {loading ? <span className="spinner" /> : "Sign up"}
             </motion.button>
             
-            <MotionLink variant="login" />
+            <MotionLink variant="signup" />
             <motion.button
                 type="button" 
                 whileTap={{ scale: 0.96, color: "#e7e7b2"}}

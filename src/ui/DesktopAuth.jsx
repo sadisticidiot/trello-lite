@@ -18,7 +18,7 @@ export default function DesktopAuth({ children }) {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
-                redirectTo: `$window.location.origin`
+                redirectTo: `${window.location.origin}/auth-intermission`
             }
         })
 
@@ -54,7 +54,7 @@ export default function DesktopAuth({ children }) {
                             <hr className="border-t border-white/20 flex-1" />
                         </div>
                         <button 
-                            className="secondary-button flex"
+                            className="secondary-button flex items-center justify-center"
                             onClick={handleGoogle}
                         >
                             {loading ? <span className="spinner"/> : "Continue with Google" }
