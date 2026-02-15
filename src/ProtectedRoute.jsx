@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
 import Interface from "./ui/Interface";
 export default function ProtectedRoute(){
-    const { loading, session } = useAuth()
+    const { loading, session, guestSession } = useAuth()
 
     if (loading) {
         return(

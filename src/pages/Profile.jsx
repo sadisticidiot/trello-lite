@@ -83,15 +83,15 @@ export default function Profile() {
     ) : []
 
     return(
-        <div className="h-full flex flex-col no-scrollbar bg-neutral-900
-        p-2 py-7 pb-30 justify-center overflow-y-auto relative">
+        <div 
+            className="h-full flex flex-col bg-neutral-900 p-2 relative overflow-y-auto">
             {isSearch ? (
                 <div className="relative flex">
                     <div className="fixed inset-0 backdrop-blur-sm
-                    bg-black/70" onClick={() => setIsSearch(false)}/>
+                    bg-black/70 z-90" onClick={() => setIsSearch(false)}/>
 
                     <div className="absolute top-1 bg-neutral-900 
-                    flex flex-col w-full rounded">
+                    flex flex-col w-full rounded z-100">
                         <div className="flex items-center justify-between
                         border-b-1 border-white/30 px-4 p-2">
                             <Search className="size-4"/>
@@ -125,19 +125,23 @@ export default function Profile() {
                     </div>
                 </div>
             ) : (
-                <header className="flex justify-center
-                relative gap-10">
-                    <div className="absolute left-2 -top-2 cursor-pointer"
-                    onClick={() => navigate(`${location.pathname}?view-profile=true`)}>
-                        <img src={profile} className="rounded-full
-                        size-12 border-2 border-white/20" />
+                <header className="flex justify-between
+                relative gap-8 items-center">
+                    {/* Profile */}
+                    <button
+                        onClick={() => navigate(`${location.pathname}?view-profile=true`)}
+                    >
+                        <img 
+                            src={profile} 
+                            className="rounded-full size-12 border-2 border-white/20"
+                        />
+                    </button>
 
-                    </div>
+                    <div className="flex justify-between px-2 flex-1 items-end">
                     {pages.map((p) => (
                         <div key={p.name} className="relative flex flex-col">
                             <button onClick={() => handleNav(p)}
                             className={clsx(
-                            "w-auto border-0 p-0",   
                             currentView === p.name
                             ? "text-[14px] text-white"
                             : "text-[13px] text-white/40"
@@ -158,14 +162,15 @@ export default function Profile() {
                             </AnimatePresence>
                         </div>
                     ))}
-                    <button className="absolute right-2 bottom-0
-                    w-auto border-0 p-0" onClick={() => setIsSearch(true)}>
+                    </div>
+
+                    <button onClick={() => setIsSearch(true)}>
                         <Search className="size-6"/>
                     </button>
                 </header>
             )}
 
-            <div className="h-full p-5 pt-10">
+            <div className="flex-1 p-2 pt-4 pb-12">
                 <Outlet />
             </div>
 
@@ -183,7 +188,7 @@ export default function Profile() {
             </div>}
                   
             <div className="flex flex-col fixed bottom-13 right-4
-            gap-2 items-end shadow-xl/30">
+            gap-2 items-end shadow-xl/30 z-90">
                 <AnimatePresence>
                 {isOpen && <motion.ul className="flex-1 flex flex-col gap-2
                 w-full items-end" exit="exit"

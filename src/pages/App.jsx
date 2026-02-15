@@ -51,16 +51,13 @@ export default function App() {
     }
 
     return(
-        <div 
-            className="relative h-screen overflow-y-auto
-            flex flex-col no-scrollbar"
-        >
-            <div className="flex-1 h-full">
+        <div className="relative">
+            <div className="w-dvw h-dvh">
                 <Outlet />
             </div>
-
+            {/* Footer */}
             <div 
-                className="bg-black w-full fixed 
+                className="bg-black w-full fixed z-100
                 grid grid-cols-3 gap-2 bottom-0 px-3"
             >
                 <AnimatePresence mode="wait">

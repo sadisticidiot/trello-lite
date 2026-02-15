@@ -41,7 +41,7 @@ export function AuthProvider({ children }) {
         const getPosts = async (userId) => {
             const { data, error } = await supabase
                 .from("posts")
-                .select("id, title, post, created_at")
+                .select("id, title, post, created_at, is_pinned, is_archived")
                 .eq("user_id", userId)
                 .order("created_at", { ascending: false })
 
@@ -120,11 +120,18 @@ export function AuthProvider({ children }) {
         setActiveNote(null)
     }
 
+    const guestSession = {
+    id: 'guest-123',
+    type: 'guest',
+    name: 'Guest'
+    };
+
     return (
         <AuthContext.Provider 
         value={{ session, loading, profile, 
         name, profileLoading, posts, setPosts,
-        activeNote, setActiveNote, logout}}>
+        activeNote, setActiveNote, logout,
+        guestSession}}>
             {children}
         </AuthContext.Provider>
     )

@@ -1,36 +1,260 @@
 import { useAuth } from "../AuthProvider"
-import { useState } from "react";
+import { useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { motion } from "motion/react";
+import { motion } from "motion/react"
+import { supabase } from "../data/supabase-client"
+import { BookmarkCheck, Trash2, ClipboardClock, Pin } from "lucide-react"
 
 export default function Notes() {
-    const { posts } = useAuth()
-    const navigate = useNavigate()
+  const { session, posts, setPosts } = useAuth()
+  const user = session.user
+  const navigate = useNavigate()
 
-    const [holdingId, setHoldingId] = useState(null)
+  const timerRef = useRef(null)
+  const longPressTriggered = useRef(false)
+  const cardRefs = useRef({})
 
-    return(
-        <div className="columns-2 gap-4 pb-30">
-            {posts.map((p) => {
-                const holding = holdingId === p.id
-                return(
-                    <motion.div key={p.id} className="flex rounded-xl flex-col 
-                    p-2 text-start border-2 border-white/40 cursor-pointer
-                    break-inside-avoid mb-4 shadow-xl/30"
-                    onTapStart={() => setHoldingId(p.id)}
-                    onTapCancel={() => setHoldingId(null)} 
-                    onTap={() => setHoldingId(null)} 
-                    animate={{ 
-                        scale: holding ? 0.96 : 1,
-                        color: holding ? "#e7e7e7b2" : "#ffffff",
-                        background: holding ? "#0e0e0e" : "#0a0a0a"
-                    }}  
-                    onClick={() => navigate(`/app/notepad/${p.id}`)}>
-                        <h1 className="p-0 text-start text-[20px] pb-4">{ p.title ||"Untitled" }</h1>
-                        <span className="text-neutral-200/95">{p.post}</span>
-                    </motion.div>
-                )
-            })}
-        </div>
+  const [pressingId, setPressingId] = useState(null)
+  const [longPressId, setLongPressId] = useState(null)
+  const [centerOffset, setCenterOffset] = useState({ x: 0, y: 0 })
+
+  const handlePointerDown = (id) => {
+    longPressTriggered.current = false
+    setPressingId(id)
+
+    timerRef.current = setTimeout(() => {
+      longPressTriggered.current = true
+
+      const rect = cardRefs.current[id].getBoundingClientRect()
+      const viewportCenterX = window.innerWidth / 2
+      const viewportCenterY = window.innerHeight / 2
+      const cardCenterX = rect.left + rect.width / 2
+      const cardCenterY = rect.top + rect.height / 2
+
+      setCenterOffset({
+        x: viewportCenterX - cardCenterX,
+        y: viewportCenterY - cardCenterY,
+      })
+
+      setLongPressId(id)
+    }, 600)
+  }
+
+  const handlePointerUp = () => {
+    clearTimeout(timerRef.current)
+    setPressingId(null)
+  }
+
+  const handlePointerLeave = () => {
+    clearTimeout(timerRef.current)
+    setPressingId(null)
+  }
+
+  const handleClick = (id) => {
+    if (longPressTriggered.current) return
+    navigate(`/app/notepad/${id}`)
+  }
+
+  const delNote = async (id) => {
+    setPosts((p) => p.filter((post) => post.id !== id))
+
+    const { error } = await supabase
+      .from("posts")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user.id)
+
+    if (error) console.error(error)
+  }
+
+  const togglePin = async (id) => {
+    const post = posts.find((p) => p.id === id)
+    if (!post) return
+
+    const newPinnedState = !post.is_pinned
+
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === id ? { ...p, is_pinned: newPinnedState } : p
+      )
     )
+
+    const { error } = await supabase
+      .from("posts")
+      .update({ is_pinned: newPinnedState })
+      .eq("id", id)
+      .eq("user_id", user.id)
+
+    if (error) {
+      console.error(error)
+
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.id === id ? { ...p, is_pinned: !newPinnedState } : p
+        )
+      )
+    }
+  }
+
+  const handleArchived = async (id) => {
+    const post = post.find((p) => p.id === id)
+    if (!post) return
+
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === id 
+          ? { ...p, is_archived: true, is_pinned: false } 
+          : p
+      )
+    )
+
+    const { error } = await supabase
+      .from("posts")
+      .update({ 
+        is_archived: true, 
+        is_pinned: false 
+      })
+      .eq("id", id)
+      .eq("user_id", user.id)
+
+    if (error) {
+      console.error(error.message)
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.id === id
+            ? { ...p, is_archived: false }
+            : p
+        )
+      )
+    }
+  }
+
+  const activePosts = posts.filter((p) => !p.is_archived)
+  const pinnedPosts = activePosts.filter((p) => p.is_pinned)
+  const unpinnedPosts = activePosts.filter((p) => !p.is_pinned)
+  const isLongPressedPinned = posts.find((p) => p.id === longPressId)?.is_pinned
+
+  return (
+    <div>
+      {/* Overlay + Action Sheet */}
+      {longPressId && (
+        <>
+          <div
+            className="overlay z-30"
+            onClick={() => setLongPressId(null)}
+          />
+
+          <div
+            className="fixed bottom-28 left-1/2 -translate-x-1/2 z-60
+            bg-neutral-900/95 rounded-xl p-3 pb-2 w-60 
+            shadow-xl flex flex-col gap-2 backdrop-blur-[2px]"
+          >
+            <div className="flex justify-between">
+              <button
+                onClick={() => {
+                  togglePin(longPressId)
+                  setLongPressId(null)
+                }}
+              >
+                {isLongPressedPinned ? (
+                  <Pin className="text-white/10 fill-yellow-600" />
+                ) : (
+                  <Pin />
+                )}
+              </button>
+
+              <button>
+                <ClipboardClock />
+              </button>
+
+              <button 
+                onClick={() => {
+                  handleArchived(longPressId)
+                  setLongPressId(null)
+                }}
+              >
+                <BookmarkCheck />
+              </button>
+
+              <button
+                onClick={() => {
+                  delNote(longPressId)
+                  setLongPressId(null)
+                }}
+              >
+                <Trash2 className="text-red-600"/>
+              </button>
+            </div>
+
+            <button
+              className="text-sm text-white/40"
+              onClick={() => setLongPressId(null)}
+            >
+              Cancel
+            </button>
+          </div>
+        </>
+      )}
+
+      {/* Pinned Notes */}
+        {pinnedPosts.length !== 0 && (
+          <div 
+            className="flex flex-col mb-6 pb-4 border-b-2 border-white/20"
+          >
+            <span className="text-start font-semibold mb-4">
+              Pinned
+            </span>
+              <div className="columns-2">
+                {pinnedPosts.map((p) => renderCard(p))}
+            </div>
+          </div>
+        )}
+
+      {/* Notes Grid */}
+      <div className="columns-2 gap-4">
+        {unpinnedPosts.map((p) => renderCard(p))}
+      </div>
+    </div>
+  )
+
+  function renderCard(p) {
+    const pressing = pressingId === p.id
+    const longPressed = longPressId === p.id
+
+    return (
+      <motion.div
+        key={p.id}
+        ref={(el) => (cardRefs.current[p.id] = el)}
+        className="notes-base"
+        onPointerDown={() => handlePointerDown(p.id)}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerLeave}
+        onPointerCancel={handlePointerLeave}
+        onClick={() => handleClick(p.id)}
+        animate={{
+          scale: longPressed
+            ? 1.04
+            : pressing
+            ? 0.96
+            : 1,
+          x: longPressed ? centerOffset.x : 0,
+          y: longPressed ? centerOffset.y : 0,
+          zIndex: longPressed ? 30 : 1,
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 25,
+        }}
+      >
+        <h1 className="p-0 text-start text-[20px] pb-4 line-clamp-2">
+          {p.title || "Untitled"}
+        </h1>
+
+        <span className="text-neutral-200/95 line-clamp-4 text-ellipsis">
+          {p.post}
+        </span>
+      </motion.div>
+    )
+  }
 }

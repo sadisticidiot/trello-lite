@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react"
 import logo from "/ewan.jfif"
 import pint from "/pinterest-logo.png"
 import discord from "/dc-logo.png"
+import landingPrev from "/landing-app-prev.png"
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom"
 import { X, Menu } from "lucide-react"
 import { useAuth } from "../AuthProvider"
@@ -42,7 +43,7 @@ export default function Landing() {
     return(
         <div
             className="w-screen h-screen relative
-            bg-black flex overflow-y-auto"
+            bg-black flex overflow-y-auto no-scrollbar"
             ref={scrollRef}
         >
             <div className="pointer-events-none absolute bg-gradient-to-b 
@@ -245,26 +246,10 @@ export default function Landing() {
                         <button 
                             className="bg-neutral-700/30 ring-2 ring-neutral-400/60
                             p-2 px-4 rounded-xl shadow-xl/10 shadow-white"
-                            onClick={() => nextSectionRef.current?.scrollIntoView({
-                                behavior: "smooth",
-                                block: "start"
-                            })}
+                            onClick={() => navigate('/auth-intermission')}
                         >
-                                Learn more
+                                Join as Guest
                         </button>
-                    </div>
-                </motion.div>
-
-                <motion.div 
-                    style={{ opacity: firstChildOpacity }}
-                    className="h-dvh scroll-mt-24 flex-none flex p-4"
-                    ref={nextSectionRef}
-                >
-                    <div className="ring-2 ring-pink-400/60 size-full
-                    shadow-[0_0_20px_rgba(253,165,213,0.3)] rounded-lg
-                    flex flex-col gap-4 justify-center items-center">
-                        <span className="text-white/40">Work in progress</span>
-                        <span className="spinner border-white/40 border-l-transparent" />
                     </div>
                 </motion.div>
             </div>
