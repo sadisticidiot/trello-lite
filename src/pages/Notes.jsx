@@ -97,7 +97,7 @@ export default function Notes() {
   }
 
   const handleArchived = async (id) => {
-    const post = post.find((p) => p.id === id)
+    const post = posts.find((p) => p.id === id)
     if (!post) return
 
     setPosts((prev) =>
