@@ -57,7 +57,7 @@ export default function App() {
             </div>
             {/* Footer */}
             <div 
-                className="bg-black w-full fixed z-100
+                className="bg-black w-full fixed z-80
                 grid grid-cols-3 gap-2 bottom-0 px-3"
             >
                 <AnimatePresence mode="wait">
