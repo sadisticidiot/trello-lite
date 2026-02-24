@@ -27,6 +27,7 @@ import PinnedNotes from './pages/Tasks.jsx'
 import ArchivedNotes from './pages/ArchivedNotes.jsx'
 import Taskpad from './pages/Taskpad.jsx'
 import FullScreen from './ui/FullScreen.jsx'
+import FooterIncluded from './ui/FooterIncluded.jsx'
 
 const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
@@ -34,18 +35,24 @@ const router = createBrowserRouter([
   { path: '/signin', element: <Login /> },
   { path: '/signup', element: <Signup /> },
 
-  //Protected Routes
-  {
-    element: <ProtectedRoute />,
+  { path: '/create-account', element: <CreateAccount /> },
+  { path: '/finish-setup', element: <FinishSetup /> },
+
+  { 
+    element: <App />,
     children: [
-      { path: '/create-account', element: <CreateAccount /> },
-      { path: '/finish-setup', element: <FinishSetup /> },
       { 
-        path: '/app', 
-        element: <App />,
+        element: <FooterIncluded />,
         children: [
-          { index: true, element: <Home />},
-          { path: 'menu', element: <Menu />},
+          { 
+            path: '/home', 
+            element: <Home />,
+            children: [
+              { index: true, element: <Notes /> },
+              { path: 'tasks', element: <PinnedNotes />},
+              { path: 'archived-notes', element: <ArchivedNotes />}, 
+            ]
+          },
           { 
             path: 'profile',
             element: <Profile />,
@@ -55,18 +62,18 @@ const router = createBrowserRouter([
               { path: 'archived-notes', element: <ArchivedNotes />},
             ]
           },
-          { 
-            element: <FullScreen />,
-            children: [
-              { path: 'notepad/:id', element: <Notepad />},
-              { path: 'taskpad/:id', element: <Taskpad />},
-            ]
-          }
+          { path: 'menu', element: <Menu /> }
         ]
       },
+      { 
+        element: <FullScreen />,
+        children: [
+          { path: 'notepad/:id', element: <Notepad /> },
+          { path: 'taskpad/:id', element: <Taskpad /> }
+        ]
+      }
     ]
-  },
-
+  } 
 ])
 
 registerSW({

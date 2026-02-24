@@ -43,11 +43,10 @@ export default function Landing() {
     return(
         <div
             className="w-screen h-screen relative
-            bg-black flex overflow-y-auto no-scrollbar"
-            ref={scrollRef}
+            bg-black flex"
         >
             <div className="pointer-events-none absolute bg-gradient-to-b 
-            from-pink-600/30 via-pink-600/10 to-transparent inset-0" />
+            from-pink-950/30 from-10% to-pink-700/50 inset-0" />
             
             <AnimatePresence>
             {auth &&
@@ -216,7 +215,6 @@ export default function Landing() {
 
             <div className="flex flex-col size-full z-40 p-4">
                 <motion.div 
-                    style={{ opacity: mainDivOpacity }}
                     className="h-dvh items-center
                     flex justify-center flex-col gap-4 flex-none">
                     <h1 className="text-shadow-lg/30 text-[3rem] md:text-[4rem]">

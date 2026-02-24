@@ -92,7 +92,7 @@ export default function ArchivedNotes() {
 
 
     return(
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 size-full">
             {selected.length > 0 &&
                 <button 
                     className="flex justify-end"
@@ -109,69 +109,76 @@ export default function ArchivedNotes() {
                     </motion.div>
                 </button>
             }
-        <div className="columns-2 relative pb-5">
+          {archivedNotes.length === 0 ?
+            (
+              <div className="flex justify-center items-center size-full">
+                <span className="text-white/40">Nothing to see here...</span>
+              </div>
+            ):(
+              <div className="columns-2 relative pb-5">
             {/* Header and Footer */}
-            <AnimatePresence>
-            {selected.length > 0 &&
-            <>
-                <motion.div 
+              <AnimatePresence>
+              {selected.length > 0 &&
+                 <>
+                  <motion.div 
                     key="header"
                     className="fixed w-full left-0 z-50 gap-2
                     top-0 bg-neutral-900 flex justify-center px-2"
                     initial={{ height: 0 }}
-                    animate={{ height: 60 }}
+                    animate={{ height: 57 }}
                     exit={{ height: 0 }}
-                >
+                  >
                     <motion.button 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={() => setSelected([])}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      onClick={() => setSelected([])}
                     >
-                        <X />
+                      <X />
                     </motion.button>
 
                     <span className="flex-1 text-start flex items-center">{selected.length} items selected</span>
-                </motion.div>
+                  </motion.div>
 
-                <motion.div 
+                  <motion.div 
                     key="footer"
-                    className="fixed w-full left-0 z-90 shadow-xl/20 items-center
+                    className="fixed w-full left-0 z-90 shadow-xl/20 items-end
                     bottom-0 bg-neutral-900 grid grid-cols-2"
                     initial={{ height: 0 }}
-                    animate={{ height: 60 }}
+                    animate={{ height: 50 }}
                     exit={{ height: 0 }}
-                >
+                  >
                     <div className="flex flex-col items-center">
-                    <motion.button 
+                      <motion.button 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={handleUnarchive}
-                    >
+                      >
                         <ArchiveRestore className="size-5"/>
-                    </motion.button>
-                    <span className="text-sm font-light">Restore all</span>
+                      </motion.button>
+
+                      <span className="text-sm font-light">Restore all</span>
                     </div>
 
                     <div className="flex flex-col items-center">
-                    <motion.button 
+                      <motion.button 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={handleDel}
-                    >
+                      >
                         <Trash2 className="size-5"/>
-                    </motion.button>
-                    <span className="text-sm font-light">Delete all</span>
+                      </motion.button>
+
+                      <span className="text-sm font-light">Delete all</span>
                     </div>
+                  </motion.div>
+              </>
+              }
+              </AnimatePresence>
 
-                </motion.div>
-            </>
-            }
-            </AnimatePresence>
-
-            {archivedNotes.map((p) => {
+              {archivedNotes.map((p) => {
                 const pressing = pressingId === p.id
                 const isSelected = selected.includes(p.id)
                 return (
@@ -208,8 +215,9 @@ export default function ArchivedNotes() {
                     }
                 </motion.div>
                 )}
-            )}
-        </div>
+              )}
+            </div>
+          )}
         </div>
     )
 }

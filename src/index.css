@@ -41,17 +41,6 @@ body{
   -webkit-touch-callout: none;
 }
 
-/* h1 */
-@layer base {
-  h1 {
-    @apply
-      font-bold
-      text-2xl
-      py-3
-      text-center
-  }
-}
-
 /* Links */
 @layer components {
   .link-base {
@@ -63,25 +52,6 @@ body{
       bg-pink-950
       ring-2
       ring-pink-600
-  }
-}
-
-/* Inputs */
-@layer base {
-  input {
-    @apply 
-      appearance-none
-      bg-neutral-900
-      inset-shadow-sm inset-shadow-zinc-950
-      rounded-2xl
-      px-2 py-4 pl-3
-      w-full
-      outline-none
-      text-neutral-100
-      placeholder:text-neutral-400/50
-      font-sans tracking-normal
-      transition
-      focus:ring-2 focus:ring-neutral-700;
   }
 }
 
@@ -161,6 +131,15 @@ body{
       border-2 border-white/40 
       cursor-pointer select-none 
       relative break-inside-avoid
-      shadow-xl/30 bg-neutral-950
+      shadow-xl/30 shadow-neutral-900 
+      bg-neutral-900
+  }
+
+  .input-base {
+    @apply 
+      appearance-none
+      outline-none
+      font-sans tracking-normal
+      transition
   }
 }

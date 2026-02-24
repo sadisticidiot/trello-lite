@@ -1,14 +1,17 @@
 import { useAuth } from "../AuthProvider"
 import { useRef, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Navigate, useNavigate, useOutletContext } from "react-router-dom"
 import { motion } from "motion/react"
 import { supabase } from "../data/supabase-client"
-import { BookmarkCheck, Trash2, ClipboardClock, Pin } from "lucide-react"
+import { Archive, ClipboardCheck, Trash2, ClipboardClock, Pin, BrushCleaning } from "lucide-react"
 
 export default function Notes() {
-  const { session, posts, setPosts } = useAuth()
-  const user = session.user
+  const { session, loading, posts, setPosts } = useAuth()
   const navigate = useNavigate()
+  
+  if (!session) return <Navigate to='/auth-intermission' />
+  if (loading) return <Navigate to='/auth-intermission' />
+  const user = session.user
 
   const timerRef = useRef(null)
   const longPressTriggered = useRef(false)
@@ -135,7 +138,7 @@ export default function Notes() {
   const isLongPressedPinned = posts.find((p) => p.id === longPressId)?.is_pinned
 
   return (
-    <div>
+    <div className="size-full">
       {/* Overlay + Action Sheet */}
       {longPressId && (
         <>
@@ -164,6 +167,10 @@ export default function Notes() {
               </button>
 
               <button>
+                <ClipboardCheck />
+              </button>
+
+              <button>
                 <ClipboardClock />
               </button>
 
@@ -173,7 +180,7 @@ export default function Notes() {
                   setLongPressId(null)
                 }}
               >
-                <BookmarkCheck />
+                <Archive />
               </button>
 
               <button
@@ -211,9 +218,23 @@ export default function Notes() {
         )}
 
       {/* Notes Grid */}
-      <div className="columns-2 gap-4">
-        {unpinnedPosts.map((p) => renderCard(p))}
-      </div>
+      {activePosts.length === 0 
+       ? (
+        <div 
+          className="h-full flex flex-col gap-2 items-center justify-center"
+        >
+          <BrushCleaning className="text-neutral-500 size-10" />
+
+          <span className="text-neutral-500">
+            No notes yet, activate your productiveness!
+          </span>
+        </div>
+       ) : (
+        <div className="columns-2 md:columns-3 gap-4">
+          {unpinnedPosts.map((p) => renderCard(p))}
+        </div>
+       )
+      }
     </div>
   )
 

@@ -1,71 +1,126 @@
 import { useState } from "react"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import clsx from "clsx"
-import { motion } from "motion/react"
+import { AnimatePresence, motion } from "motion/react"
+import { X } from "lucide-react"
+
+const container = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1, 
+    transition: { staggerChildren: 0.1 }
+  },
+  exit: { 
+    opacity: 0, 
+    transition: { staggerChildren: 0.1, staggerDirection: -1 }
+  }
+}
+
+const item = {
+  hidden: { opacity: 0, y: -50 },
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -50 }
+}
 
 export default function Taskpad() {
-    const { id } = useParams()
-    const [openType, setOpenType] = useState(false)
-    const [type, setType] = useState({name: "", desc: ""})
-    const isNew = id === "new"
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const [openDropdown, setOpenDropdown] = useState(null)
+  const [type, setType] = useState({name: "", desc: ""})
+  const isNew = id === "new"
 
-    const types = [
-        { name: "One-time", desc: "A time one quest that can be ticked off once finished." },
-        { name: "Hourly", desc: "A quest that requires hourly attention." },
-        { name: "Time specific", desc: "A quest that requires a specific date." },
-        { name: "Daily", desc: "A daily quest that needs constant reminding." },
-    ]
+  const types = [
+    { name: "One-time", desc: "A time one quest that can be ticked off once finished." },
+    { name: "Hourly", desc: "A quest that requires hourly attention." },
+    { name: "Time specific", desc: "A quest that requires a specific date." },
+    { name: "Daily", desc: "A daily quest that needs constant reminding." },
+  ]
 
-    return(
-        <div className="grid grid-rows-2 h-full p-4 pb-15 gap-2">
-            <div className="flex flex-col gap-2 relative">
-                <div className="flex gap-2 items-center">
-                    <span>Type of quest:</span>
-                    <div 
-                        onClick={() => setOpenType(p => !p)}
-                        className="border-neutral-600 bg-neutral-900
-                        relative p-2 rounded border-2 flex-1"
-                    >
-                        {openType && 
-                            <div 
-                                className="absolute bg-neutral-800/70 
-                                w-full top-11 left-0"
-                            >
-                                {types.map((t) => (
-                                    <motion.div 
-                                        key={t.name} 
-                                        onClick={() => setType(t)}
-                                        className="p-2" 
-                                        whileTap={{ 
-                                            backgroundColor: "#404040"
-                                        }}
-                                    >
-                                        <span>{t.name}</span>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        }
+  return(
+    <div className="flex flex-col gap-2 p-2">
+      <header className="items-start flex">
+        <button onClick={() => navigate(-1)}>
+          <X />
+        </button>
+      </header>
+      
+      <div>
+        {/* First dropdown */}
+        <div className="flex flex-col gap-2">
+          <span>Type</span>
+          
+          <div 
+            className={clsx(
+              "rounded-full p-2 h-10",
+              type.name ? "bg-neutral-800" : "bg-neutral-900"
+            )}
+            onClick={() => setOpenDropdown(p => p === "type" ? null : "type")}
+          >
+            <span className={clsx(type.name ? "text-white" : "text-white/40")}>
+              {type.name || "None"}
+            </span>
+          </div>
 
-                        {type.name || "None"}
-                    </div>
-                </div>
-
-                <div className="flex-1 flex items-center justify-center">
-                    <span>{type.desc}</span>
-                </div>
-
-                <button className={clsx(
-                    "absolute bottom-0 right-0",
-                   type.name ? "text-white underline"
-                   : "text-white/40" 
-                )}>
-                    Next
-                </button>
-            </div>
-
-            <div className="bg-neutral-900 border-2 
-            border-neutral-400/40">
-            </div>
+          <AnimatePresence>
+            {openDropdown === "type" &&
+              <motion.ul
+                className="flex flex-col gap-2"
+                initial="hidden" animate="visible" exit="exit"
+                variants={container}
+              >
+                {types.map((t) => (
+                  <motion.li
+                    variants={item}
+                    onClick={() => {setType(t); setOpenType(false)}}
+                    key={t.name}
+                    className="rounded-full p-2 bg-neutral-800"
+                  >
+                    <h2>{t.name}</h2>
+                  </motion.li>
+                ))}
+              </motion.ul>
+            }
+          </AnimatePresence>
         </div>
-    )
+
+        {/* Second dropdown */}
+        <div className="flex flex-col gap-2">
+          <span>Type</span>
+          
+          <div 
+            className={clsx(
+              "rounded-full p-2 h-10",
+              type.name ? "bg-neutral-800" : "bg-neutral-900"
+            )}
+            onClick={() => setOpenDropdown(p => p === "type" ? null : "type")}
+          >
+            <span className={clsx(type.name ? "text-white" : "text-white/40")}>
+              {type.name || "None"}
+            </span>
+          </div>
+
+          <AnimatePresence>
+            {openDropdown === "type" &&
+              <motion.ul
+                className="flex flex-col gap-2"
+                initial="hidden" animate="visible" exit="exit"
+                variants={container}
+              >
+                {types.map((t) => (
+                  <motion.li
+                    variants={item}
+                    onClick={() => {setType(t); setOpenType(false)}}
+                    key={t.name}
+                    className="rounded-full p-2 bg-neutral-800"
+                  >
+                    <h2>{t.name}</h2>
+                  </motion.li>
+                ))}
+              </motion.ul>
+            }
+          </AnimatePresence>
+        </div>
+      </div>
+    </div>
+  )
 }

@@ -1,10 +1,10 @@
 import { useAuth } from "../AuthProvider"
 import { 
     Outlet, useLocation, 
-    useNavigate, useSearchParams 
+    useNavigate, useOutletContext, useSearchParams 
 } from "react-router-dom"
 import clsx from "clsx"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { usePreviousPathname } from "../data/PrevRoute"
 import { motion, AnimatePresence } from "motion/react"
 import { 
@@ -32,146 +32,193 @@ const item = {
 }
 
 export default function Profile() {
-    const prevPath = usePreviousPathname()
-    const { posts, profile, name, profileLoading } = useAuth()
+  const prevPath = usePreviousPathname()
+  const { isFooter } = useOutletContext() 
+  const { posts, profile, name, profileLoading } = useAuth()
 
-    const navigate = useNavigate()
-    const location = useLocation()
-    const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [searchParams] = useSearchParams()
+  const view = searchParams.get("view-profile")
 
-    const view = searchParams.get("view-profile")
-    const [searchInput, setSearchInput] = useState("")
-    const [isOpen, setIsOpen] = useState(false)
-    const [isSearch, setIsSearch] = useState(false)
+  const [searchInput, setSearchInput] = useState("")
+  const [isOpen, setIsOpen] = useState(false)
+  const [isSearch, setIsSearch] = useState(false)
+  const searchRef = useRef(null)
 
-    const pages = [
-        { name: "Notes", path: '/app/profile'},
-        { name: "Tasks", path: '/app/profile/tasks'},
-        { name: "Archived", path: '/app/profile/archived-notes'},
-    ]
+  const pages = [
+      { name: "Notes", path: '/app/profile'},
+      { name: "Tasks", path: '/app/profile/tasks'},
+      { name: "Archived", path: '/app/profile/archived-notes'},
+  ]
 
-    const actions = [
+  useEffect(() => {
+    if (!isSearch) return;
+
+    const handleOutside = (e) => {
+      if (!searchRef.current?.contains(e.target)) {
+        setIsSearch(false);
+        setSearchInput("")
+      }
+    };
+
+    document.addEventListener("pointerdown", handleOutside);
+    return () => document.removeEventListener("pointerdown", handleOutside);
+  }, [isSearch])
+
+  const actions = [
         { name: "Add Note", icon: Pen, path: '/app/notepad/new' },
         { name: "Quest", icon: ClipboardCheck, path: '/app/taskpad/new' },
         { name: "To-do", icon: LayoutList },
-    ]
+  ]
 
-    const resolveRoute = (pathname) => pages
-        .slice()
-        .sort((a, b) => b.path.length - a.path.length)
-        .find(p => pathname.startsWith(p.path))
+  const resolveRoute = (pathname) => pages
+  .slice()
+  .sort((a, b) => b.path.length - a.path.length)
+  .find(p => pathname.startsWith(p.path))
     
-    const getIndex = (pathname) => {
-        const route = resolveRoute(pathname)
-        return route ? pages.findIndex(p => p.path === route.path) : 0
-    }
+  const getIndex = (pathname) => {
+    const route = resolveRoute(pathname)
+    return route ? pages.findIndex(p => p.path === route.path) : 0
+  }
     
-    const currentIndex = getIndex(location.pathname)
-    const prevIndex = prevPath ? getIndex(prevPath) : currentIndex
+  const currentIndex = getIndex(location.pathname)
+  const prevIndex = prevPath ? getIndex(prevPath) : currentIndex
 
-    const currentView =
-        resolveRoute(location.pathname)?.name ?? "Notes"
+  const currentView = resolveRoute(location.pathname)?.name ?? "Notes"
 
-    const handleNav = (i) => {
-        if (currentView !== i.name) {
-            navigate(i.path)
-        }
+  const handleNav = (i) => {
+    if (currentView !== i.name) {
+     navigate(i.path)
     }
+  }
 
-    const searchedTitles = searchInput ? posts.filter(p => 
-        p.title?.toLowerCase().includes(searchInput.toLowerCase())
-    ) : []
+  const searchedTitles = searchInput ? posts.filter(p => 
+    p.title?.toLowerCase().includes(searchInput.toLowerCase())
+  ) : []
 
     return(
         <div 
-            className="h-full flex flex-col bg-neutral-900 p-2 relative overflow-y-auto">
-            {isSearch ? (
-                <div className="relative flex">
-                    <div className="fixed inset-0 backdrop-blur-sm
-                    bg-black/70 z-90" onClick={() => setIsSearch(false)}/>
+          className="flex flex-col bg-black
+          p-2 relative overflow-y-auto h-full"
+        >
+          <header 
+            className="flex justify-between gap-8 items-center"
+          >
+            {/* Profile */}
+            <button
+              onClick={() => navigate(`${location.pathname}?view-profile=true`)}
+            >
+              <img 
+                  src={profile} 
+                  className={clsx(
+                    "rounded-full size-12 border-2 border-white/20",
+                    profileLoading && "animate-pulse"
+                  )}
+              />
+            </button>
 
-                    <div className="absolute top-1 bg-neutral-900 
-                    flex flex-col w-full rounded z-100">
-                        <div className="flex items-center justify-between
-                        border-b-1 border-white/30 px-4 p-2">
-                            <Search className="size-4"/>
+            {/* Header Navigations */}
+            <div className="flex justify-between px-2 md:px-15 flex-1 items-end">
+              {pages.map((p) => (
+                <div 
+                  key={p.name} 
+                  className="relative flex flex-col"
+                >
+                  <button 
+                    onClick={() => handleNav(p)}
+                    className={clsx(
+                      currentView === p.name
+                        ? "text-[14px] text-white"
+                        : "text-[13px] text-white/40"
+                    )}
+                  >
+                    {p.name}
+                  </button>
 
-                            <input placeholder="Search for a specific note..."
-                            className="inset-shadow-none w-auto flex-1 py-1
-                            focus:ring-0" value={searchInput} 
-                            onChange={(e) => setSearchInput(e.target.value)}/>
-
-                            <button onClick={() => setIsSearch(false)}
-                            className="rounded-0 w-auto py-1 text-sm">
-                                close
-                            </button>
-                        </div>
-
-                        <div className=" py-2 px-4 flex flex-col gap-4">
-                            {searchedTitles.map((p) => (
-                                <div key={p.id} className="bg-neutral-800 
-                                rounded p-2 cursor-pointer"
-                                onClick={() => navigate(`/app/notepad/${p.id}`)}>
-                                    <h1>{p.title}</h1>
-                                </div>
-                            ))}
-
-                            {searchedTitles.length === 0 && 
-                                <div className="h-40 flex items-center justify-center">
-                                    <span className="text-white/40">No results</span>
-                                </div>
-                            }
-                        </div>
-                    </div>
+                  <AnimatePresence>
+                    {currentView === p.name && (
+                      <motion.div
+                        className="absolute top-6 w-full h-0.5 bg-neutral-100"
+                        initial={{ scaleX: 0, opacity: 0 }}
+                        animate={{ scaleX: 1, opacity: 1 }}
+                        exit={{ scaleX: 0, opacity: 0 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                      />
+                    )}
+                  </AnimatePresence>
                 </div>
-            ) : (
-                <header className="flex justify-between
-                relative gap-8 items-center">
-                    {/* Profile */}
-                    <button
-                        onClick={() => navigate(`${location.pathname}?view-profile=true`)}
+              ))}
+            </div>
+
+            {/* Search button */}
+            <div 
+              className="relative"
+              ref={searchRef}
+            >
+              <button onClick={() => setIsSearch(p => !p)}>
+                <Search className="size-6" />
+              </button>
+
+              {/* Search input */}
+              {isSearch &&
+              <>
+              <div 
+                className="block md:hidden overlay z-90" 
+                onClick={() => {setIsSearch(false); setSearchInput("")}}
+              />
+
+              <div 
+                className="flex flex-col absolute 
+                top-12 w-100 md:right-0 right-5 gap-2 z-100"
+              >
+                <motion.input
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  initial={{ opacity: 0, y: -120 }} 
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2 }}
+                  placeholder="Find your note" 
+                  className="bg-neutral-900 inset-shadow-none py-2 
+                  ring-1 ring-white/30 focus:ring-white" 
+                />
+
+                <div className="flex flex-col rounded-xl overflow-hidden">
+                {searchInput &&
+                  searchedTitles.map((t) => (
+                    <div 
+                      key={t.id}
+                      className="bg-neutral-900 p-2 py-5 hover:bg-neutral-800 
+                      text-start cursor-pointer"
+                      onClick={() => navigate(`/app/notepad/${t.id}`)}
                     >
-                        <img 
-                            src={profile} 
-                            className="rounded-full size-12 border-2 border-white/20"
-                        />
-                    </button>
-
-                    <div className="flex justify-between px-2 flex-1 items-end">
-                    {pages.map((p) => (
-                        <div key={p.name} className="relative flex flex-col">
-                            <button onClick={() => handleNav(p)}
-                            className={clsx(
-                            currentView === p.name
-                            ? "text-[14px] text-white"
-                            : "text-[13px] text-white/40"
-                            )}>
-                                {p.name}
-                            </button>
-
-                            <AnimatePresence>
-                                {currentView === p.name && (
-                                <motion.div
-                                    className="absolute top-6 w-full h-0.5 bg-neutral-100"
-                                    initial={{ scaleX: 0, opacity: 0 }}
-                                    animate={{ scaleX: 1, opacity: 1 }}
-                                    exit={{ scaleX: 0, opacity: 0 }}
-                                    transition={{ duration: 0.2, ease: "easeOut" }}
-                                />
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    ))}
+                      <h2>{t.title}</h2>
                     </div>
+                  ))
+                }
 
-                    <button onClick={() => setIsSearch(true)}>
-                        <Search className="size-6"/>
-                    </button>
-                </header>
-            )}
+                {searchInput && searchedTitles.length === 0 &&
+                  <div
+                    className="bg-neutral-900 p-2 h-30 flex 
+                    items-center justify-center"
+                  >
+                    <h2 className="text-white/40">No results found</h2>
+                  </div>
+                }
+                </div>
+              </div>
+              </>
+              }
+            </div>
+          </header>
 
-            <div className="flex-1 p-2 pt-4 pb-12">
-                <Outlet />
+            <div 
+              className={clsx(
+                "flex-1 p-2 pt-4 pb-2",
+                isFooter && "pb-11"
+              )}
+            >
+              <Outlet context={{ setIsOpen }} />
             </div>
 
             {view && <div className="fixed inset-0 flex items-center justify-center">
@@ -187,8 +234,12 @@ export default function Profile() {
                 </div>
             </div>}
                   
-            <div className="flex flex-col fixed bottom-13 right-4
-            gap-2 items-end shadow-xl/30 z-90">
+            <div 
+              className={clsx(
+                "flex flex-col fixed bottom-2 right-4 gap-2 items-end z-80",
+                isFooter && "bottom-13"
+              )}
+            >
                 <AnimatePresence>
                 {isOpen && <motion.ul className="flex-1 flex flex-col gap-2
                 w-full items-end" exit="exit"
