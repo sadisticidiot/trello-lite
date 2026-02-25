@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
-body{
+body {
   background-color: black;
   color: white;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -23,12 +25,12 @@ body{
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #e41a86; 
+  background-color: #e41a86;
 }
 
 @media (max-width: 768px) {
   ::-webkit-scrollbar {
-  display: none;
+    display: none;
   }
 
   .no-scrollbar {
@@ -44,22 +46,20 @@ body{
 /* Links */
 @layer components {
   .link-base {
-    @apply
-      rounded-full
+    @apply rounded-full
       text-center
       p-1 px-10
       cursor-pointer
       bg-pink-950
       ring-2
-      ring-pink-600
+      ring-pink-600;
   }
 }
 
 /* Dropdowns */
 @layer base {
   select {
-    @apply 
-      appearance-none
+    @apply appearance-none
       bg-neutral-900
       inset-shadow-sm inset-shadow-neutral-900/20
       rounded-xl
@@ -80,66 +80,59 @@ body{
 /* Buttons */
 @layer base {
   button {
-    @apply
-      text-center
-      cursor-pointer
+    @apply text-center
+      cursor-pointer;
   }
 }
 
 /* Spinner for loading states */
 @layer components {
   .spinner {
-    @apply
-      size-4 
+    @apply size-4 
       border-2 
       border-white 
       border-l-white/0 
       rounded-full 
-      animate-spin
+      animate-spin;
   }
 }
 
 @layer components {
   .overlay {
-    @apply
-      fixed inset-0
+    @apply fixed inset-0
       backdrop-blur-[4px]
-      bg-black/50
+      bg-black/50;
   }
 
   .secondary-button {
-    @apply
-     w-full p-2 
+    @apply w-full p-2 
      bg-neutral-950 rounded-lg
-     shadow-[0_3px_0_rgba(0,0,0,0.95)]
+     shadow-[0_3px_0_rgba(0,0,0,0.95)];
   }
 
-  .button-base { 
-    @apply
-      w-full 
+  .button-base {
+    @apply w-full 
       p-2 
       bg-pink-700
       rounded-lg
-      shadow-[0_3px_0_rgba(134,16,67,0.95)]
+      shadow-[0_3px_0_rgba(134,16,67,0.95)];
   }
 
   .notes-base {
-    @apply
-      flex flex-col 
+    @apply flex flex-col 
       rounded-xl        
       p-2 mb-4 text-start 
       border-2 border-white/40 
       cursor-pointer select-none 
       relative break-inside-avoid
       shadow-xl/30 shadow-neutral-900 
-      bg-neutral-900
+      bg-neutral-900;
   }
 
   .input-base {
-    @apply 
-      appearance-none
+    @apply appearance-none
       outline-none
       font-sans tracking-normal
-      transition
+      transition;
   }
 }

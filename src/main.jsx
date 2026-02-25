@@ -8,11 +8,6 @@ import './index.css'
 import { AuthProvider } from './AuthProvider.jsx'
 import ProtectedRoute from './ProtectedRoute.jsx'
 
-import App from './pages/App.jsx'
-import Notepad from './pages/Notepad.jsx'
-import Home from './pages/Home.jsx'
-import Profile from './pages/Profile.jsx'
-import Menu from './pages/Menu.jsx'
 
 import CreateAccount from './pages/CreateAccount.jsx'
 import FinishSetup from './pages/FinishSetup.jsx'
@@ -22,12 +17,11 @@ import Landing from './pages/Landing.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 
+import Footer from './ui/Footer.jsx'
+import Home from './pages/Home.jsx'
 import Notes from './pages/Notes.jsx'
 import PinnedNotes from './pages/Tasks.jsx'
 import ArchivedNotes from './pages/ArchivedNotes.jsx'
-import Taskpad from './pages/Taskpad.jsx'
-import FullScreen from './ui/FullScreen.jsx'
-import FooterIncluded from './ui/FooterIncluded.jsx'
 
 const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
@@ -37,41 +31,18 @@ const router = createBrowserRouter([
 
   { path: '/create-account', element: <CreateAccount /> },
   { path: '/finish-setup', element: <FinishSetup /> },
-
-  { 
-    element: <App />,
+  {
+    element: <Footer />,
     children: [
       { 
-        element: <FooterIncluded />,
+        path: '/home', 
+        element: <Home />,
         children: [
-          { 
-            path: '/home', 
-            element: <Home />,
-            children: [
-              { index: true, element: <Notes /> },
-              { path: 'tasks', element: <PinnedNotes />},
-              { path: 'archived-notes', element: <ArchivedNotes />}, 
-            ]
-          },
-          { 
-            path: 'profile',
-            element: <Profile />,
-            children: [
-              { index: true, element: <Notes />},
-              { path: 'tasks', element: <PinnedNotes />},
-              { path: 'archived-notes', element: <ArchivedNotes />},
-            ]
-          },
-          { path: 'menu', element: <Menu /> }
+          { index: true, element: <Notes /> },
+          { path: 'tasks', element: <PinnedNotes />},
+          { path: 'archived-notes', element: <ArchivedNotes />}, 
         ]
       },
-      { 
-        element: <FullScreen />,
-        children: [
-          { path: 'notepad/:id', element: <Notepad /> },
-          { path: 'taskpad/:id', element: <Taskpad /> }
-        ]
-      }
     ]
   } 
 ])

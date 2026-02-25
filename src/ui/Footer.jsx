@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import clsx from "clsx";
 import { useState } from "react";
 
-export default function FooterIncluded()  {
+export default function Footer()  {
   const prevPath = usePreviousPathname()
   const location = useLocation()
   const navigate = useNavigate()
@@ -43,7 +43,7 @@ export default function FooterIncluded()  {
   }
 
     return(
-        <div 
+        <motion.div 
           className="flex relative w-dvw h-dvh select-none bg-white"
           onDoubleClick={() => setIsFooter(p => !p)}
         >
@@ -58,7 +58,7 @@ export default function FooterIncluded()  {
                 initial={{ y: 40 }}
                 animate={{ y: 0}}
                 transition={{ duration: 0.2, ease: "easeInOut"}}
-                className="bg-white w-full fixed z-80 
+                className="bg-white w-full fixed z-80
                 grid grid-cols-2 gap-2 bottom-0 px-3"
               >
                 {routes.map((i) => (
@@ -94,6 +94,6 @@ export default function FooterIncluded()  {
                 ))}
               </motion.div>
             }
-        </div>
+        </motion.div>
     )
 }
