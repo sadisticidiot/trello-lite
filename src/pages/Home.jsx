@@ -4,8 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { useAuth } from "../AuthProvider"
 
 export default function Home() {
-  const { posts, isGuest } = useAuth()
-  const [guestNotes, setGuestNotes] = useState([])
+  const { posts, isGuest, guestNotes, setGuestNotes } = useAuth()
 
   const inputRef = useRef(null)
   const [isSearch, setIsSearch] = useState(false)
@@ -21,7 +20,7 @@ export default function Home() {
   }, [isGuest])
 
   const notesToSearch = isGuest ? guestNotes : posts
-  
+
   const searchedTitles = searchInput ? 
     notesToSearch.filter(n => 
     n.title?.toLowerCase().includes(searchInput.toLowerCase())
@@ -71,7 +70,7 @@ export default function Home() {
       {/* Children */}
       <div className="flex-1 flex flex-col pb-12 overflow-y-auto">
         <div className="shrink-0 h-3" />
-        <Outlet context={{ searchedTitles, searchInput, guestNotes }}/>
+        <Outlet context={{ searchedTitles, searchInput }}/>
       </div>
     </div>
   )

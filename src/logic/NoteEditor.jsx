@@ -6,7 +6,7 @@ import { useAuth } from "../AuthProvider";
 import clsx from "clsx";
 
 export default function NoteEditor() {
-  const { session, isGuest } = useAuth()
+  const { session, isGuest, guestNotes, setGuestNotes } = useAuth()
   const user = session?.user
 
   const location = useLocation()
@@ -27,9 +27,6 @@ export default function NoteEditor() {
   // Fetch existing note on render 
   useEffect(() => {
     if (isGuest && isUpdate) {
-      const stored = localStorage.getItem("guest_notes")
-      const guestNotes = stored ? JSON.parse(stored) : []
-
       const found = guestNotes.find(n => n.id === noteId)
 
       if (found) {
@@ -100,9 +97,6 @@ export default function NoteEditor() {
 
   const submitNote = async () => {
     if (isGuest) {
-      const stored = localStorage.getItem("guest_notes")
-      const guestNotes = stored ? JSON.parse(stored) : []
-
       if (isNew) {
         const newNote = {
           id: crypto.randomUUID(),
@@ -112,6 +106,7 @@ export default function NoteEditor() {
         }
 
         const updatedNotes = [newNote, ...guestNotes]
+        setGuestNotes(updatedNotes)
         localStorage.setItem("guest_notes", JSON.stringify(updatedNotes))
         return
       }
@@ -122,7 +117,8 @@ export default function NoteEditor() {
             ? { ...n, title: note.title, post: note.desc }
             : n
         )
-
+        
+        setGuestNotes(updatedNotes)
         localStorage.setItem("guest_notes", JSON.stringify(updatedNotes))
         return
       }

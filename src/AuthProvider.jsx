@@ -10,6 +10,10 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null)
   const [name, setName] = useState(null)
   const [posts, setPosts] = useState([])
+  const [guestNotes, setGuestNotes] = useState(() => {
+    const stored = localStorage.getItem("guest_notes")
+    return stored ? JSON.parse(stored) : []
+  })
 
   const [isGuest, setIsGuest] = useState(true)
   const [profileLoading, setProfileLoading] = useState(true)
@@ -58,7 +62,7 @@ export function AuthProvider({ children }) {
     if (session?.user) {
       getPosts(session.user.id)
     }
-  }, [session])
+  }, [session, isGuest])
 
   // get user's session
   useEffect(() => {
@@ -76,6 +80,23 @@ export function AuthProvider({ children }) {
         
     return () => subscription.unsubscribe()
   }, [])
+
+  // listen to local storage updates
+  useEffect(() => {
+    if (isGuest) {
+      localStorage.setItem("guest_notes", JSON.stringify(guestNotes))
+    }
+  }, [guestNotes, isGuest])
+  useEffect(() => {
+  const handleStorage = (e) => {
+    if (e.key === "guest_notes") {
+      setGuestNotes(e.newValue ? JSON.parse(e.newValue) : [])
+    }
+  }
+
+  window.addEventListener("storage", handleStorage)
+  return () => window.removeEventListener("storage", handleStorage)
+}, [])
 
   // subscribe for real time updates
   useEffect(() => {
@@ -119,24 +140,12 @@ export function AuthProvider({ children }) {
       }
   }, [session])
 
-  const logout = async () => {
-    console.log("logging out..")
-    const { error } = await supabase.auth.signOut()
-    console.log("singed out", error)
-    setSession(null)
-    setProfile(null)
-    setName(null)
-    setPosts([])
-    setIsGuest(true)
-  }
-
   return (
     <AuthContext.Provider 
       value={{ 
         session, loading, profile, 
         name, profileLoading, posts, setPosts,
-        logout,
-        isGuest 
+        guestNotes, setGuestNotes, isGuest 
       }}
     >
       {children}

@@ -6,8 +6,8 @@ import { useEffect, useRef, useState } from "react"
 import clsx from "clsx"
 
 export default function Notes() {
-  const { session, loading, posts, isGuest } = useAuth()
-  const { searchedTitles, searchInput, guestNotes } = useOutletContext() 
+  const { guestNotes, posts, isGuest } = useAuth()
+  const { searchedTitles, searchInput } = useOutletContext() 
   const [, setSearchParams] = useSearchParams()
 
   const timerRef = useRef(null)
