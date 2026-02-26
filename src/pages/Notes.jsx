@@ -2,12 +2,12 @@ import { useAuth } from "../AuthProvider"
 import { useOutletContext, useSearchParams } from "react-router-dom"
 import { motion } from "motion/react"
 import { BrushCleaning } from "lucide-react"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import clsx from "clsx"
 
 export default function Notes() {
-  const { session, loading, posts } = useAuth()
-  const { searchedTitles, searchInput } = useOutletContext() 
+  const { session, loading, posts, isGuest } = useAuth()
+  const { searchedTitles, searchInput, guestNotes } = useOutletContext() 
   const [, setSearchParams] = useSearchParams()
 
   const timerRef = useRef(null)
@@ -15,10 +15,6 @@ export default function Notes() {
 
   const [selected, setSelected] = useState([])
   const [pressedId, setPressedId] = useState(null)
-
-  if (!session || loading) return null
-
-  const noResults = searchInput && searchedTitles.length === 0
 
   const handlePointerDown = (id) => {
     longPressedRef.current = false
@@ -51,10 +47,13 @@ export default function Notes() {
     setSearchParams({ add_note: "update", note_id: id })
   }
 
+  const noResults = searchInput && searchedTitles.length === 0
+  const notesToRender = isGuest ? guestNotes : posts
+
   return (
     <div>
       {/* Notes Grid */}
-      {posts.length === 0 || noResults ? (
+      {notesToRender.length === 0 || noResults ? (
         <div 
           className="h-110 flex flex-col gap-2 
           items-center justify-center"
@@ -70,7 +69,7 @@ export default function Notes() {
           {searchedTitles.length > 0 ? (
             searchedTitles.map((s) => renderCard(s))
           ) : (
-            posts.map((p) => renderCard(p))
+            notesToRender.map((p) => renderCard(p))
           )}
         </div>
       )}

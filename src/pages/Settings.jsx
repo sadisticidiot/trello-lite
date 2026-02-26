@@ -1,9 +1,10 @@
 import { 
     Bolt, ChevronRight, CircleUser, 
-    Eye, Languages, Palette, Shield 
+    Eye, Languages, LogOut, Palette, Shield 
 } from "lucide-react"
 import { useAuth } from "../AuthProvider"
 import { motion, AnimatePresence } from "motion/react"
+import { supabase } from "../data/supabase-client"
 
 export default function Settings() {
   const options = [
@@ -12,8 +13,15 @@ export default function Settings() {
     { name: "Visibility", icon: Eye },
     { name: "Privacy", icon: Shield  },
     { name: "Language", icon: Languages },
+    { name: "Log out", icon: LogOut },
   ]
-  const { profile, name } = useAuth()
+
+  const { profile, name, isGuest } = useAuth()
+
+  const logout = async () => {
+    await supabase.auth.signOut()
+  }
+
   return(
     <div className="flex flex-col w-dvw h-dvh">
       <div className="flex gap-1 items-center px-3 border-b-1 border-neutral-700">
@@ -34,6 +42,7 @@ export default function Settings() {
           <span>{o.name}</span>
         </motion.div>
       ))}
+      <button onClick={() => logout()} className="border-2">Log out</button>
     </div>
     )
 }

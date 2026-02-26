@@ -1,17 +1,38 @@
 import { Outlet } from "react-router-dom"
 import { X, Search } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useAuth } from "../AuthProvider"
 
 export default function Home() {
-  const { posts } = useAuth()
+  const { posts, isGuest } = useAuth()
+  const [guestNotes, setGuestNotes] = useState([])
 
+  const inputRef = useRef(null)
   const [isSearch, setIsSearch] = useState(false)
   const [searchInput, setSearchInput] = useState("")
 
-  const searchedTitles = searchInput ? posts.filter(p => 
-    p.title?.toLowerCase().includes(searchInput.toLowerCase())
+  useEffect(() => {
+    if (isGuest) {
+      const stored = localStorage.getItem("guest_notes")
+      if (stored) {
+        setGuestNotes(JSON.parse(stored))
+      }
+    }
+  }, [isGuest])
+
+  const notesToSearch = isGuest ? guestNotes : posts
+  
+  const searchedTitles = searchInput ? 
+    notesToSearch.filter(n => 
+    n.title?.toLowerCase().includes(searchInput.toLowerCase())
   ) : []
+
+  {/* Auto focus on search */}
+  useEffect(() => {
+    if (isSearch && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [isSearch])
 
   return (
     <div className="flex flex-col h-dvh">
@@ -24,7 +45,8 @@ export default function Home() {
             className="flex w-full border-1 border-neutral-400 
             rounded-full px-2 p-1"
           >
-            <input 
+            <input
+              ref={inputRef}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Search" 
@@ -45,11 +67,11 @@ export default function Home() {
           </>
         )}
       </div>
-
+      
       {/* Children */}
       <div className="flex-1 flex flex-col pb-12 overflow-y-auto">
         <div className="shrink-0 h-3" />
-        <Outlet context={{ searchedTitles, searchInput }}/>
+        <Outlet context={{ searchedTitles, searchInput, guestNotes }}/>
       </div>
     </div>
   )

@@ -5,7 +5,7 @@ import { supabase } from "../data/supabase-client"
 import ewan from "/ewan.jfif"
 
 export default function PageLoadguard() {
-  const { session, loading, guestSession } = useAuth()
+  const { session, loading, isGuest } = useAuth()
   const navigate = useNavigate()
   const [checking, setChecking] = useState(true)
 
@@ -13,8 +13,8 @@ export default function PageLoadguard() {
       if (loading) return // wait until auth is fully initialized
 
       const decide = async () => {
-        if (!session) {
-          navigate("/signin", { replace: true })
+        if (isGuest) {
+          navigate('/', { replace: true })
           return
         }
 
@@ -36,7 +36,7 @@ export default function PageLoadguard() {
         } else if (!data.has_password) {
           navigate("/finish-setup", { replace: true })
         } else {
-          navigate("/home", { replace: true })
+          navigate("/", { replace: true })
         }
 
         setChecking(false)

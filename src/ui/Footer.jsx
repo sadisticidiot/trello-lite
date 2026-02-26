@@ -1,17 +1,22 @@
-import { Outlet, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { NotebookPen, Plus, Settings } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import clsx from "clsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NoteEditor from "../logic/NoteEditor";
+import { useAuth } from "../AuthProvider"
 
 export default function Footer()  {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const { session, isGuest } = useAuth()
+
   const location = useLocation()
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const addNote = searchParams.get("add_note")
 
   const [isFooter, setIsFooter] = useState(true)
+ 
+  if (!isGuest && !session ) return <Navigate to='/auth-intermission' />
 
   const routes = [
     { name: "Notes", path: '/', icon: NotebookPen },

@@ -6,9 +6,8 @@ import { useAuth } from "../AuthProvider";
 import clsx from "clsx";
 
 export default function NoteEditor() {
-  const { session } = useAuth()
-  if (!session) return null
-  const user = session.user
+  const { session, isGuest } = useAuth()
+  const user = session?.user
 
   const location = useLocation()
   const navigate= useNavigate()
@@ -25,8 +24,28 @@ export default function NoteEditor() {
   const [note, setNote] = useState({ title: "", desc: "" })
   const [isLoading, setIsLoading] = useState(true)
 
-  // Fetch notes on render
+  // Fetch existing note on render 
   useEffect(() => {
+    if (isGuest && isUpdate) {
+      const stored = localStorage.getItem("guest_notes")
+      const guestNotes = stored ? JSON.parse(stored) : []
+
+      const found = guestNotes.find(n => n.id === noteId)
+
+      if (found) {
+        const formatted = {
+          title: found.title,
+          desc: found.post
+        }
+
+        setNote(formatted)
+        origNoteRef.current = formatted
+      }
+
+      setIsLoading(false)
+      return
+    }
+
     if (isNew) {
       origNoteRef.current = { title: "", desc: "" }
       setIsLoading(false)
@@ -80,6 +99,35 @@ export default function NoteEditor() {
   }
 
   const submitNote = async () => {
+    if (isGuest) {
+      const stored = localStorage.getItem("guest_notes")
+      const guestNotes = stored ? JSON.parse(stored) : []
+
+      if (isNew) {
+        const newNote = {
+          id: crypto.randomUUID(),
+          title: note.title,
+          post: note.desc,
+          created_at: new Date().toISOString()
+        }
+
+        const updatedNotes = [newNote, ...guestNotes]
+        localStorage.setItem("guest_notes", JSON.stringify(updatedNotes))
+        return
+      }
+
+      if (isUpdate) {
+        const updatedNotes = guestNotes.map((n) => 
+          n.id === noteId
+            ? { ...n, title: note.title, post: note.desc }
+            : n
+        )
+
+        localStorage.setItem("guest_notes", JSON.stringify(updatedNotes))
+        return
+      }
+    }
+
     if (isNew) {
       return supabase
         .from("posts")
