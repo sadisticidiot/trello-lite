@@ -1,79 +1,58 @@
-import { useAuth } from "../AuthProvider"
-import { useOutletContext, useSearchParams } from "react-router-dom"
-import { motion } from "motion/react"
-import { BrushCleaning } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import { AnimatePresence, motion } from "motion/react"
+import { BrushCleaning, ChevronRight } from "lucide-react"
 import clsx from "clsx"
+import { useNotesLogic } from "../logic/NotesLogic"
+import GroupingConf from "../ui/GroupingConf"
 
 export default function Notes() {
-  const { guestNotes, posts, isGuest } = useAuth()
-  const { searchedTitles, searchInput } = useOutletContext() 
-  const [, setSearchParams] = useSearchParams()
-
-  const timerRef = useRef(null)
-  const longPressedRef = useRef(false)
-
-  const [selected, setSelected] = useState([])
-  const [pressedId, setPressedId] = useState(null)
-
-  const handlePointerDown = (id) => {
-    longPressedRef.current = false
-    setPressedId(id)
-
-    timerRef.current = setTimeout(() => {
-      longPressedRef.current = true
-      setPressedId(null)
-      setSelected((prev) => prev.includes(id) ? prev : [...prev, id])
-    }, 600)
-  }
-
-  const handlePointerLeave = () => {
-    clearTimeout(timerRef.current)
-    setPressedId(null)
-  }
-
-  const handleClick = (id) => {
-    if (longPressedRef.current) {
-      longPressedRef.current = false
-      return
-    }
-
-    if (selected.length > 0 ) {
-      setSelected((prev) => 
-        prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-      )
-      return
-    }
-    setSearchParams({ add_note: "update", note_id: id })
-  }
-
-  const noResults = searchInput && searchedTitles.length === 0
-  const notesToRender = isGuest ? guestNotes : posts
+  const { 
+    noResults, notesToRender, searchedTitles, 
+    handlePointerDown, handlePointerLeave, handleClick,
+    isGrouping,
+    selected, 
+    pressedId,
+    groups,
+  } = useNotesLogic()
 
   return (
     <div>
-      {/* Notes Grid */}
       {notesToRender.length === 0 || noResults ? (
-        <div 
-          className="h-110 flex flex-col gap-2 
-          items-center justify-center"
-        >
+        <div className="h-110 flex flex-col gap-2 items-center justify-center">
           <BrushCleaning className="text-neutral-500 size-10" />
 
           <span className="text-neutral-500">
-            {noResults ? "No results found" : "No notes yet, activate your productiveness!"}
+            {noResults ? 
+              "No results found" 
+              : "No notes yet, activate your productiveness!"
+            }
           </span>
         </div>
-      ): (
-        <div className="flex flex-col gap-2 px-2">
+      ) : (
+        <div className="flex flex-col gap-3 px-2">
+          <div className="flex justify-between items-center p-1 px-4 border-1 border-neutral-400 rounded-full">
+            <h1 className="font-semibold">Go to groups</h1>
+            <ChevronRight />
+          </div>
+
+        <div className="flex flex-col gap-2">
           {searchedTitles.length > 0 ? (
             searchedTitles.map((s) => renderCard(s))
           ) : (
-            notesToRender.map((p) => renderCard(p))
+            <>
+              {groups.length > 0 && notesToRender.length > 0 &&
+                <h1 className="font-bold">Notes</h1>
+              }
+
+              {notesToRender.map((p) => renderCard(p))}
+              
+              <AnimatePresence>
+                {isGrouping && <GroupingConf />}
+              </AnimatePresence>
+            </>
           )}
         </div>
+        </div>
       )}
-
     </div>
   )
 
@@ -90,7 +69,7 @@ export default function Notes() {
         onClick={() => handleClick(p.id)}
         animate={{ 
           scale: pressed ? 0.98 : 1,
-          backgroundColor: isSelected  ? "#cecece" : pressed ? "#e4e4e4" : "#fff"
+          backgroundColor: isSelected  ? "#c4c4c4" : pressed ? "#e4e4e4" : "#fff"
         }}
         className={clsx(
           "flex flex-col p-2 relative border-neutral-400 rounded-xl",

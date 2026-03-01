@@ -4,11 +4,14 @@ import {
     useSpring
 } from "motion/react"
 import { useEffect } from "react"
+import { useNotesLogic } from "../logic/NotesLogic"
 
 const RESTING_Y = 80
 const CLOSE_TRESHOLD = 210
 
-export default function BottomSheet({ closeSheet, children }) {
+export default function BottomSheet({ children }) {
+  const { attemptClose } = useNotesLogic()
+
   const y = useMotionValue(window.innerHeight)
   const smoothY = useSpring(y, {stiffness: 200, damping: 30})
   const overlayOpacity = useTransform(smoothY, [230, 600], [1, 0])
@@ -31,19 +34,21 @@ export default function BottomSheet({ closeSheet, children }) {
   }, [])
 
   const handleExit = async () => {
+    const shouldClose = await attemptClose()
+    if (!shouldClose) return
+
     const controls = animate(y, window.innerHeight, {
       type: "spring",
       stiffness: 300,
       damping: 30
     })
     await controls.finished
-    await closeSheet()
   }
 
   return(
-    <div className="flex pt-5 fixed inset-0 z-100">
+    <div className="flex pt-5 fixed inset-0 z-40">
       <motion.div 
-        className="overlay touch-none" 
+        className="overlay touch-none z-30" 
         style={{ 
           opacity: overlayOpacity, 
           backdropFilter: overlayBlur,
@@ -53,7 +58,7 @@ export default function BottomSheet({ closeSheet, children }) {
       />
 
       <motion.div 
-        className="w-dvw h-full bg-white z-80 rounded-t-[20px] gap-2
+        className="w-dvw h-full bg-white z-40 rounded-t-[20px] gap-2
         pt-1 flex flex-col items-center p-2 px-3"
         style={{ y }}
         drag="y"

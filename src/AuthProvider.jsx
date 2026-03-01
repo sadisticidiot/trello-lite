@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "./data/supabase-client"
-import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext(null)
 
@@ -43,7 +42,7 @@ export function AuthProvider({ children }) {
     }
   }, [session])
 
-  // fetch user's posts from db or local storage
+  // fetch user's posts from db
   useEffect(() => {
     const getPosts = async (userId) => {
       const { data, error } = await supabase
