@@ -1,15 +1,20 @@
-import { Outlet } from "react-router-dom"
 import HomeHeader from "../ui/HomeHeader"
+import Notes from "./Notes"
+import Groups from "./Groups"
+import HomePages from "../ui/HomePages"
+
 
 export default function Home() {
+  const pages = [
+    { path: '/', element: <Notes /> },
+    { path: '/groups', element: <Groups />},
+  ]
+ 
   return (
     <div className="flex flex-col h-dvh">
       <HomeHeader />
 
-      <div className="flex-1 flex flex-col pb-12 overflow-y-auto">
-        <div className="shrink-0 h-3" />
-        <Outlet />
-      </div>
+      <HomePages pages={pages} />
     </div>
   )
 }

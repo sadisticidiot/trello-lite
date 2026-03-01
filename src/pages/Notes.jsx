@@ -3,8 +3,11 @@ import { BrushCleaning, ChevronRight } from "lucide-react"
 import clsx from "clsx"
 import { useNotesLogic } from "../logic/NotesLogic"
 import GroupingConf from "../ui/GroupingConf"
+import { useNavigate } from "react-router-dom"
 
 export default function Notes() {
+  const navigate = useNavigate()
+
   const { 
     noResults, notesToRender, searchedTitles, 
     handlePointerDown, handlePointerLeave, handleClick,
@@ -16,6 +19,15 @@ export default function Notes() {
 
   return (
     <div>
+      <div 
+        className="flex justify-between items-center p-1 px-4 
+        border-1 border-neutral-400 rounded-full cursor-pointer mb-2"
+        onClick={() => navigate('/groups')}
+      >
+        <h1 className="font-semibold">Go to groups</h1>
+        <ChevronRight />
+      </div>
+
       {notesToRender.length === 0 || noResults ? (
         <div className="h-110 flex flex-col gap-2 items-center justify-center">
           <BrushCleaning className="text-neutral-500 size-10" />
@@ -28,11 +40,7 @@ export default function Notes() {
           </span>
         </div>
       ) : (
-        <div className="flex flex-col gap-3 px-2">
-          <div className="flex justify-between items-center p-1 px-4 border-1 border-neutral-400 rounded-full">
-            <h1 className="font-semibold">Go to groups</h1>
-            <ChevronRight />
-          </div>
+        <div className="flex flex-col gap-3">
 
         <div className="flex flex-col gap-2">
           {searchedTitles.length > 0 ? (

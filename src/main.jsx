@@ -14,7 +14,6 @@ import PageLoadguard from './ui/PageLoadGuard.jsx'
 
 import Footer from './ui/Footer.jsx'
 import Home from './pages/Home.jsx'
-import Notes from './pages/Notes.jsx'
 import Settings from './pages/Settings.jsx'
 
 const router = createBrowserRouter([
@@ -29,13 +28,8 @@ const router = createBrowserRouter([
       </NotesLogic>
     ),
     children: [
-      { 
-        path: '/',
-        element: <Home />,
-        children: [
-          { index: true, element: <Notes /> },
-        ]
-      },
+      { path: '/', element: <Home /> },
+      { path: '/groups', element: <Home /> },
       { path: '/settings', element: <Settings /> },
     ]
   } 
