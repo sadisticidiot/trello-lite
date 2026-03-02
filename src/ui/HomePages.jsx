@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { motion } from "motion/react"
+import {  animate, motion, useMotionValue } from "motion/react"
 
 export default function HomePages({ pages }) {
   const location = useLocation()
   const navigate = useNavigate()
 
+  const x = useMotionValue(0)
   const [width, setWidth] = useState(window.innerWidth)
 
   useEffect(() => {
@@ -20,6 +21,14 @@ export default function HomePages({ pages }) {
 
   const safeIndex = currentIndex === -1 ? 0 : currentIndex
 
+  useEffect(() => {
+    animate(x, -safeIndex * width, {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+    })
+  }, [safeIndex, width])
+  
   return (
     <div className="flex-1 overflow-hidden">
       <motion.div
@@ -28,29 +37,35 @@ export default function HomePages({ pages }) {
         dragElastic={0.05}
         dragMomentum={false}
         dragDirectionLock
-        style={{ touchAction: "pan-y" }}
+        style={{ x, touchAction: "pan-y" }}
         dragConstraints={{
           left: -(pages.length - 1) * width,
           right: 0,
         }}
-        animate={{ x: -safeIndex * width }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         onDragEnd={(_, info) => {
-          const threshold = width / 4
+          let nextIndex = safeIndex
 
-          if (
-            info.offset.x < -threshold &&
-            safeIndex < pages.length - 1
-          ) {
-            navigate(pages[safeIndex + 1].path)
+          const movedFarEnough = Math.abs(info.offset.x) > width / 2
+          const movedFastEnough = Math.abs(info.velocity.x) > width
+
+          if (movedFarEnough || movedFastEnough) {
+            if (info.offset.x < 0) {
+              nextIndex = safeIndex + 1
+            } else {
+              nextIndex = safeIndex - 1
+            }
           }
 
-          if (
-            info.offset.x > threshold &&
-            safeIndex > 0
-          ) {
-            navigate(pages[safeIndex - 1].path)
-          }
+          nextIndex = Math.max(0, Math.min(pages.length - 1, nextIndex))
+
+          animate(x, -nextIndex * width, {
+            type: "spring",
+            stiffness: 300,
+            damping: 30,
+          })
+
+          navigate(pages[nextIndex].path)
         }}
       >
         {pages.map((p) => (
