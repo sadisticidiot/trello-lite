@@ -35,6 +35,9 @@
 
   .touch-pan-x {
     touch-action: pan-x;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
 }
 

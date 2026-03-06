@@ -39,7 +39,7 @@ export default function HomePages({ pages }) {
   return (
     <div 
       ref={containerRef} 
-      className="flex-1 overflow-hidden block md:hidden touch-pan-x"
+      className="flex-1 overflow-hidden block md:hidden touch-pan-x relative"
     >
       <motion.div
         className="flex h-full"
@@ -47,7 +47,6 @@ export default function HomePages({ pages }) {
         dragElastic={0.05}
         dragMomentum={false}
         dragDirectionLock
-        dragPropagation
         style={{ x }}
         dragConstraints={containerRef}
         onDragEnd={(_, info) => {
