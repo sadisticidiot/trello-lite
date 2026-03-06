@@ -46,7 +46,8 @@ export default function HomePages({ pages }) {
         dragElastic={0.05}
         dragMomentum={false}
         dragDirectionLock
-        style={{ x, touchAction: "pan-y" }}
+        dragPropagation
+        style={{ x }}
         dragConstraints={{
           left: -(pages.length - 1) * width,
           right: 0,
