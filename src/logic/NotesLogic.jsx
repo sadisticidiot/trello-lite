@@ -4,6 +4,7 @@ import {
 import { useAuth } from "../AuthProvider"
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom"
 import { supabase } from "../data/supabase-client";
+import { usePreviousPathname } from "../data/PrevRoute";
 
 const NotesContext = createContext(null)
 
@@ -15,13 +16,15 @@ export function NotesLogic({ children }) {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
+  const prevPath = usePreviousPathname()
+  const playAnim = prevPath && !prevPath?.startsWith('/view-group')
 
   // bottom sheet related params
   const mode = searchParams.get("add_note")
   const noteId = searchParams.get("note_id")
   const isNew = mode === "new"
   const isUpdate = mode === "update" && noteId
-
+  const currentNote = notesSource.find(n => n.id === noteId)
 
   const timerRef = useRef(null)
   const textareaRef = useRef(null)
@@ -34,6 +37,7 @@ export function NotesLogic({ children }) {
     return storedGroups ? JSON.parse(storedGroups) : []
   })
   const [groupName, setGroupName] = useState("")
+  const [groupErr, setGroupErr] = useState("")
 
   // note related states
   const [selected, setSelected] = useState([])
@@ -46,6 +50,12 @@ export function NotesLogic({ children }) {
   const [unfinished, setUnfinished] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [isGrouping, setIsGrouping] = useState(false)
+
+  // searching related constants
+  const searchedTitles = searchInput ? notesSource.filter(n => 
+      n.title?.toLowerCase().includes(searchInput.toLowerCase())
+  ) : []
+  const noResults = searchInput && searchedTitles.length === 0
 
   // sheet related functions
   useEffect(() => {
@@ -196,10 +206,7 @@ export function NotesLogic({ children }) {
       setSelected((prev) => prev.includes(id) ? prev : [...prev, id])
     }, 600)
   }
-  const handlePointerLeave = () => {
-    clearTimeout(timerRef.current)
-    setPressedId(null)
-  }
+  const handlePointerLeave = () => { clearTimeout(timerRef.current); setPressedId(null)}
   const handleClick = (id) => {
     if (longPressedRef.current) {
       longPressedRef.current = false
@@ -215,47 +222,52 @@ export function NotesLogic({ children }) {
     setSearchParams({ add_note: "update", note_id: id })
   }
 
-  // header related logic 
-  const notesToSearch = notesSource
-  const noResults = searchInput && searchedTitles.length === 0
+  // grouping related logic 
   const handleSaveGroup = () => {
-    if (isGuest) {
-      const newGroup = {
-        id: Date.now(),
-        name: groupName,
-        notes: selected
-      }
-      const updatedGroups = [ newGroup, ...groups ]
-      setGroups(updatedGroups)
-      localStorage.setItem("guest_groups", JSON.stringify(updatedGroups))
-      setIsGrouping(false)
-      setSelected([])
+    if (!groupName.trim()) {
+      setGroupErr("Group name cannot be empty.")
       return
     }
+
+    const newGroup = {
+      id: crypto.randomUUID(),
+      name: groupName,
+      notes: selected
+    }
+    
+    const updatedGroups = [ newGroup, ...groups ]
+    setGroups(updatedGroups)
+    localStorage.setItem("guest_groups", JSON.stringify(updatedGroups))
+    setIsGrouping(false)
+    setGroupName("")
+    setSelected([])
   }
 
-  // note rendering logic
-  const groupedNoteIDs = groups.flatMap(group => group.notes)
-  const notesToRender = notesSource.filter(note => 
-    !groupedNoteIDs.includes(note.id)
-  )
-  const searchedTitles = searchInput ? notesToSearch.filter(n => 
-      n.title?.toLowerCase().includes(searchInput.toLowerCase())
-  ) : []
+  //auto clear error after 5 seconds
+  useEffect(() => {
+    if (!groupErr) return
+
+    const eraseErr = setTimeout(() => {
+      setGroupErr("")
+    }, 5000)
+    return () => clearTimeout(eraseErr)
+  }, [groupErr])
 
   return (
     <NotesContext.Provider 
       value={{ 
-        noResults, notesToRender, searchedTitles, 
-        setSearchInput,
+        notesSource,
+        noResults, searchedTitles, 
+        searchInput, setSearchInput,
         isGrouping, setIsGrouping, 
-        selected, setSelected,
+        selected, setSelected, currentNote,
+        playAnim,
         pressedId,
         isLoading,
         note, setNote,
-        textareaRef, handleDesc,
+        textareaRef, handleDesc, isChanged, autoResize,
         groupName, setGroupName,
-        groups, groupedNoteIDs,
+        setGroups, groups, groupErr,
         showConfirm, setShowConfirm,
         actuallyClose, attemptClose,
         handlePointerDown, handlePointerLeave, handleClick,  

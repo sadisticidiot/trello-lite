@@ -2,7 +2,13 @@ import { useNotesLogic } from "../logic/NotesLogic";
 import ConfPopup from "./ConfPopup";
 
 export default function GroupingConf() {
-  const { setIsGrouping, groupName, setGroupName, handleSaveGroup } = useNotesLogic()
+  const { 
+    setIsGrouping, 
+    groupName, setGroupName, 
+    handleSaveGroup, 
+    groupErr 
+  } = useNotesLogic()
+
   return(
     <ConfPopup closeConf={setIsGrouping}> 
       <h1 className="p-3 pb-0 text-center text-xl font-semibold">
@@ -19,9 +25,17 @@ export default function GroupingConf() {
         />
       </div>
 
+      {groupErr && 
+        <div className="flex items-center justify-center">
+          <span className=" text-red-700 text-sm text-center">
+            {groupErr}
+          </span>
+        </div>
+      }
+
       <div className="border-t-1 border-neutral-400 grid grid-cols-2">
         <button
-          className="border-r-1 border-neutral-400 p-2 text-red-700"
+          className="border-r-1 border-neutral-400 p-2 text-neutral-800"
           onClick={() => setIsGrouping(false)}
         >
           Cancel

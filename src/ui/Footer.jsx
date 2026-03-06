@@ -1,8 +1,8 @@
 import { Navigate, Outlet, useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { NotebookPen, Plus, Settings } from "lucide-react";
+import { House, Plus, Settings } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import clsx from "clsx";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import NoteEditor from "../logic/NoteEditor";
 import { useAuth } from "../AuthProvider"
 
@@ -15,11 +15,12 @@ export default function Footer()  {
   const addNote = searchParams.get("add_note")
 
   const [isFooter, setIsFooter] = useState(true)
+
  
   if (!isGuest && !session ) return <Navigate to='/auth-intermission' />
 
   const routes = [
-    { name: "Notes", path: '/', icon: NotebookPen },
+    { name: "Notes", path: '/', icon: House },
     { name: "Settings", sheet: "new", icon: Plus },
     { name: "Add Note", path: '/settings', icon: Settings },
   ]
@@ -43,11 +44,11 @@ export default function Footer()  {
         navigate(i.path)
     }
   }
-  
+
   return(
     <div className="flex relative h-dvh select-none bg-white">
       <div 
-        className="size-full"
+        className="size-full fixed"
         onDoubleClick={() => setIsFooter(p => !p)}
       >
         <AnimatePresence>
@@ -65,7 +66,7 @@ export default function Footer()  {
           animate={{ y: 0}}
           exit={{ y: 100 }}
           transition={{ duration: 0.2, ease: "easeInOut"}}
-          className="bg-white w-full fixed z-30 border-neutral-400
+          className="bg-white w-full fixed z-20 border-neutral-400
           grid grid-flow-col gap-2 bottom-0 px-3 border-t-1"
         >
           {routes.map((i) => (

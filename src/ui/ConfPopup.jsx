@@ -18,7 +18,6 @@ export default function ConfPopup({ children, closeConf }) {
       >
         {children}
       </motion.div>
-              
     </div>
     )
 }

@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom"
 import {  animate, motion, useMotionValue } from "motion/react"
+import { useNotesLogic } from "../logic/NotesLogic"
+import clsx from "clsx"
 
 export default function HomePages({ pages }) {
   const location = useLocation()
   const navigate = useNavigate()
+  const { playAnim } = useNotesLogic()
+  const { isFooter } = useOutletContext()
 
   const x = useMotionValue(0)
   const [width, setWidth] = useState(window.innerWidth)
@@ -21,7 +25,12 @@ export default function HomePages({ pages }) {
 
   const safeIndex = currentIndex === -1 ? 0 : currentIndex
 
-  useEffect(() => {
+  useEffect(() => {  
+    if (!playAnim && location.pathname !== '/') {
+      x.set(-width)
+      return
+    }
+
     animate(x, -safeIndex * width, {
         type: "spring",
         stiffness: 300,
@@ -30,7 +39,7 @@ export default function HomePages({ pages }) {
   }, [safeIndex, width])
   
   return (
-    <div className="flex-1 overflow-hidden">
+    <div className="flex-1 overflow-hidden block md:hidden">
       <motion.div
         className="flex h-full"
         drag="x"
@@ -73,7 +82,7 @@ export default function HomePages({ pages }) {
             key={p.path}
             className="w-screen shrink-0 h-full flex flex-col"
           >
-            <div className="flex-1 overflow-y-auto pb-12 p-2">
+            <div className={clsx("flex-1 overflow-y-auto p-2", isFooter ? "pb-11" : "pb-2")}>
                 {p.element}
             </div>
           </div>

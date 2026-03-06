@@ -15,6 +15,7 @@ import PageLoadguard from './ui/PageLoadGuard.jsx'
 import Footer from './ui/Footer.jsx'
 import Home from './pages/Home.jsx'
 import Settings from './pages/Settings.jsx'
+import ViewGroup from './pages/ViewGroup.jsx'
 
 const router = createBrowserRouter([
   { path: '/auth-intermission', element: <PageLoadguard /> },
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
       { path: '/', element: <Home /> },
       { path: '/groups', element: <Home /> },
       { path: '/settings', element: <Settings /> },
+      { path: '/view-group/:id', element: <ViewGroup /> },
     ]
   } 
 ])
