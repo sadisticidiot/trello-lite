@@ -39,7 +39,7 @@ export default function HomePages({ pages }) {
   return (
     <div 
       ref={containerRef} 
-      className="flex-1 overflow-hidden block md:hidden"
+      className="flex-1 overflow-hidden block md:hidden touch-pan-x"
     >
       <motion.div
         className="flex h-full"
