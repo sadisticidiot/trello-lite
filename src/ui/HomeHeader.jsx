@@ -66,21 +66,21 @@ export default function HomeHeader() {
               </div>
             ) : (
               <div className="grid grid-cols-2">
-                <h1 className="font-bold leading-none text-[2rem]">missnakita</h1>
+                <h1 className="font-bold pt-2 leading-none text-[2rem]">missnakita</h1>
 
-                <div className="flex gap-5 justify-end">
+                <div className="flex gap-6 justify-end">
                   {loc === '/groups' ? (
                     <button onClick={() => navigate('/')}>
-                      <SquarePen className="text-blue-700 size-9" />
+                      <SquarePen className="text-blue-700" />
                     </button>
                   ) : (
                     <button onClick={() => navigate('/groups')}>
-                      <FolderOpen className="text-blue-700 size-9" />
+                      <FolderOpen className="text-blue-700" />
                     </button>
                   )}
                   
                   <button onClick={() => setIsSearch(true)}>
-                      <Search className="text-blue-700 size-9" />
+                      <Search className="text-blue-700" />
                   </button>
                 </div>
               </div>

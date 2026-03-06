@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useLocation, useNavigate, useOutletContext } from "react-router-dom"
 import {  animate, motion, useMotionValue } from "motion/react"
 import { useNotesLogic } from "../logic/NotesLogic"
@@ -11,7 +11,7 @@ export default function HomePages({ pages }) {
   const { isFooter } = useOutletContext()
 
   const x = useMotionValue(0)
-  const [width, setWidth] = useState(window.innerWidth)
+  const containerRef = useRef(null)
 
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth)
@@ -19,13 +19,11 @@ export default function HomePages({ pages }) {
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  const currentIndex = pages.findIndex(
-    (p) => p.path === location.pathname
-  )
-
+  const currentIndex = pages.findIndex(p => p.path === location.pathname)
   const safeIndex = currentIndex === -1 ? 0 : currentIndex
 
   useEffect(() => {  
+    const width = containerRef.current?.offsetWidth || window.innerWidth
     if (!playAnim && location.pathname !== '/') {
       x.set(-width)
       return
@@ -36,10 +34,13 @@ export default function HomePages({ pages }) {
         stiffness: 300,
         damping: 30,
     })
-  }, [safeIndex, width])
+  }, [safeIndex, location.pathname])
   
   return (
-    <div className="flex-1 overflow-hidden block md:hidden">
+    <div 
+      ref={containerRef} 
+      className="flex-1 overflow-hidden block md:hidden"
+    >
       <motion.div
         className="flex h-full"
         drag="x"
@@ -48,14 +49,10 @@ export default function HomePages({ pages }) {
         dragDirectionLock
         dragPropagation
         style={{ x }}
-        dragConstraints={{
-          left: -(pages.length - 1) * width,
-          right: 0,
-        }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        dragConstraints={containerRef}
         onDragEnd={(_, info) => {
+          const width = containerRef.current?.offsetWidth || window.innerWidth
           let nextIndex = safeIndex
-
           const movedFarEnough = Math.abs(info.offset.x) > width / 2
           const movedFastEnough = Math.abs(info.velocity.x) > width
 
