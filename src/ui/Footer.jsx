@@ -65,14 +65,14 @@ export default function Footer()  {
           initial={{ y: 100 }}
           animate={{ y: 0}}
           exit={{ y: 100 }}
-          transition={{ duration: 0.2, ease: "easeInOut"}}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
           className="bg-white w-full fixed z-20 border-neutral-400
           grid grid-flow-col gap-2 bottom-0 px-3 border-t-1"
         >
           {routes.map((i) => (
             <div 
               key={i.name}
-              className="flex items-center justify-center p-1"
+              className="flex items-center justify-center p-2"
             >
               <button 
                 onClick={() => handleNav(i)}

@@ -71,16 +71,16 @@ export default function HomeHeader() {
                 <div className="flex gap-5 justify-end">
                   {loc === '/groups' ? (
                     <button onClick={() => navigate('/')}>
-                      <SquarePen className="text-blue-700" />
+                      <SquarePen className="text-blue-700 size-9" />
                     </button>
                   ) : (
                     <button onClick={() => navigate('/groups')}>
-                      <FolderOpen className="text-blue-700" />
+                      <FolderOpen className="text-blue-700 size-9" />
                     </button>
                   )}
                   
                   <button onClick={() => setIsSearch(true)}>
-                      <Search className="text-blue-700" />
+                      <Search className="text-blue-700 size-9" />
                   </button>
                 </div>
               </div>
